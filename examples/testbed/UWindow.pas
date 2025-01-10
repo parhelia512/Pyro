@@ -33,12 +33,9 @@ var
   LPos: TPyPoint;
   LHudPos: TPyPoint;
 begin
-  LWindow := TPyWindow.Create();
+  LWindow := TPyWindow.Init('Pyro: Nuklear #01');
 
-  LWindow.Open('Pyro: Nuklear #01');
-
-  LFont := TPyFont.Create();
-  LFont.Load(LWindow, 10);
+  LFont := TPyFont.Init(LWindow, 10);
 
   LPos.x := 0;
   LPos.y := 25;
@@ -97,15 +94,11 @@ var
   LPos: TPyPoint;
   LHudPos: TPyPoint;
 begin
-  LWindow := TPyWindow.Create();
+  LWindow := TPyWindow.Init('Pyro: Window #02');
 
-  LWindow.Open('Pyro: Window #01');
+  LFont := TPyFont.Init(LWindow, 10);
 
-  LFont := TPyFont.Create();
-  LFont.Load(LWindow, 10);
-
-  LTexture := TPyTexture.Create();
-  LTexture.LoadFromZipFile(CZipFilename, 'res/images/pyro.png');
+  LTexture := TPyTexture.Init(CZipFilename, 'res/images/pyro.png');
   LTexture.SetPos(LWindow.GetVirtualSize().w/2, LWindow.GetVirtualSize().h/2);
   LTexture.SetScale(0.5);
 

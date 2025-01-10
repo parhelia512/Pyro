@@ -18,58 +18,71 @@ interface
 
 uses
   System.SysUtils,
+  System.Classes,
   Pyro,
   UCommon;
-
 
 procedure Spine01();
 
 implementation
 
+function SpineCreateTextureCallback(const APath: PAnsiChar; AUserData: Pointer): GLuint; cdecl;
+var
+  LFilename: string;
+begin
+  Result := 0;
+
+  // Exit if APath (file path) is not provided.
+  if not Assigned(APath) then Exit;
+
+  // Convert the provided path to a Delphi string.
+  LFilename := string(APath);
+
+  // Load spint texture from zipfile
+  Result := TPyTexture.Spine(TPyZipFileIO.Init(CZipFilename, LFilename));
+end;
+
+procedure SpineDisposeTextureCallback(ATexture: GLuint; AUserData: Pointer); cdecl;
+begin
+  // Delete spine texture
+  TPyTexture.Delete(ATexture);
+end;
+
 procedure Spine01();
 var
   LWindow: TPyWindow;
-  LIO: TPyZipFileIO;
   LPos: TPyPoint;
   LSpAtlas: pspAtlas;
   LSpSkeletonData: pspSkeletonData;
   LSpStateData: pspAnimationStateData;
   LSpDrawable: pspSkeletonDrawable;
   LSpJson: pspSkeletonJson;
-  LData: array of Byte;
+  LData: TMemoryStream;
   LHudPos: TPyPoint;
   LFont: TPyFont;
 begin
   LPos.x := 0;
   LPos.y := 25;
 
-  LWindow := TPyWindow.Create();
+  LWindow := TPyWindow.Init('Pyro: Spine #01');
 
-  LWindow.Open('Pyro: Spine #01');
+  LFont := TPyFont.Init(LWindow, 10);
 
-  LFont := TPyFont.Create();
-  LFont.Load(LWindow, 10);
+  spAtlasPage_setCallbacks(SpineCreateTextureCallback, SpineDisposeTextureCallback, nil);
 
   // Load spine data
-  LIO := TPyZipFileIO.Create();
-  LIO.Open(CZipFilename, 'res/spine/spineboy/spineboy-pma.atlas');
-  SetLength(LData, LIO.Size());
-  LIO.Read(@LData[0], LIO.Size());
-  LSpAtlas := spAtlas_create(@LData[0], length(LData), 'res/spine/spineboy', LWindow.Handle);
-  LData := nil;
-  LIO.Close();
+  LData := TPyZipFileIO.Load(CZipFilename, 'res/spine/spineboy/spineboy-pma.atlas');
+  LSpAtlas := spAtlas_create(LData.Memory, LData.Size, 'res/spine/spineboy', LWindow);
+  LData.Free();
 
+  // Load spine json data
   LSpJson := spSkeletonJson_create(LSpAtlas);
   LSpJson.scale := 0.4;
 
-  // Load spine json data
-  LIO.Open(CZipFilename, 'res/spine/spineboy/spineboy-pro.json');
-  SetLength(LData, LIO.Size());
-  LIO.Read(@LData[0], LIO.Size());
-  LSpSkeletonData := spSkeletonJson_readSkeletonData(LSpJson, @LData[0]);
+  LData := TPyZipFileIO.Load(CZipFilename, 'res/spine/spineboy/spineboy-pro.json');
+  LSpSkeletonData := spSkeletonJson_readSkeletonData(LSpJson, LData.Memory);
   spSkeletonJson_dispose(LSpJson);
-  LData := nil;
-  LIO.Free();
+  LData.Free();
 
   LSpStateData := spAnimationStateData_create(LSpSkeletonData);
   LSpStateData.defaultMix := 0.2;

@@ -53,9 +53,7 @@ begin
   LPos.x := 0;
   LPos.y := 25;
 
-  LWindow := TPyWindow.Create();
-
-  LWindow.Open('Pyro: GUI #01');
+  LWindow := TPyWindow.Init('Pyro: Nuklear #01');
 
   LNkCtx := nk_glfw3_init(LWindow.Handle, NK_GLFW3_INSTALL_CALLBACKS);
   nk_glfw3_font_stash_begin(@LNkAtlas);

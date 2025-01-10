@@ -32,20 +32,14 @@ begin
 end;
 
 procedure ZipFileIO01();
-var
-  LIO: TPyZipFileIO;
 begin
   // Set the console title for the application window
   PyConsole.SetTitle('Pyro: ZipFile #01');
 
-  LIO := TPyZipFileIO.Create();
-
-  if LIO.Build(CZipFilename, 'res', Test_ZipFile01_BuildProgress, nil) then
+  if  TPyZipFileIO.Build(CZipFilename, 'res', Test_ZipFile01_BuildProgress, nil) then
     PyConsole.PrintLn(PyCRLF+'%sSuccess!', [PyCSIBlink+PyCSIFGCyan])
   else
     PyConsole.PrintLn(PyCRLF+'%sFailed!', [PyCSIBlink+PyCSIFGRed]);
-
-  LIO.Free();
 end;
 
 end.

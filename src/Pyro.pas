@@ -14226,6 +14226,8 @@ type
     procedure ResetTiming();
     function  GetFrameRate(): UInt32;
     function  GetDeltaTime(): Double;
+
+    class function  Init(const ATitle: string; const AVirtualWidth: Cardinal=PyDEFAULT_WINDOW_WIDTH; const AVirtualHeight: Cardinal=PyDEFAULT_WINDOW_HEIGHT; const AParent: NativeUInt=0): TPyWindow; static;
   end;
 
 {$ENDREGION}
@@ -14320,8 +14322,10 @@ type
     function  Write(const AData: Pointer; const ASize: Int64): Int64; override;
     function  Pos(): Int64; override;
     function  Eos(): Boolean; override;
-    function Build(const AZipFilename, ADirectoryName: string; const AHandler: TPyZipFileIOBuildProgressCallback=nil; const AUserData: Pointer=nil; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): Boolean;
     function Open(const AZipFilename, AFilename: string; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): Boolean;
+    class function Init(const AZipFilename, AFilename: string; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): TPyZipFileIO; static;
+    class function Load(const AZipFilename, AFilename: string; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): TMemoryStream; static;
+    class function Build(const AZipFilename, ADirectoryName: string; const AHandler: TPyZipFileIOBuildProgressCallback=nil; const AUserData: Pointer=nil; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): Boolean; static;
   end;
 
 {$ENDREGION}
@@ -14404,6 +14408,10 @@ type
     procedure SetPixel(const X, Y: Single; const ARed, AGreen, ABlue, AAlpha: Byte); overload;
     function  CollideAABB(const ATexture: TPyTexture): Boolean;
     function  CollideOBB(const ATexture: TPyTexture): Boolean;
+    class function Init(const AZipFilename, AFilename: string; const AColorKey: PPyColor=nil; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): TPyTexture; static;
+    class function Spine(const AIO: TPyIO; const AOwnIO: Boolean=True): GLuint;
+    class procedure Delete(const ATexture: GLuint);
+
   end;
 
 {$ENDREGION}
@@ -14442,6 +14450,10 @@ type
     function  TextLength(const AText: string; const AArgs: array of const): Single; overload;
     function  TextHeight(): Single;
     function  SaveTexture(const AFilename: string): Boolean;
+
+    class function Init(const AWindow: TPyWindow; const ASize: Cardinal; const AGlyphs: string=''): TPyFont; overload; static;
+    class function Init(const AWindow: TPyWindow; const AZipFilename, AFilename: string; const ASize: Cardinal; const AGlyphs: string=''; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): TPyFont; overload; static;
+
   end;
 
 {$ENDREGION}
@@ -30209,6 +30221,16 @@ begin
   Result := FTiming.DeltaTime;
 end;
 
+class function  TPyWindow.Init(const ATitle: string; const AVirtualWidth: Cardinal=PyDEFAULT_WINDOW_WIDTH; const AVirtualHeight: Cardinal=PyDEFAULT_WINDOW_HEIGHT; const AParent: NativeUInt=0): TPyWindow;
+begin
+  Result := TPyWindow.Create();
+  if not Result.Open(ATitle, AVirtualWidth, AVirtualHeight, AParent) then
+  begin
+    Result.Free();
+    Result := nil;
+  end;
+end;
+
 {$ENDREGION}
 
 {$REGION ' Pyro.IO '}
@@ -30574,7 +30596,64 @@ begin
   PyConsole.Print(PyCR+'Adding %s(%d%s)...', [ExtractFileName(string(aFilename)), aProgress, '%']);
 end;
 
-function TPyZipFileIO.Build(const AZipFilename, ADirectoryName: string; const AHandler: TPyZipFileIOBuildProgressCallback; const AUserData: Pointer; const APassword: string): Boolean;
+function TPyZipFileIO.Open(const AZipFilename, AFilename: string; const APassword: string): Boolean;
+var
+  LPassword: PAnsiChar;
+  LZipFilename: PAnsiChar;
+  LFilename: PAnsiChar;
+  LFile: unzFile;
+begin
+  Result := False;
+
+  LPassword := PAnsiChar(AnsiString(APassword));
+  LZipFilename := PAnsiChar(AnsiString(StringReplace(string(AZipFilename), '/', '\', [rfReplaceAll])));
+  LFilename := PAnsiChar(AnsiString(StringReplace(string(AFilename), '/', '\', [rfReplaceAll])));
+
+  LFile := unzOpen64(LZipFilename);
+  if not Assigned(LFile) then Exit;
+
+  if unzLocateFile(LFile, LFilename, 0) <> UNZ_OK then
+  begin
+    unzClose(LFile);
+    Exit;
+  end;
+
+  if unzOpenCurrentFilePassword(LFile, LPassword) <> UNZ_OK then
+  begin
+    unzClose(LFile);
+    Exit;
+  end;
+
+  FHandle := LFile;
+  FPassword := LPassword;
+  FFilename := LFilename;
+
+  Result := True;
+end;
+
+class function TPyZipFileIO.Init(const AZipFilename, AFilename: string; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): TPyZipFileIO;
+begin
+  Result := TPyZipFileIO.Create();
+  if not Result.Open(AZipFilename, AFilename, APassword) then
+  begin
+    Result.Free();
+    Result := nil;
+  end;
+end;
+
+class function TPyZipFileIO.Load(const AZipFilename, AFilename: string; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): TMemoryStream;
+var
+  LIO: TPyZipFileIO;
+begin
+  LIO := TPyZipFileIO.Init(AZipFilename, AFilename, APassword);
+  Result := TMemoryStream.Create();
+  Result.SetSize(LIO.Size());
+  LIO.Read(Result.Memory, LIO.Size);
+  LIO.Free();
+  Result.Position := 0;
+end;
+
+class function TPyZipFileIO.Build(const AZipFilename, ADirectoryName: string; const AHandler: TPyZipFileIOBuildProgressCallback; const AUserData: Pointer; const APassword: string): Boolean;
 var
   LFileList: TStringDynArray;
   LArchive: PAnsiChar;
@@ -30692,41 +30771,6 @@ begin
 
   // return true if new zip file exits
   Result := TFile.Exists(LFilename);
-end;
-
-function TPyZipFileIO.Open(const AZipFilename, AFilename: string; const APassword: string): Boolean;
-var
-  LPassword: PAnsiChar;
-  LZipFilename: PAnsiChar;
-  LFilename: PAnsiChar;
-  LFile: unzFile;
-begin
-  Result := False;
-
-  LPassword := PAnsiChar(AnsiString(APassword));
-  LZipFilename := PAnsiChar(AnsiString(StringReplace(string(AZipFilename), '/', '\', [rfReplaceAll])));
-  LFilename := PAnsiChar(AnsiString(StringReplace(string(AFilename), '/', '\', [rfReplaceAll])));
-
-  LFile := unzOpen64(LZipFilename);
-  if not Assigned(LFile) then Exit;
-
-  if unzLocateFile(LFile, LFilename, 0) <> UNZ_OK then
-  begin
-    unzClose(LFile);
-    Exit;
-  end;
-
-  if unzOpenCurrentFilePassword(LFile, LPassword) <> UNZ_OK then
-  begin
-    unzClose(LFile);
-    Exit;
-  end;
-
-  FHandle := LFile;
-  FPassword := LPassword;
-  FFilename := LFilename;
-
-  Result := True;
 end;
 
 {$ENDREGION}
@@ -30908,13 +30952,13 @@ begin
   glGenTextures(1, @FHandle);
   glBindTexture(GL_TEXTURE_2D, FHandle);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, LWidth, LHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, LData);
-
   // Set texture parameters
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, LWidth, LHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, LData);
 
   stbi_image_free(LData);
 
@@ -31465,6 +31509,80 @@ begin
   Result := PyMath.OBBIntersect(obbA, obbB);
 end;
 
+class function TPyTexture.Init(const AZipFilename, AFilename: string; const AColorKey: PPyColor=nil; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): TPyTexture;
+begin
+  Result := TPyTexture.Create();
+  if not Result.LoadFromZipFile(AZipFilename, AFilename, AColorKey, APassword) then
+  begin
+    Result.Free();
+    Result := nil;
+  end;
+end;
+
+class function TPyTexture.Spine(const AIO: TPyIO; const AOwnIO: Boolean=True): GLuint;
+var
+  LCallbacks: stbi_io_callbacks;
+  LData: Pstbi_uc;
+  LWidth,LHeight,LChannels: Integer;
+  LIO: TPyIO;
+  LPrevTexture: GLuint;
+begin
+  Result := 0;
+  if not Assigned(AIO) then Exit;
+
+  LIO := AIO;
+
+  LCallbacks.read := Texture_Read;
+  LCallbacks.skip := Texture_Skip;
+  LCallbacks.eof := Texture_Eof;
+
+  LData := stbi_load_from_callbacks(@LCallbacks, LIO, @LWidth, @LHeight, @LChannels, 4);
+  if not Assigned(LData) then Exit;
+
+  glGenTextures(1, @Result);
+
+  glGetIntegerv(GL_TEXTURE_BINDING_2D, @LPrevTexture);
+
+  glBindTexture(GL_TEXTURE_2D, Result);
+
+  // Set texture parameters
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, LWidth, LHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, LData);
+
+  stbi_image_free(LData);
+
+  glBindTexture(GL_TEXTURE_2D, LPrevTexture);
+
+  if AOwnIO then
+  begin
+    AIO.Free();
+  end;
+end;
+
+class procedure TPyTexture.Delete(const ATexture: GLuint);
+var
+  LCurrentTexture: GLuInt;
+begin
+  // Exit if the texture pointer is not valid.
+  if ATexture = 0 then Exit;
+
+  // Save current texture
+  glGetIntegerv(GL_TEXTURE_BINDING_2D, @LCurrentTexture);
+
+  // Delete spine texture
+  glDeleteTextures(1, @ATexture);
+
+  // Restore current texture
+  if LCurrentTexture <> 0 then
+  begin
+    glBindTexture(GL_TEXTURE_2D, LCurrentTexture);
+  end;
+end;
+
 {$ENDREGION}
 
 {$REGION ' Pyro.Font '}
@@ -31789,6 +31907,22 @@ begin
   if not Assigned(FAtlas) then Exit;
   if AFilename.IsEmpty then Exit;
   FAtlas.Save(AFilename);
+end;
+
+class function TPyFont.Init(const AWindow: TPyWindow; const ASize: Cardinal; const AGlyphs: string=''): TPyFont;
+begin
+  Result := TPyFont.Create();
+  Result.Load(AWindow, ASize, AGlyphs);
+end;
+
+class function TPyFont.Init(const AWindow: TPyWindow; const AZipFilename, AFilename: string; const ASize: Cardinal; const AGlyphs: string=''; const APassword: string=PyDEFAULT_ZIPFILE_PASSWORD): TPyFont;
+begin
+  Result := TPyFont.Create();
+  if not Result.LoadFromZipFile(AWindow, AZipFilename, AFilename, ASize, AGlyphs, APassword) then
+  begin
+    Result.Free();
+    Result := nil;
+  end;
 end;
 
 {$ENDREGION}

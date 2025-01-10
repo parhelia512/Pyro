@@ -47,12 +47,9 @@ var
   LPos: TPyPoint;
   LHudPos: TPyPoint;
 begin
-  LWindow := TPyWindow.Create();
+  LWindow := TPyWindow.Init('Pyro: Video #01');
 
-  LWindow.Open('Pyro: Video #01');
-
-  LFont := TPyFont.Create();
-  LFont.Load(LWindow, 10);
+  LFont := TPyFont.Init(LWindow, 10);
 
   PyVideo.SetStatusEvent(nil, Video01_VideoStatusEvent);
   PyVideo.PlayFromZipFile(CZipFilename, 'res/videos/pyro.mpg', 1.0, False);
