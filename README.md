@@ -8,4 +8,15 @@ Optimized for modern Windows platforms, PGL fully supports **Win64** and **Unico
 
 With its all-in-one solution, PGL removes the complexity of managing multiple libraries or external dependencies, letting you focus on creating outstanding games. Whether you're crafting your first indie project or a professional-grade title, PGL equips you with everything you need to bring your vision to life.
 
-### 🚀✨ Coming Soon! ✨🚀
+✨ Ready to get started? Download the latest version from GitHub and start building today! 🔥 Let Pyro Game Library help you deliver secure, high-performance, and unforgettable gaming experiences your players will love. 💪🎉
+
+---
+
+The **Pyro Game Library (PGL)** is a **work-in-progress**, and we’re actively developing and improving it to bring you the best 2D game development experience! 🚀 The repository’s README is currently under construction 🛠️, but we’re here to help if you need assistance.  
+
+Feel free to:  
+- 💬 [**Join our Discord**](https://discord.gg/tPWjMwK) for live discussions and support.  
+- 📝 [**Post in Discussions**](https://github.com/tinyBigGAMES/Pyro/discussions) for questions or suggestions.  
+- 🐞 [**Submit an Issue**](https://github.com/tinyBigGAMES/Pyro/issues) if you encounter any bugs or need help with specific problems.  
+
+We appreciate your patience and feedback as we continue to build something awesome together! 🎮🔥
