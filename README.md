@@ -8,7 +8,7 @@ Optimized for modern Windows platforms, PGL fully supports **Win64** and **Unico
 
 With its all-in-one solution, PGL removes the complexity of managing multiple libraries or external dependencies, letting you focus on creating outstanding games. Whether you're crafting your first indie project or a professional-grade title, PGL equips you with everything you need to bring your vision to life.
 
-✨ Ready to get started? Download the latest version from GitHub and start building today! 🔥 Let Pyro Game Library help you deliver secure, high-performance, and unforgettable gaming experiences your players will love. 💪🎉
+✨ Ready to get started? Download the latest version from [GitHub](https://github.com/tinyBigGAMES/Pyro/archive/refs/heads/main.zip) and start building today! 🔥 Let Pyro Game Library help you deliver secure, high-performance, and unforgettable gaming experiences your players will love. 💪🎉
 
 ---
 
