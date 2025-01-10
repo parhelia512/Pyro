@@ -12,7 +12,7 @@
  https://github.com/tinyBigGAMES/Pyro
 ===============================================================================}
 
-unit UTestWindow;
+unit UWindow;
 
 interface
 
@@ -21,11 +21,73 @@ uses
   Pyro,
   UCommon;
 
-procedure TestWindow01();
+procedure Window01();
+procedure Window02();
 
 implementation
 
-procedure TestWindow01();
+procedure Window01();
+var
+  LWindow: TPyWindow;
+  LFont: TPyFont;
+  LPos: TPyPoint;
+  LHudPos: TPyPoint;
+begin
+  LWindow := TPyWindow.Create();
+
+  LWindow.Open('Pyro: Nuklear #01');
+
+  LFont := TPyFont.Create();
+  LFont.Load(LWindow, 10);
+
+  LPos.x := 0;
+  LPos.y := 25;
+
+  while not LWindow.ShouldClose() do
+  begin
+    LWindow.StartFrame();
+
+      if LWindow.GetKey(PyKEY_ESCAPE, isWasReleased) then
+        LWindow.SetShouldClose(True);
+
+      if LWindow.GetKey(PyKEY_F11, isWasPressed) then
+        LWindow.ToggleFullscreen();
+
+      if LWindow.GetMouseButton(PyMOUSE_BUTTON_RIGHT, isWasReleased) then
+        LWindow.SetShouldClose(True);
+
+
+      LPos.x := LPos.x + 3.0;
+      if LPos.x > LWindow.GetVirtualSize().w + 25 then
+        LPos.x := -25;
+
+      LWindow.StartDrawing();
+
+        LWindow.Clear(PyDARKSLATEBROWN);
+
+        LWindow.DrawFilledRect(LPos.x, LPos.y, 50, 50, PyRED, 0);
+
+        LHudPos := PyMath.Point(3, 3);
+
+        LFont.DrawText(LWindow, LHudPos.x, LHudPos.y, 0, PyWHITE, haLeft, '%d fps', [LWindow.GetFrameRate()]);
+        LFont.DrawText(LWindow, LHudPos.x, LHudPos.y, 0, PyWHITE, haLeft, PyUtils.HudTextItem('Quit', 'ESC'));
+        LFont.DrawText(LWindow, LHudPos.x, LHudPos.y, 0, PyWHITE, haLeft, PyUtils.HudTextItem('F11', 'Toggle fullscreen'));
+
+        LFont.DrawText(LWindow, LHudPos.x, LHudPos.y, 0, PyORANGE, haLeft, PyUtils.HudTextItem('Mouse Wheel','x:%3.2f, y:%3.2f', 20, ' '), [LWindow.GetMouseWheel().x, LWindow.GetMouseWheel().y]);
+        LFont.DrawText(LWindow, LHudPos.x, LHudPos.y, 0, PyORANGE, haLeft, PyUtils.HudTextItem('Mouse Pos', 'x:%3.2f, y:%3.2f', 20, ' '), [LWindow.GetMousePos().x, LWindow.GetMousePos().y]);
+
+      LWindow.EndDrawing();
+
+    LWindow.EndFrame();
+  end;
+
+  PyUtils.AsyncWaitForAllToTerminate();
+
+  LFont.Free();
+  LWindow.Free();
+end;
+
+procedure Window02();
 const
   CFalseTrue: array[False..True] of string = ('no focus', 'has focus');
 var

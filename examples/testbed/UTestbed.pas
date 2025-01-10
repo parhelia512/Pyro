@@ -21,8 +21,12 @@ uses
   System.SysUtils,
   Pyro,
   UCommon,
-  UTestIO,
-  UTestWindow;
+  UIO,
+  UWindow,
+  UVideo,
+  UNuklear,
+  USpine,
+  UAudio;
 
 procedure RunTests();
 
@@ -30,8 +34,13 @@ implementation
 
 type
   TExamples = (
-    exTestZipFileIO01,
-    exTestWindow01
+    exZipFileIO01,
+    exWindow01,
+    exWindow02,
+    exVideo01,
+    exNuklear01,
+    exSpine01,
+    exAudio01
   );
 
 procedure RunTests();
@@ -39,11 +48,16 @@ var
   LExample: TExamples;
 begin
   try
-    LExample := exTestZipFileIO01;
+    LExample := exZipFileIO01;
 
     case LExample of
-      exTestZipFileIO01: TestZipFileIO01();
-      exTestWindow01   : TestWindow01();
+      exZipFileIO01: ZipFileIO01();
+      exWindow01   : Window01();
+      exWindow02   : Window02();
+      exVideo01    : Video01();
+      exNuklear01  : Nuklear01();
+      exSpine01    : Spine01();
+      exAudio01    : Audio01();
     end;
 
     PyConsole.Pause();

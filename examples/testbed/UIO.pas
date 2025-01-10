@@ -12,7 +12,7 @@
  https://github.com/tinyBigGAMES/Pyro
 ===============================================================================}
 
-unit UTestIO;
+unit UIO;
 
 interface
 
@@ -21,7 +21,7 @@ uses
   Pyro,
   UCommon;
 
-procedure TestZipFileIO01();
+procedure ZipFileIO01();
 
 implementation
 
@@ -31,7 +31,7 @@ begin
   PyConsole.Print(PyCR+'%sAdding %s(%d%s)...', [PyCSIDim+PyCSIFGWhite, ExtractFileName(string(aFilename)), aProgress, '%']);
 end;
 
-procedure TestZipFileIO01();
+procedure ZipFileIO01();
 var
   LIO: TPyZipFileIO;
 begin

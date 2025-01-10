@@ -4,7 +4,7 @@
         <ProjectVersion>20.3</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <ProjectName Condition="'$(ProjectName)'==''">Testbed</ProjectName>
         <TargetedPlatforms>3</TargetedPlatforms>
@@ -116,8 +116,12 @@
         <DCCReference Include="..\..\src\Pyro.pas"/>
         <DCCReference Include="UTestbed.pas"/>
         <DCCReference Include="UCommon.pas"/>
-        <DCCReference Include="UTestIO.pas"/>
-        <DCCReference Include="UTestWindow.pas"/>
+        <DCCReference Include="UIO.pas"/>
+        <DCCReference Include="UWindow.pas"/>
+        <DCCReference Include="UVideo.pas"/>
+        <DCCReference Include="UNuklear.pas"/>
+        <DCCReference Include="USpine.pas"/>
+        <DCCReference Include="UAudio.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

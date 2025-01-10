@@ -23,8 +23,12 @@ uses
   Pyro in '..\..\src\Pyro.pas',
   UTestbed in 'UTestbed.pas',
   UCommon in 'UCommon.pas',
-  UTestIO in 'UTestIO.pas',
-  UTestWindow in 'UTestWindow.pas';
+  UIO in 'UIO.pas',
+  UWindow in 'UWindow.pas',
+  UVideo in 'UVideo.pas',
+  UNuklear in 'UNuklear.pas',
+  USpine in 'USpine.pas',
+  UAudio in 'UAudio.pas';
 
 begin
   RunTests();
