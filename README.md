@@ -11,8 +11,9 @@ With its all-in-one solution, PGL removes the complexity of managing multiple li
 ### Getting Started  
 
 1. **Download**: Get the latest version from [GitHub](https://github.com/tinyBigGAMES/Pyro/archive/refs/heads/main.zip).  
-2. **Load the Project**: Open `Pyro Game Library.groupproj` in the `src` folder to access the examples.  
-3. **Build the Resource Archive**: Run the `ZipFileIO01` example first. This creates the resource archive used by other examples.  
+2. **Load the Project**: Open `Pyro Game Library.groupproj` in the `src` folder to access the ever-expanding number of examples showcasing PGL's features.  
+3. **Build the Resource Archive**: Run the `ZipFileIO01` example first. This creates the resource archive used by other examples.
+4. Simply add `Pyro` to the `uses` section of your project to unlock all PGL features.
 
 With its all-in-one solution, PGL removes the complexity of managing multiple libraries or external dependencies, letting you focus on creating outstanding games. Whether you're crafting your first indie project or a professional-grade title, PGL equips you with everything you need to bring your vision to life.  
 
