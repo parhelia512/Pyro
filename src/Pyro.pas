@@ -20834,7 +20834,7 @@ end;
 class procedure PyConsole.SetCursorPos(const X, Y: Integer);
 begin
   if not HasOutput() then Exit;
-  Write(Format(PyCSICursorPos, [Y, X]));
+  Write(Format(PyCSICursorPos, [X, Y]));
 end;
 
 class procedure PyConsole.SetCursorVisible(const AVisible: Boolean);
