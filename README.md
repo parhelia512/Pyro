@@ -29,3 +29,11 @@ Feel free to:
 - 🐞 [**Submit an Issue**](https://github.com/tinyBigGAMES/Pyro/issues) if you encounter any bugs or need help with specific problems.  
 
 We appreciate your patience and feedback as we continue to build something awesome together! 🎮🔥
+
+<p align="center">
+<img src="media/delphi.png" alt="Delphi">
+</p>
+<h5 align="center">
+
+Made with :heart: in Delphi
+</h5>
