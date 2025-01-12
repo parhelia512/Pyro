@@ -42,6 +42,8 @@ var
   LNkBkgrnd: nk_colorf;
   LNkFont: Pnk_font;
   LResStream: TResourceStream;
+  LHudPos: TPyPoint;
+  LFont: TPyFont;
 begin
   LNkBkgrnd.r := 0.10;
   LNkBkgrnd.g := 0.18;
@@ -54,6 +56,8 @@ begin
   LPos.y := 25;
 
   LWindow := TPyWindow.Init('Pyro: Nuklear #01');
+
+  LFont := TPyFont.Init(LWindow, 10);
 
   LNkCtx := nk_glfw3_init(LWindow.Handle, NK_GLFW3_INSTALL_CALLBACKS);
   nk_glfw3_font_stash_begin(@LNkAtlas);
@@ -129,6 +133,13 @@ begin
         nk_glfw3_render(NK_ANTI_ALIASING_ON, LWindow.GetVirtualSize().w, LWindow.GetVirtualSize().h);
         glEnable(GL_POLYGON_SMOOTH);
 
+        LHudPos := PyMath.Point(3, 3);
+
+        LFont.DrawText(LWindow, LHudPos.x, LHudPos.y, 0, PyWHITE, haLeft, '%d fps', [LWindow.GetFrameRate()]);
+        LFont.DrawText(LWindow, LHudPos.x, LHudPos.y, 0, PyWHITE, haLeft, PyUtils.HudTextItem('Quit', 'ESC'));
+        LFont.DrawText(LWindow, LHudPos.x, LHudPos.y, 0, PyWHITE, haLeft, PyUtils.HudTextItem('F11', 'Toggle fullscreen'));
+        LFont.DrawText(LWindow, LHudPos.x, LHudPos.y, 0, PyORANGE, haLeft, PyUtils.HudTextItem('Mouse Pos', 'x:%3.2f, y:%3.2f', 20, ' '), [LWindow.GetMousePos().x, LWindow.GetMousePos().y]);
+
       LWindow.EndDrawing();
 
     LWindow.EndFrame();
@@ -136,6 +147,7 @@ begin
 
   nk_glfw3_shutdown();
 
+  LFont.Free();
   LWindow.Free();
 end;
 

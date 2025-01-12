@@ -28,7 +28,8 @@ uses
   UVideo in 'UVideo.pas',
   UNuklear in 'UNuklear.pas',
   USpine in 'USpine.pas',
-  UAudio in 'UAudio.pas';
+  UAudio in 'UAudio.pas',
+  UDatabase in 'UDatabase.pas';
 
 begin
   RunTests();

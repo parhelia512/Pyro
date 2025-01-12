@@ -26,7 +26,8 @@ uses
   UVideo,
   UNuklear,
   USpine,
-  UAudio;
+  UAudio,
+  UDatabase;
 
 procedure RunTests();
 
@@ -53,7 +54,7 @@ end;
 
 procedure ShowMenu;
 var
-  I, SelectedIndex, Columns, Rows, TotalItems: Integer;
+  SelectedIndex, Columns, Rows, TotalItems: Integer;
   Key: Integer;
 
   // Local function to handle menu-specific key input
@@ -184,6 +185,7 @@ begin
   AddMenuOption('Audio #01', Audio01);
   AddMenuOption('Video #01', Video01);
   AddMenuOption('Video #02', Video02);
+  AddMenuOption('Remote Db #01', RemoteDb01, True);
   ShowMenu();
 end;
 
