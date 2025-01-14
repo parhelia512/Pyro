@@ -123,6 +123,7 @@
         <DCCReference Include="USpine.pas"/>
         <DCCReference Include="UAudio.pas"/>
         <DCCReference Include="UDatabase.pas"/>
+        <DCCReference Include="UImGui.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

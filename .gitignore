@@ -83,3 +83,4 @@ modules/
 # Pyro
 *.dsv
 bin/Data.zip
+bin/imgui.ini

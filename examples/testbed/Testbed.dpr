@@ -29,7 +29,8 @@ uses
   UNuklear in 'UNuklear.pas',
   USpine in 'USpine.pas',
   UAudio in 'UAudio.pas',
-  UDatabase in 'UDatabase.pas';
+  UDatabase in 'UDatabase.pas',
+  UImGui in 'UImGui.pas';
 
 begin
   RunTests();

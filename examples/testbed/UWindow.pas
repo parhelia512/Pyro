@@ -78,8 +78,6 @@ begin
     LWindow.EndFrame();
   end;
 
-  PyUtils.AsyncWaitForAllToTerminate();
-
   LFont.Free();
   LWindow.Free();
 end;

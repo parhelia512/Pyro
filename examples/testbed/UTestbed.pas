@@ -27,7 +27,8 @@ uses
   UNuklear,
   USpine,
   UAudio,
-  UDatabase;
+  UDatabase,
+  UImGui;
 
 procedure RunTests();
 
@@ -186,6 +187,7 @@ begin
   AddMenuOption('Video #01', Video01);
   AddMenuOption('Video #02', Video02);
   AddMenuOption('Remote Db #01', RemoteDb01, True);
+  AddMenuOption('ImGui #01', ImGui01);
   ShowMenu();
 end;
 

@@ -42,6 +42,7 @@
 -------------------------------------------------------------------------------
 
  This project uses the following open-source libraries:
+ * cimgui       - https://github.com/cimgui/cimgui
  * cute_headers - https://github.com/RandyGaul/cute_headers
  * glfw         - https://github.com/glfw/glfw
  * luajit       - https://github.com/LuaJIT/LuaJIT
@@ -1760,9 +1761,9 @@ const
   LUA_ERRFILE = (LUA_ERRERR+1);
   LUA_NOREF = (-2);
   LUA_REFNIL = (-1);
-  LUAJIT_VERSION = 'LuaJIT 2.1.1734355927';
+  LUAJIT_VERSION = 'LuaJIT 2.1.1736781742';
   LUAJIT_VERSION_NUM = 20199;
-  LUAJIT_COPYRIGHT = 'Copyright (C) 2005-2023 Mike Pall';
+  LUAJIT_COPYRIGHT = 'Copyright (C) 2005-2025 Mike Pall';
   LUAJIT_URL = 'https://luajit.org/';
   LUAJIT_MODE_MASK = $00ff;
   LUAJIT_MODE_OFF = $0000;
@@ -2188,9 +2189,9 @@ const
   NK_PI = 3.141592654;
   NK_PI_HALF = 1.570796326;
   NK_MAX_FLOAT_PRECISION = 2;
-  SQLITE_VERSION = '3.47.2';
-  SQLITE_VERSION_NUMBER = 3047002;
-  SQLITE_SOURCE_ID = '2024-12-07 20:39:59 2aabe05e2e8cae4847a802ee2daddc1d7413d8fc560254d93ee3e72c14685b6c';
+  SQLITE_VERSION = '3.48.0';
+  SQLITE_VERSION_NUMBER = 3048000;
+  SQLITE_SOURCE_ID = '2025-01-14 11:05:00 d2fe6b05f38d9d7cd78c5d252e99ac59f1aea071d669830c1ffe4e8966e84010';
   SQLITE_OK = 0;
   SQLITE_ERROR = 1;
   SQLITE_INTERNAL = 2;
@@ -2387,6 +2388,7 @@ const
   SQLITE_FCNTL_EXTERNAL_READER = 40;
   SQLITE_FCNTL_CKSM_FILE = 41;
   SQLITE_FCNTL_RESET_CACHE = 42;
+  SQLITE_FCNTL_NULL_IO = 43;
   SQLITE_GET_LOCKPROXYFILE = SQLITE_FCNTL_GET_LOCKPROXYFILE;
   SQLITE_SET_LOCKPROXYFILE = SQLITE_FCNTL_SET_LOCKPROXYFILE;
   SQLITE_LAST_ERRNO = SQLITE_FCNTL_LAST_ERRNO;
@@ -2503,6 +2505,7 @@ const
   SQLITE_PREPARE_PERSISTENT = $01;
   SQLITE_PREPARE_NORMALIZE = $02;
   SQLITE_PREPARE_NO_VTAB = $04;
+  SQLITE_PREPARE_DONT_LOG = $10;
   SQLITE_INTEGER = 1;
   SQLITE_FLOAT = 2;
   SQLITE_BLOB = 4;
@@ -2664,6 +2667,9 @@ const
   FTS5_TOKENIZE_DOCUMENT = $0004;
   FTS5_TOKENIZE_AUX = $0008;
   FTS5_TOKEN_COLOCATED = $0001;
+  IM_UNICODE_CODEPOINT_MAX = $FFFF;
+  IMGUI_HAS_DOCK = 1;
+  ImDrawCallback_ResetRenderState = -8;
 
 const
   LUAJIT_MODE_ENGINE = 0;
@@ -4211,9 +4217,1474 @@ const
   NK_GLFW3_INSTALL_CALLBACKS = 1;
 
 type
+  ImGuiWindowFlags_ = Integer;
+  PImGuiWindowFlags_ = ^ImGuiWindowFlags_;
+
+const
+  ImGuiWindowFlags_None = 0;
+  ImGuiWindowFlags_NoTitleBar = 1;
+  ImGuiWindowFlags_NoResize = 2;
+  ImGuiWindowFlags_NoMove = 4;
+  ImGuiWindowFlags_NoScrollbar = 8;
+  ImGuiWindowFlags_NoScrollWithMouse = 16;
+  ImGuiWindowFlags_NoCollapse = 32;
+  ImGuiWindowFlags_AlwaysAutoResize = 64;
+  ImGuiWindowFlags_NoBackground = 128;
+  ImGuiWindowFlags_NoSavedSettings = 256;
+  ImGuiWindowFlags_NoMouseInputs = 512;
+  ImGuiWindowFlags_MenuBar = 1024;
+  ImGuiWindowFlags_HorizontalScrollbar = 2048;
+  ImGuiWindowFlags_NoFocusOnAppearing = 4096;
+  ImGuiWindowFlags_NoBringToFrontOnFocus = 8192;
+  ImGuiWindowFlags_AlwaysVerticalScrollbar = 16384;
+  ImGuiWindowFlags_AlwaysHorizontalScrollbar = 32768;
+  ImGuiWindowFlags_NoNavInputs = 65536;
+  ImGuiWindowFlags_NoNavFocus = 131072;
+  ImGuiWindowFlags_UnsavedDocument = 262144;
+  ImGuiWindowFlags_NoDocking = 524288;
+  ImGuiWindowFlags_NoNav = 196608;
+  ImGuiWindowFlags_NoDecoration = 43;
+  ImGuiWindowFlags_NoInputs = 197120;
+  ImGuiWindowFlags_ChildWindow = 16777216;
+  ImGuiWindowFlags_Tooltip = 33554432;
+  ImGuiWindowFlags_Popup = 67108864;
+  ImGuiWindowFlags_Modal = 134217728;
+  ImGuiWindowFlags_ChildMenu = 268435456;
+  ImGuiWindowFlags_DockNodeHost = 536870912;
+
+type
+  ImGuiChildFlags_ = Integer;
+  PImGuiChildFlags_ = ^ImGuiChildFlags_;
+
+const
+  ImGuiChildFlags_None = 0;
+  ImGuiChildFlags_Borders = 1;
+  ImGuiChildFlags_AlwaysUseWindowPadding = 2;
+  ImGuiChildFlags_ResizeX = 4;
+  ImGuiChildFlags_ResizeY = 8;
+  ImGuiChildFlags_AutoResizeX = 16;
+  ImGuiChildFlags_AutoResizeY = 32;
+  ImGuiChildFlags_AlwaysAutoResize = 64;
+  ImGuiChildFlags_FrameStyle = 128;
+  ImGuiChildFlags_NavFlattened = 256;
+
+type
+  ImGuiItemFlags_ = Integer;
+  PImGuiItemFlags_ = ^ImGuiItemFlags_;
+
+const
+  ImGuiItemFlags_None = 0;
+  ImGuiItemFlags_NoTabStop = 1;
+  ImGuiItemFlags_NoNav = 2;
+  ImGuiItemFlags_NoNavDefaultFocus = 4;
+  ImGuiItemFlags_ButtonRepeat = 8;
+  ImGuiItemFlags_AutoClosePopups = 16;
+  ImGuiItemFlags_AllowDuplicateId = 32;
+
+type
+  ImGuiInputTextFlags_ = Integer;
+  PImGuiInputTextFlags_ = ^ImGuiInputTextFlags_;
+
+const
+  ImGuiInputTextFlags_None = 0;
+  ImGuiInputTextFlags_CharsDecimal = 1;
+  ImGuiInputTextFlags_CharsHexadecimal = 2;
+  ImGuiInputTextFlags_CharsScientific = 4;
+  ImGuiInputTextFlags_CharsUppercase = 8;
+  ImGuiInputTextFlags_CharsNoBlank = 16;
+  ImGuiInputTextFlags_AllowTabInput = 32;
+  ImGuiInputTextFlags_EnterReturnsTrue = 64;
+  ImGuiInputTextFlags_EscapeClearsAll = 128;
+  ImGuiInputTextFlags_CtrlEnterForNewLine = 256;
+  ImGuiInputTextFlags_ReadOnly = 512;
+  ImGuiInputTextFlags_Password = 1024;
+  ImGuiInputTextFlags_AlwaysOverwrite = 2048;
+  ImGuiInputTextFlags_AutoSelectAll = 4096;
+  ImGuiInputTextFlags_ParseEmptyRefVal = 8192;
+  ImGuiInputTextFlags_DisplayEmptyRefVal = 16384;
+  ImGuiInputTextFlags_NoHorizontalScroll = 32768;
+  ImGuiInputTextFlags_NoUndoRedo = 65536;
+  ImGuiInputTextFlags_ElideLeft = 131072;
+  ImGuiInputTextFlags_CallbackCompletion = 262144;
+  ImGuiInputTextFlags_CallbackHistory = 524288;
+  ImGuiInputTextFlags_CallbackAlways = 1048576;
+  ImGuiInputTextFlags_CallbackCharFilter = 2097152;
+  ImGuiInputTextFlags_CallbackResize = 4194304;
+  ImGuiInputTextFlags_CallbackEdit = 8388608;
+
+type
+  ImGuiTreeNodeFlags_ = Integer;
+  PImGuiTreeNodeFlags_ = ^ImGuiTreeNodeFlags_;
+
+const
+  ImGuiTreeNodeFlags_None = 0;
+  ImGuiTreeNodeFlags_Selected = 1;
+  ImGuiTreeNodeFlags_Framed = 2;
+  ImGuiTreeNodeFlags_AllowOverlap = 4;
+  ImGuiTreeNodeFlags_NoTreePushOnOpen = 8;
+  ImGuiTreeNodeFlags_NoAutoOpenOnLog = 16;
+  ImGuiTreeNodeFlags_DefaultOpen = 32;
+  ImGuiTreeNodeFlags_OpenOnDoubleClick = 64;
+  ImGuiTreeNodeFlags_OpenOnArrow = 128;
+  ImGuiTreeNodeFlags_Leaf = 256;
+  ImGuiTreeNodeFlags_Bullet = 512;
+  ImGuiTreeNodeFlags_FramePadding = 1024;
+  ImGuiTreeNodeFlags_SpanAvailWidth = 2048;
+  ImGuiTreeNodeFlags_SpanFullWidth = 4096;
+  ImGuiTreeNodeFlags_SpanTextWidth = 8192;
+  ImGuiTreeNodeFlags_SpanAllColumns = 16384;
+  ImGuiTreeNodeFlags_NavLeftJumpsBackHere = 32768;
+  ImGuiTreeNodeFlags_CollapsingHeader = 26;
+
+type
+  ImGuiPopupFlags_ = Integer;
+  PImGuiPopupFlags_ = ^ImGuiPopupFlags_;
+
+const
+  ImGuiPopupFlags_None = 0;
+  ImGuiPopupFlags_MouseButtonLeft = 0;
+  ImGuiPopupFlags_MouseButtonRight = 1;
+  ImGuiPopupFlags_MouseButtonMiddle = 2;
+  ImGuiPopupFlags_MouseButtonMask_ = 31;
+  ImGuiPopupFlags_MouseButtonDefault_ = 1;
+  ImGuiPopupFlags_NoReopen = 32;
+  ImGuiPopupFlags_NoOpenOverExistingPopup = 128;
+  ImGuiPopupFlags_NoOpenOverItems = 256;
+  ImGuiPopupFlags_AnyPopupId = 1024;
+  ImGuiPopupFlags_AnyPopupLevel = 2048;
+  ImGuiPopupFlags_AnyPopup = 3072;
+
+type
+  ImGuiSelectableFlags_ = Integer;
+  PImGuiSelectableFlags_ = ^ImGuiSelectableFlags_;
+
+const
+  ImGuiSelectableFlags_None = 0;
+  ImGuiSelectableFlags_NoAutoClosePopups = 1;
+  ImGuiSelectableFlags_SpanAllColumns = 2;
+  ImGuiSelectableFlags_AllowDoubleClick = 4;
+  ImGuiSelectableFlags_Disabled = 8;
+  ImGuiSelectableFlags_AllowOverlap = 16;
+  ImGuiSelectableFlags_Highlight = 32;
+
+type
+  ImGuiComboFlags_ = Integer;
+  PImGuiComboFlags_ = ^ImGuiComboFlags_;
+
+const
+  ImGuiComboFlags_None = 0;
+  ImGuiComboFlags_PopupAlignLeft = 1;
+  ImGuiComboFlags_HeightSmall = 2;
+  ImGuiComboFlags_HeightRegular = 4;
+  ImGuiComboFlags_HeightLarge = 8;
+  ImGuiComboFlags_HeightLargest = 16;
+  ImGuiComboFlags_NoArrowButton = 32;
+  ImGuiComboFlags_NoPreview = 64;
+  ImGuiComboFlags_WidthFitPreview = 128;
+  ImGuiComboFlags_HeightMask_ = 30;
+
+type
+  ImGuiTabBarFlags_ = Integer;
+  PImGuiTabBarFlags_ = ^ImGuiTabBarFlags_;
+
+const
+  ImGuiTabBarFlags_None = 0;
+  ImGuiTabBarFlags_Reorderable = 1;
+  ImGuiTabBarFlags_AutoSelectNewTabs = 2;
+  ImGuiTabBarFlags_TabListPopupButton = 4;
+  ImGuiTabBarFlags_NoCloseWithMiddleMouseButton = 8;
+  ImGuiTabBarFlags_NoTabListScrollingButtons = 16;
+  ImGuiTabBarFlags_NoTooltip = 32;
+  ImGuiTabBarFlags_DrawSelectedOverline = 64;
+  ImGuiTabBarFlags_FittingPolicyResizeDown = 128;
+  ImGuiTabBarFlags_FittingPolicyScroll = 256;
+  ImGuiTabBarFlags_FittingPolicyMask_ = 384;
+  ImGuiTabBarFlags_FittingPolicyDefault_ = 128;
+
+type
+  ImGuiTabItemFlags_ = Integer;
+  PImGuiTabItemFlags_ = ^ImGuiTabItemFlags_;
+
+const
+  ImGuiTabItemFlags_None = 0;
+  ImGuiTabItemFlags_UnsavedDocument = 1;
+  ImGuiTabItemFlags_SetSelected = 2;
+  ImGuiTabItemFlags_NoCloseWithMiddleMouseButton = 4;
+  ImGuiTabItemFlags_NoPushId = 8;
+  ImGuiTabItemFlags_NoTooltip = 16;
+  ImGuiTabItemFlags_NoReorder = 32;
+  ImGuiTabItemFlags_Leading = 64;
+  ImGuiTabItemFlags_Trailing = 128;
+  ImGuiTabItemFlags_NoAssumedClosure = 256;
+
+type
+  ImGuiFocusedFlags_ = Integer;
+  PImGuiFocusedFlags_ = ^ImGuiFocusedFlags_;
+
+const
+  ImGuiFocusedFlags_None = 0;
+  ImGuiFocusedFlags_ChildWindows = 1;
+  ImGuiFocusedFlags_RootWindow = 2;
+  ImGuiFocusedFlags_AnyWindow = 4;
+  ImGuiFocusedFlags_NoPopupHierarchy = 8;
+  ImGuiFocusedFlags_DockHierarchy = 16;
+  ImGuiFocusedFlags_RootAndChildWindows = 3;
+
+type
+  ImGuiHoveredFlags_ = Integer;
+  PImGuiHoveredFlags_ = ^ImGuiHoveredFlags_;
+
+const
+  ImGuiHoveredFlags_None = 0;
+  ImGuiHoveredFlags_ChildWindows = 1;
+  ImGuiHoveredFlags_RootWindow = 2;
+  ImGuiHoveredFlags_AnyWindow = 4;
+  ImGuiHoveredFlags_NoPopupHierarchy = 8;
+  ImGuiHoveredFlags_DockHierarchy = 16;
+  ImGuiHoveredFlags_AllowWhenBlockedByPopup = 32;
+  ImGuiHoveredFlags_AllowWhenBlockedByActiveItem = 128;
+  ImGuiHoveredFlags_AllowWhenOverlappedByItem = 256;
+  ImGuiHoveredFlags_AllowWhenOverlappedByWindow = 512;
+  ImGuiHoveredFlags_AllowWhenDisabled = 1024;
+  ImGuiHoveredFlags_NoNavOverride = 2048;
+  ImGuiHoveredFlags_AllowWhenOverlapped = 768;
+  ImGuiHoveredFlags_RectOnly = 928;
+  ImGuiHoveredFlags_RootAndChildWindows = 3;
+  ImGuiHoveredFlags_ForTooltip = 4096;
+  ImGuiHoveredFlags_Stationary = 8192;
+  ImGuiHoveredFlags_DelayNone = 16384;
+  ImGuiHoveredFlags_DelayShort = 32768;
+  ImGuiHoveredFlags_DelayNormal = 65536;
+  ImGuiHoveredFlags_NoSharedDelay = 131072;
+
+type
+  ImGuiDockNodeFlags_ = Integer;
+  PImGuiDockNodeFlags_ = ^ImGuiDockNodeFlags_;
+
+const
+  ImGuiDockNodeFlags_None = 0;
+  ImGuiDockNodeFlags_KeepAliveOnly = 1;
+  ImGuiDockNodeFlags_NoDockingOverCentralNode = 4;
+  ImGuiDockNodeFlags_PassthruCentralNode = 8;
+  ImGuiDockNodeFlags_NoDockingSplit = 16;
+  ImGuiDockNodeFlags_NoResize = 32;
+  ImGuiDockNodeFlags_AutoHideTabBar = 64;
+  ImGuiDockNodeFlags_NoUndocking = 128;
+
+type
+  ImGuiDragDropFlags_ = Integer;
+  PImGuiDragDropFlags_ = ^ImGuiDragDropFlags_;
+
+const
+  ImGuiDragDropFlags_None = 0;
+  ImGuiDragDropFlags_SourceNoPreviewTooltip = 1;
+  ImGuiDragDropFlags_SourceNoDisableHover = 2;
+  ImGuiDragDropFlags_SourceNoHoldToOpenOthers = 4;
+  ImGuiDragDropFlags_SourceAllowNullID = 8;
+  ImGuiDragDropFlags_SourceExtern = 16;
+  ImGuiDragDropFlags_PayloadAutoExpire = 32;
+  ImGuiDragDropFlags_PayloadNoCrossContext = 64;
+  ImGuiDragDropFlags_PayloadNoCrossProcess = 128;
+  ImGuiDragDropFlags_AcceptBeforeDelivery = 1024;
+  ImGuiDragDropFlags_AcceptNoDrawDefaultRect = 2048;
+  ImGuiDragDropFlags_AcceptNoPreviewTooltip = 4096;
+  ImGuiDragDropFlags_AcceptPeekOnly = 3072;
+
+type
+  ImGuiDataType_ = Integer;
+  PImGuiDataType_ = ^ImGuiDataType_;
+
+const
+  ImGuiDataType_S8 = 0;
+  ImGuiDataType_U8 = 1;
+  ImGuiDataType_S16 = 2;
+  ImGuiDataType_U16 = 3;
+  ImGuiDataType_S32 = 4;
+  ImGuiDataType_U32 = 5;
+  ImGuiDataType_S64 = 6;
+  ImGuiDataType_U64 = 7;
+  ImGuiDataType_Float = 8;
+  ImGuiDataType_Double = 9;
+  ImGuiDataType_Bool = 10;
+  ImGuiDataType_COUNT = 11;
+
+type
+  ImGuiDir = Integer;
+  PImGuiDir = ^ImGuiDir;
+
+const
+  ImGuiDir_None = -1;
+  ImGuiDir_Left = 0;
+  ImGuiDir_Right = 1;
+  ImGuiDir_Up = 2;
+  ImGuiDir_Down = 3;
+  ImGuiDir_COUNT = 4;
+
+type
+  ImGuiSortDirection = Integer;
+  PImGuiSortDirection = ^ImGuiSortDirection;
+
+const
+  ImGuiSortDirection_None = 0;
+  ImGuiSortDirection_Ascending = 1;
+  ImGuiSortDirection_Descending = 2;
+
+type
+  ImGuiKey = Integer;
+  PImGuiKey = ^ImGuiKey;
+
+const
+  ImGuiKey_None = 0;
+  ImGuiKey_NamedKey_BEGIN = 512;
+  ImGuiKey_Tab = 512;
+  ImGuiKey_LeftArrow = 513;
+  ImGuiKey_RightArrow = 514;
+  ImGuiKey_UpArrow = 515;
+  ImGuiKey_DownArrow = 516;
+  ImGuiKey_PageUp = 517;
+  ImGuiKey_PageDown = 518;
+  ImGuiKey_Home = 519;
+  ImGuiKey_End = 520;
+  ImGuiKey_Insert = 521;
+  ImGuiKey_Delete = 522;
+  ImGuiKey_Backspace = 523;
+  ImGuiKey_Space = 524;
+  ImGuiKey_Enter = 525;
+  ImGuiKey_Escape = 526;
+  ImGuiKey_LeftCtrl = 527;
+  ImGuiKey_LeftShift = 528;
+  ImGuiKey_LeftAlt = 529;
+  ImGuiKey_LeftSuper = 530;
+  ImGuiKey_RightCtrl = 531;
+  ImGuiKey_RightShift = 532;
+  ImGuiKey_RightAlt = 533;
+  ImGuiKey_RightSuper = 534;
+  ImGuiKey_Menu = 535;
+  ImGuiKey_0 = 536;
+  ImGuiKey_1 = 537;
+  ImGuiKey_2 = 538;
+  ImGuiKey_3 = 539;
+  ImGuiKey_4 = 540;
+  ImGuiKey_5 = 541;
+  ImGuiKey_6 = 542;
+  ImGuiKey_7 = 543;
+  ImGuiKey_8 = 544;
+  ImGuiKey_9 = 545;
+  ImGuiKey_A = 546;
+  ImGuiKey_B = 547;
+  ImGuiKey_C = 548;
+  ImGuiKey_D = 549;
+  ImGuiKey_E = 550;
+  ImGuiKey_F = 551;
+  ImGuiKey_G = 552;
+  ImGuiKey_H = 553;
+  ImGuiKey_I = 554;
+  ImGuiKey_J = 555;
+  ImGuiKey_K = 556;
+  ImGuiKey_L = 557;
+  ImGuiKey_M = 558;
+  ImGuiKey_N = 559;
+  ImGuiKey_O = 560;
+  ImGuiKey_P = 561;
+  ImGuiKey_Q = 562;
+  ImGuiKey_R = 563;
+  ImGuiKey_S = 564;
+  ImGuiKey_T = 565;
+  ImGuiKey_U = 566;
+  ImGuiKey_V = 567;
+  ImGuiKey_W = 568;
+  ImGuiKey_X = 569;
+  ImGuiKey_Y = 570;
+  ImGuiKey_Z = 571;
+  ImGuiKey_F1 = 572;
+  ImGuiKey_F2 = 573;
+  ImGuiKey_F3 = 574;
+  ImGuiKey_F4 = 575;
+  ImGuiKey_F5 = 576;
+  ImGuiKey_F6 = 577;
+  ImGuiKey_F7 = 578;
+  ImGuiKey_F8 = 579;
+  ImGuiKey_F9 = 580;
+  ImGuiKey_F10 = 581;
+  ImGuiKey_F11 = 582;
+  ImGuiKey_F12 = 583;
+  ImGuiKey_F13 = 584;
+  ImGuiKey_F14 = 585;
+  ImGuiKey_F15 = 586;
+  ImGuiKey_F16 = 587;
+  ImGuiKey_F17 = 588;
+  ImGuiKey_F18 = 589;
+  ImGuiKey_F19 = 590;
+  ImGuiKey_F20 = 591;
+  ImGuiKey_F21 = 592;
+  ImGuiKey_F22 = 593;
+  ImGuiKey_F23 = 594;
+  ImGuiKey_F24 = 595;
+  ImGuiKey_Apostrophe = 596;
+  ImGuiKey_Comma = 597;
+  ImGuiKey_Minus = 598;
+  ImGuiKey_Period = 599;
+  ImGuiKey_Slash = 600;
+  ImGuiKey_Semicolon = 601;
+  ImGuiKey_Equal = 602;
+  ImGuiKey_LeftBracket = 603;
+  ImGuiKey_Backslash = 604;
+  ImGuiKey_RightBracket = 605;
+  ImGuiKey_GraveAccent = 606;
+  ImGuiKey_CapsLock = 607;
+  ImGuiKey_ScrollLock = 608;
+  ImGuiKey_NumLock = 609;
+  ImGuiKey_PrintScreen = 610;
+  ImGuiKey_Pause = 611;
+  ImGuiKey_Keypad0 = 612;
+  ImGuiKey_Keypad1 = 613;
+  ImGuiKey_Keypad2 = 614;
+  ImGuiKey_Keypad3 = 615;
+  ImGuiKey_Keypad4 = 616;
+  ImGuiKey_Keypad5 = 617;
+  ImGuiKey_Keypad6 = 618;
+  ImGuiKey_Keypad7 = 619;
+  ImGuiKey_Keypad8 = 620;
+  ImGuiKey_Keypad9 = 621;
+  ImGuiKey_KeypadDecimal = 622;
+  ImGuiKey_KeypadDivide = 623;
+  ImGuiKey_KeypadMultiply = 624;
+  ImGuiKey_KeypadSubtract = 625;
+  ImGuiKey_KeypadAdd = 626;
+  ImGuiKey_KeypadEnter = 627;
+  ImGuiKey_KeypadEqual = 628;
+  ImGuiKey_AppBack = 629;
+  ImGuiKey_AppForward = 630;
+  ImGuiKey_GamepadStart = 631;
+  ImGuiKey_GamepadBack = 632;
+  ImGuiKey_GamepadFaceLeft = 633;
+  ImGuiKey_GamepadFaceRight = 634;
+  ImGuiKey_GamepadFaceUp = 635;
+  ImGuiKey_GamepadFaceDown = 636;
+  ImGuiKey_GamepadDpadLeft = 637;
+  ImGuiKey_GamepadDpadRight = 638;
+  ImGuiKey_GamepadDpadUp = 639;
+  ImGuiKey_GamepadDpadDown = 640;
+  ImGuiKey_GamepadL1 = 641;
+  ImGuiKey_GamepadR1 = 642;
+  ImGuiKey_GamepadL2 = 643;
+  ImGuiKey_GamepadR2 = 644;
+  ImGuiKey_GamepadL3 = 645;
+  ImGuiKey_GamepadR3 = 646;
+  ImGuiKey_GamepadLStickLeft = 647;
+  ImGuiKey_GamepadLStickRight = 648;
+  ImGuiKey_GamepadLStickUp = 649;
+  ImGuiKey_GamepadLStickDown = 650;
+  ImGuiKey_GamepadRStickLeft = 651;
+  ImGuiKey_GamepadRStickRight = 652;
+  ImGuiKey_GamepadRStickUp = 653;
+  ImGuiKey_GamepadRStickDown = 654;
+  ImGuiKey_MouseLeft = 655;
+  ImGuiKey_MouseRight = 656;
+  ImGuiKey_MouseMiddle = 657;
+  ImGuiKey_MouseX1 = 658;
+  ImGuiKey_MouseX2 = 659;
+  ImGuiKey_MouseWheelX = 660;
+  ImGuiKey_MouseWheelY = 661;
+  ImGuiKey_ReservedForModCtrl = 662;
+  ImGuiKey_ReservedForModShift = 663;
+  ImGuiKey_ReservedForModAlt = 664;
+  ImGuiKey_ReservedForModSuper = 665;
+  ImGuiKey_NamedKey_END = 666;
+  ImGuiMod_None = 0;
+  ImGuiMod_Ctrl = 4096;
+  ImGuiMod_Shift = 8192;
+  ImGuiMod_Alt = 16384;
+  ImGuiMod_Super = 32768;
+  ImGuiMod_Mask_ = 61440;
+  ImGuiKey_NamedKey_COUNT = 154;
+
+type
+  ImGuiInputFlags_ = Integer;
+  PImGuiInputFlags_ = ^ImGuiInputFlags_;
+
+const
+  ImGuiInputFlags_None = 0;
+  ImGuiInputFlags_Repeat = 1;
+  ImGuiInputFlags_RouteActive = 1024;
+  ImGuiInputFlags_RouteFocused = 2048;
+  ImGuiInputFlags_RouteGlobal = 4096;
+  ImGuiInputFlags_RouteAlways = 8192;
+  ImGuiInputFlags_RouteOverFocused = 16384;
+  ImGuiInputFlags_RouteOverActive = 32768;
+  ImGuiInputFlags_RouteUnlessBgFocused = 65536;
+  ImGuiInputFlags_RouteFromRootWindow = 131072;
+  ImGuiInputFlags_Tooltip = 262144;
+
+type
+  ImGuiConfigFlags_ = Integer;
+  PImGuiConfigFlags_ = ^ImGuiConfigFlags_;
+
+const
+  ImGuiConfigFlags_None = 0;
+  ImGuiConfigFlags_NavEnableKeyboard = 1;
+  ImGuiConfigFlags_NavEnableGamepad = 2;
+  ImGuiConfigFlags_NoMouse = 16;
+  ImGuiConfigFlags_NoMouseCursorChange = 32;
+  ImGuiConfigFlags_NoKeyboard = 64;
+  ImGuiConfigFlags_DockingEnable = 128;
+  ImGuiConfigFlags_ViewportsEnable = 1024;
+  ImGuiConfigFlags_DpiEnableScaleViewports = 16384;
+  ImGuiConfigFlags_DpiEnableScaleFonts = 32768;
+  ImGuiConfigFlags_IsSRGB = 1048576;
+  ImGuiConfigFlags_IsTouchScreen = 2097152;
+
+type
+  ImGuiBackendFlags_ = Integer;
+  PImGuiBackendFlags_ = ^ImGuiBackendFlags_;
+
+const
+  ImGuiBackendFlags_None = 0;
+  ImGuiBackendFlags_HasGamepad = 1;
+  ImGuiBackendFlags_HasMouseCursors = 2;
+  ImGuiBackendFlags_HasSetMousePos = 4;
+  ImGuiBackendFlags_RendererHasVtxOffset = 8;
+  ImGuiBackendFlags_PlatformHasViewports = 1024;
+  ImGuiBackendFlags_HasMouseHoveredViewport = 2048;
+  ImGuiBackendFlags_RendererHasViewports = 4096;
+
+type
+  ImGuiCol_ = Integer;
+  PImGuiCol_ = ^ImGuiCol_;
+
+const
+  ImGuiCol_Text = 0;
+  ImGuiCol_TextDisabled = 1;
+  ImGuiCol_WindowBg = 2;
+  ImGuiCol_ChildBg = 3;
+  ImGuiCol_PopupBg = 4;
+  ImGuiCol_Border = 5;
+  ImGuiCol_BorderShadow = 6;
+  ImGuiCol_FrameBg = 7;
+  ImGuiCol_FrameBgHovered = 8;
+  ImGuiCol_FrameBgActive = 9;
+  ImGuiCol_TitleBg = 10;
+  ImGuiCol_TitleBgActive = 11;
+  ImGuiCol_TitleBgCollapsed = 12;
+  ImGuiCol_MenuBarBg = 13;
+  ImGuiCol_ScrollbarBg = 14;
+  ImGuiCol_ScrollbarGrab = 15;
+  ImGuiCol_ScrollbarGrabHovered = 16;
+  ImGuiCol_ScrollbarGrabActive = 17;
+  ImGuiCol_CheckMark = 18;
+  ImGuiCol_SliderGrab = 19;
+  ImGuiCol_SliderGrabActive = 20;
+  ImGuiCol_Button = 21;
+  ImGuiCol_ButtonHovered = 22;
+  ImGuiCol_ButtonActive = 23;
+  ImGuiCol_Header = 24;
+  ImGuiCol_HeaderHovered = 25;
+  ImGuiCol_HeaderActive = 26;
+  ImGuiCol_Separator = 27;
+  ImGuiCol_SeparatorHovered = 28;
+  ImGuiCol_SeparatorActive = 29;
+  ImGuiCol_ResizeGrip = 30;
+  ImGuiCol_ResizeGripHovered = 31;
+  ImGuiCol_ResizeGripActive = 32;
+  ImGuiCol_TabHovered = 33;
+  ImGuiCol_Tab = 34;
+  ImGuiCol_TabSelected = 35;
+  ImGuiCol_TabSelectedOverline = 36;
+  ImGuiCol_TabDimmed = 37;
+  ImGuiCol_TabDimmedSelected = 38;
+  ImGuiCol_TabDimmedSelectedOverline = 39;
+  ImGuiCol_DockingPreview = 40;
+  ImGuiCol_DockingEmptyBg = 41;
+  ImGuiCol_PlotLines = 42;
+  ImGuiCol_PlotLinesHovered = 43;
+  ImGuiCol_PlotHistogram = 44;
+  ImGuiCol_PlotHistogramHovered = 45;
+  ImGuiCol_TableHeaderBg = 46;
+  ImGuiCol_TableBorderStrong = 47;
+  ImGuiCol_TableBorderLight = 48;
+  ImGuiCol_TableRowBg = 49;
+  ImGuiCol_TableRowBgAlt = 50;
+  ImGuiCol_TextLink = 51;
+  ImGuiCol_TextSelectedBg = 52;
+  ImGuiCol_DragDropTarget = 53;
+  ImGuiCol_NavCursor = 54;
+  ImGuiCol_NavWindowingHighlight = 55;
+  ImGuiCol_NavWindowingDimBg = 56;
+  ImGuiCol_ModalWindowDimBg = 57;
+  ImGuiCol_COUNT = 58;
+
+type
+  ImGuiStyleVar_ = Integer;
+  PImGuiStyleVar_ = ^ImGuiStyleVar_;
+
+const
+  ImGuiStyleVar_Alpha = 0;
+  ImGuiStyleVar_DisabledAlpha = 1;
+  ImGuiStyleVar_WindowPadding = 2;
+  ImGuiStyleVar_WindowRounding = 3;
+  ImGuiStyleVar_WindowBorderSize = 4;
+  ImGuiStyleVar_WindowMinSize = 5;
+  ImGuiStyleVar_WindowTitleAlign = 6;
+  ImGuiStyleVar_ChildRounding = 7;
+  ImGuiStyleVar_ChildBorderSize = 8;
+  ImGuiStyleVar_PopupRounding = 9;
+  ImGuiStyleVar_PopupBorderSize = 10;
+  ImGuiStyleVar_FramePadding = 11;
+  ImGuiStyleVar_FrameRounding = 12;
+  ImGuiStyleVar_FrameBorderSize = 13;
+  ImGuiStyleVar_ItemSpacing = 14;
+  ImGuiStyleVar_ItemInnerSpacing = 15;
+  ImGuiStyleVar_IndentSpacing = 16;
+  ImGuiStyleVar_CellPadding = 17;
+  ImGuiStyleVar_ScrollbarSize = 18;
+  ImGuiStyleVar_ScrollbarRounding = 19;
+  ImGuiStyleVar_GrabMinSize = 20;
+  ImGuiStyleVar_GrabRounding = 21;
+  ImGuiStyleVar_TabRounding = 22;
+  ImGuiStyleVar_TabBorderSize = 23;
+  ImGuiStyleVar_TabBarBorderSize = 24;
+  ImGuiStyleVar_TabBarOverlineSize = 25;
+  ImGuiStyleVar_TableAngledHeadersAngle = 26;
+  ImGuiStyleVar_TableAngledHeadersTextAlign = 27;
+  ImGuiStyleVar_ButtonTextAlign = 28;
+  ImGuiStyleVar_SelectableTextAlign = 29;
+  ImGuiStyleVar_SeparatorTextBorderSize = 30;
+  ImGuiStyleVar_SeparatorTextAlign = 31;
+  ImGuiStyleVar_SeparatorTextPadding = 32;
+  ImGuiStyleVar_DockingSeparatorSize = 33;
+  ImGuiStyleVar_COUNT = 34;
+
+type
+  ImGuiButtonFlags_ = Integer;
+  PImGuiButtonFlags_ = ^ImGuiButtonFlags_;
+
+const
+  ImGuiButtonFlags_None = 0;
+  ImGuiButtonFlags_MouseButtonLeft = 1;
+  ImGuiButtonFlags_MouseButtonRight = 2;
+  ImGuiButtonFlags_MouseButtonMiddle = 4;
+  ImGuiButtonFlags_MouseButtonMask_ = 7;
+  ImGuiButtonFlags_EnableNav = 8;
+
+type
+  ImGuiColorEditFlags_ = Integer;
+  PImGuiColorEditFlags_ = ^ImGuiColorEditFlags_;
+
+const
+  ImGuiColorEditFlags_None = 0;
+  ImGuiColorEditFlags_NoAlpha = 2;
+  ImGuiColorEditFlags_NoPicker = 4;
+  ImGuiColorEditFlags_NoOptions = 8;
+  ImGuiColorEditFlags_NoSmallPreview = 16;
+  ImGuiColorEditFlags_NoInputs = 32;
+  ImGuiColorEditFlags_NoTooltip = 64;
+  ImGuiColorEditFlags_NoLabel = 128;
+  ImGuiColorEditFlags_NoSidePreview = 256;
+  ImGuiColorEditFlags_NoDragDrop = 512;
+  ImGuiColorEditFlags_NoBorder = 1024;
+  ImGuiColorEditFlags_AlphaBar = 65536;
+  ImGuiColorEditFlags_AlphaPreview = 131072;
+  ImGuiColorEditFlags_AlphaPreviewHalf = 262144;
+  ImGuiColorEditFlags_HDR = 524288;
+  ImGuiColorEditFlags_DisplayRGB = 1048576;
+  ImGuiColorEditFlags_DisplayHSV = 2097152;
+  ImGuiColorEditFlags_DisplayHex = 4194304;
+  ImGuiColorEditFlags_Uint8 = 8388608;
+  ImGuiColorEditFlags_Float = 16777216;
+  ImGuiColorEditFlags_PickerHueBar = 33554432;
+  ImGuiColorEditFlags_PickerHueWheel = 67108864;
+  ImGuiColorEditFlags_InputRGB = 134217728;
+  ImGuiColorEditFlags_InputHSV = 268435456;
+  ImGuiColorEditFlags_DefaultOptions_ = 177209344;
+  ImGuiColorEditFlags_DisplayMask_ = 7340032;
+  ImGuiColorEditFlags_DataTypeMask_ = 25165824;
+  ImGuiColorEditFlags_PickerMask_ = 100663296;
+  ImGuiColorEditFlags_InputMask_ = 402653184;
+
+type
+  ImGuiSliderFlags_ = Integer;
+  PImGuiSliderFlags_ = ^ImGuiSliderFlags_;
+
+const
+  ImGuiSliderFlags_None = 0;
+  ImGuiSliderFlags_Logarithmic = 32;
+  ImGuiSliderFlags_NoRoundToFormat = 64;
+  ImGuiSliderFlags_NoInput = 128;
+  ImGuiSliderFlags_WrapAround = 256;
+  ImGuiSliderFlags_ClampOnInput = 512;
+  ImGuiSliderFlags_ClampZeroRange = 1024;
+  ImGuiSliderFlags_AlwaysClamp = 1536;
+  ImGuiSliderFlags_InvalidMask_ = 1879048207;
+
+type
+  ImGuiMouseButton_ = Integer;
+  PImGuiMouseButton_ = ^ImGuiMouseButton_;
+
+const
+  ImGuiMouseButton_Left = 0;
+  ImGuiMouseButton_Right = 1;
+  ImGuiMouseButton_Middle = 2;
+  ImGuiMouseButton_COUNT = 5;
+
+type
+  ImGuiMouseCursor_ = Integer;
+  PImGuiMouseCursor_ = ^ImGuiMouseCursor_;
+
+const
+  ImGuiMouseCursor_None = -1;
+  ImGuiMouseCursor_Arrow = 0;
+  ImGuiMouseCursor_TextInput = 1;
+  ImGuiMouseCursor_ResizeAll = 2;
+  ImGuiMouseCursor_ResizeNS = 3;
+  ImGuiMouseCursor_ResizeEW = 4;
+  ImGuiMouseCursor_ResizeNESW = 5;
+  ImGuiMouseCursor_ResizeNWSE = 6;
+  ImGuiMouseCursor_Hand = 7;
+  ImGuiMouseCursor_NotAllowed = 8;
+  ImGuiMouseCursor_COUNT = 9;
+
+type
+  ImGuiMouseSource = Integer;
+  PImGuiMouseSource = ^ImGuiMouseSource;
+
+const
+  ImGuiMouseSource_Mouse = 0;
+  ImGuiMouseSource_TouchScreen = 1;
+  ImGuiMouseSource_Pen = 2;
+  ImGuiMouseSource_COUNT = 3;
+
+type
+  ImGuiCond_ = Integer;
+  PImGuiCond_ = ^ImGuiCond_;
+
+const
+  ImGuiCond_None = 0;
+  ImGuiCond_Always = 1;
+  ImGuiCond_Once = 2;
+  ImGuiCond_FirstUseEver = 4;
+  ImGuiCond_Appearing = 8;
+
+type
+  ImGuiTableFlags_ = Integer;
+  PImGuiTableFlags_ = ^ImGuiTableFlags_;
+
+const
+  ImGuiTableFlags_None = 0;
+  ImGuiTableFlags_Resizable = 1;
+  ImGuiTableFlags_Reorderable = 2;
+  ImGuiTableFlags_Hideable = 4;
+  ImGuiTableFlags_Sortable = 8;
+  ImGuiTableFlags_NoSavedSettings = 16;
+  ImGuiTableFlags_ContextMenuInBody = 32;
+  ImGuiTableFlags_RowBg = 64;
+  ImGuiTableFlags_BordersInnerH = 128;
+  ImGuiTableFlags_BordersOuterH = 256;
+  ImGuiTableFlags_BordersInnerV = 512;
+  ImGuiTableFlags_BordersOuterV = 1024;
+  ImGuiTableFlags_BordersH = 384;
+  ImGuiTableFlags_BordersV = 1536;
+  ImGuiTableFlags_BordersInner = 640;
+  ImGuiTableFlags_BordersOuter = 1280;
+  ImGuiTableFlags_Borders = 1920;
+  ImGuiTableFlags_NoBordersInBody = 2048;
+  ImGuiTableFlags_NoBordersInBodyUntilResize = 4096;
+  ImGuiTableFlags_SizingFixedFit = 8192;
+  ImGuiTableFlags_SizingFixedSame = 16384;
+  ImGuiTableFlags_SizingStretchProp = 24576;
+  ImGuiTableFlags_SizingStretchSame = 32768;
+  ImGuiTableFlags_NoHostExtendX = 65536;
+  ImGuiTableFlags_NoHostExtendY = 131072;
+  ImGuiTableFlags_NoKeepColumnsVisible = 262144;
+  ImGuiTableFlags_PreciseWidths = 524288;
+  ImGuiTableFlags_NoClip = 1048576;
+  ImGuiTableFlags_PadOuterX = 2097152;
+  ImGuiTableFlags_NoPadOuterX = 4194304;
+  ImGuiTableFlags_NoPadInnerX = 8388608;
+  ImGuiTableFlags_ScrollX = 16777216;
+  ImGuiTableFlags_ScrollY = 33554432;
+  ImGuiTableFlags_SortMulti = 67108864;
+  ImGuiTableFlags_SortTristate = 134217728;
+  ImGuiTableFlags_HighlightHoveredColumn = 268435456;
+  ImGuiTableFlags_SizingMask_ = 57344;
+
+type
+  ImGuiTableColumnFlags_ = Integer;
+  PImGuiTableColumnFlags_ = ^ImGuiTableColumnFlags_;
+
+const
+  ImGuiTableColumnFlags_None = 0;
+  ImGuiTableColumnFlags_Disabled = 1;
+  ImGuiTableColumnFlags_DefaultHide = 2;
+  ImGuiTableColumnFlags_DefaultSort = 4;
+  ImGuiTableColumnFlags_WidthStretch = 8;
+  ImGuiTableColumnFlags_WidthFixed = 16;
+  ImGuiTableColumnFlags_NoResize = 32;
+  ImGuiTableColumnFlags_NoReorder = 64;
+  ImGuiTableColumnFlags_NoHide = 128;
+  ImGuiTableColumnFlags_NoClip = 256;
+  ImGuiTableColumnFlags_NoSort = 512;
+  ImGuiTableColumnFlags_NoSortAscending = 1024;
+  ImGuiTableColumnFlags_NoSortDescending = 2048;
+  ImGuiTableColumnFlags_NoHeaderLabel = 4096;
+  ImGuiTableColumnFlags_NoHeaderWidth = 8192;
+  ImGuiTableColumnFlags_PreferSortAscending = 16384;
+  ImGuiTableColumnFlags_PreferSortDescending = 32768;
+  ImGuiTableColumnFlags_IndentEnable = 65536;
+  ImGuiTableColumnFlags_IndentDisable = 131072;
+  ImGuiTableColumnFlags_AngledHeader = 262144;
+  ImGuiTableColumnFlags_IsEnabled = 16777216;
+  ImGuiTableColumnFlags_IsVisible = 33554432;
+  ImGuiTableColumnFlags_IsSorted = 67108864;
+  ImGuiTableColumnFlags_IsHovered = 134217728;
+  ImGuiTableColumnFlags_WidthMask_ = 24;
+  ImGuiTableColumnFlags_IndentMask_ = 196608;
+  ImGuiTableColumnFlags_StatusMask_ = 251658240;
+  ImGuiTableColumnFlags_NoDirectResize_ = 1073741824;
+
+type
+  ImGuiTableRowFlags_ = Integer;
+  PImGuiTableRowFlags_ = ^ImGuiTableRowFlags_;
+
+const
+  ImGuiTableRowFlags_None = 0;
+  ImGuiTableRowFlags_Headers = 1;
+
+type
+  ImGuiTableBgTarget_ = Integer;
+  PImGuiTableBgTarget_ = ^ImGuiTableBgTarget_;
+
+const
+  ImGuiTableBgTarget_None = 0;
+  ImGuiTableBgTarget_RowBg0 = 1;
+  ImGuiTableBgTarget_RowBg1 = 2;
+  ImGuiTableBgTarget_CellBg = 3;
+
+type
+  ImGuiMultiSelectFlags_ = Integer;
+  PImGuiMultiSelectFlags_ = ^ImGuiMultiSelectFlags_;
+
+const
+  ImGuiMultiSelectFlags_None = 0;
+  ImGuiMultiSelectFlags_SingleSelect = 1;
+  ImGuiMultiSelectFlags_NoSelectAll = 2;
+  ImGuiMultiSelectFlags_NoRangeSelect = 4;
+  ImGuiMultiSelectFlags_NoAutoSelect = 8;
+  ImGuiMultiSelectFlags_NoAutoClear = 16;
+  ImGuiMultiSelectFlags_NoAutoClearOnReselect = 32;
+  ImGuiMultiSelectFlags_BoxSelect1d = 64;
+  ImGuiMultiSelectFlags_BoxSelect2d = 128;
+  ImGuiMultiSelectFlags_BoxSelectNoScroll = 256;
+  ImGuiMultiSelectFlags_ClearOnEscape = 512;
+  ImGuiMultiSelectFlags_ClearOnClickVoid = 1024;
+  ImGuiMultiSelectFlags_ScopeWindow = 2048;
+  ImGuiMultiSelectFlags_ScopeRect = 4096;
+  ImGuiMultiSelectFlags_SelectOnClick = 8192;
+  ImGuiMultiSelectFlags_SelectOnClickRelease = 16384;
+  ImGuiMultiSelectFlags_NavWrapX = 65536;
+
+type
+  ImGuiSelectionRequestType = Integer;
+  PImGuiSelectionRequestType = ^ImGuiSelectionRequestType;
+
+const
+  ImGuiSelectionRequestType_None = 0;
+  ImGuiSelectionRequestType_SetAll = 1;
+  ImGuiSelectionRequestType_SetRange = 2;
+
+type
+  ImDrawFlags_ = Integer;
+  PImDrawFlags_ = ^ImDrawFlags_;
+
+const
+  ImDrawFlags_None = 0;
+  ImDrawFlags_Closed = 1;
+  ImDrawFlags_RoundCornersTopLeft = 16;
+  ImDrawFlags_RoundCornersTopRight = 32;
+  ImDrawFlags_RoundCornersBottomLeft = 64;
+  ImDrawFlags_RoundCornersBottomRight = 128;
+  ImDrawFlags_RoundCornersNone = 256;
+  ImDrawFlags_RoundCornersTop = 48;
+  ImDrawFlags_RoundCornersBottom = 192;
+  ImDrawFlags_RoundCornersLeft = 80;
+  ImDrawFlags_RoundCornersRight = 160;
+  ImDrawFlags_RoundCornersAll = 240;
+  ImDrawFlags_RoundCornersDefault_ = 240;
+  ImDrawFlags_RoundCornersMask_ = 496;
+
+type
+  ImDrawListFlags_ = Integer;
+  PImDrawListFlags_ = ^ImDrawListFlags_;
+
+const
+  ImDrawListFlags_None = 0;
+  ImDrawListFlags_AntiAliasedLines = 1;
+  ImDrawListFlags_AntiAliasedLinesUseTex = 2;
+  ImDrawListFlags_AntiAliasedFill = 4;
+  ImDrawListFlags_AllowVtxOffset = 8;
+
+type
+  ImFontAtlasFlags_ = Integer;
+  PImFontAtlasFlags_ = ^ImFontAtlasFlags_;
+
+const
+  ImFontAtlasFlags_None = 0;
+  ImFontAtlasFlags_NoPowerOfTwoHeight = 1;
+  ImFontAtlasFlags_NoMouseCursors = 2;
+  ImFontAtlasFlags_NoBakedLines = 4;
+
+type
+  ImGuiViewportFlags_ = Integer;
+  PImGuiViewportFlags_ = ^ImGuiViewportFlags_;
+
+const
+  ImGuiViewportFlags_None = 0;
+  ImGuiViewportFlags_IsPlatformWindow = 1;
+  ImGuiViewportFlags_IsPlatformMonitor = 2;
+  ImGuiViewportFlags_OwnedByApp = 4;
+  ImGuiViewportFlags_NoDecoration = 8;
+  ImGuiViewportFlags_NoTaskBarIcon = 16;
+  ImGuiViewportFlags_NoFocusOnAppearing = 32;
+  ImGuiViewportFlags_NoFocusOnClick = 64;
+  ImGuiViewportFlags_NoInputs = 128;
+  ImGuiViewportFlags_NoRendererClear = 256;
+  ImGuiViewportFlags_NoAutoMerge = 512;
+  ImGuiViewportFlags_TopMost = 1024;
+  ImGuiViewportFlags_CanHostOtherWindows = 2048;
+  ImGuiViewportFlags_IsMinimized = 4096;
+  ImGuiViewportFlags_IsFocused = 8192;
+
+type
+  ImGuiDataTypePrivate_ = Integer;
+  PImGuiDataTypePrivate_ = ^ImGuiDataTypePrivate_;
+
+const
+  ImGuiDataType_String = 12;
+  ImGuiDataType_Pointer = 13;
+  ImGuiDataType_ID = 14;
+
+type
+  ImGuiItemFlagsPrivate_ = Integer;
+  PImGuiItemFlagsPrivate_ = ^ImGuiItemFlagsPrivate_;
+
+const
+  ImGuiItemFlags_Disabled = 1024;
+  ImGuiItemFlags_ReadOnly = 2048;
+  ImGuiItemFlags_MixedValue = 4096;
+  ImGuiItemFlags_NoWindowHoverableCheck = 8192;
+  ImGuiItemFlags_AllowOverlap = 16384;
+  ImGuiItemFlags_NoNavDisableMouseHover = 32768;
+  ImGuiItemFlags_NoMarkEdited = 65536;
+  ImGuiItemFlags_Inputable = 1048576;
+  ImGuiItemFlags_HasSelectionUserData = 2097152;
+  ImGuiItemFlags_IsMultiSelect = 4194304;
+  ImGuiItemFlags_Default_ = 16;
+
+type
+  ImGuiItemStatusFlags_ = Integer;
+  PImGuiItemStatusFlags_ = ^ImGuiItemStatusFlags_;
+
+const
+  ImGuiItemStatusFlags_None = 0;
+  ImGuiItemStatusFlags_HoveredRect = 1;
+  ImGuiItemStatusFlags_HasDisplayRect = 2;
+  ImGuiItemStatusFlags_Edited = 4;
+  ImGuiItemStatusFlags_ToggledSelection = 8;
+  ImGuiItemStatusFlags_ToggledOpen = 16;
+  ImGuiItemStatusFlags_HasDeactivated = 32;
+  ImGuiItemStatusFlags_Deactivated = 64;
+  ImGuiItemStatusFlags_HoveredWindow = 128;
+  ImGuiItemStatusFlags_Visible = 256;
+  ImGuiItemStatusFlags_HasClipRect = 512;
+  ImGuiItemStatusFlags_HasShortcut = 1024;
+
+type
+  ImGuiHoveredFlagsPrivate_ = Integer;
+  PImGuiHoveredFlagsPrivate_ = ^ImGuiHoveredFlagsPrivate_;
+
+const
+  ImGuiHoveredFlags_DelayMask_ = 245760;
+  ImGuiHoveredFlags_AllowedMaskForIsWindowHovered = 12479;
+  ImGuiHoveredFlags_AllowedMaskForIsItemHovered = 262048;
+
+type
+  ImGuiInputTextFlagsPrivate_ = Integer;
+  PImGuiInputTextFlagsPrivate_ = ^ImGuiInputTextFlagsPrivate_;
+
+const
+  ImGuiInputTextFlags_Multiline = 67108864;
+  ImGuiInputTextFlags_MergedItem = 134217728;
+  ImGuiInputTextFlags_LocalizeDecimalPoint = 268435456;
+
+type
+  ImGuiButtonFlagsPrivate_ = Integer;
+  PImGuiButtonFlagsPrivate_ = ^ImGuiButtonFlagsPrivate_;
+
+const
+  ImGuiButtonFlags_PressedOnClick = 16;
+  ImGuiButtonFlags_PressedOnClickRelease = 32;
+  ImGuiButtonFlags_PressedOnClickReleaseAnywhere = 64;
+  ImGuiButtonFlags_PressedOnRelease = 128;
+  ImGuiButtonFlags_PressedOnDoubleClick = 256;
+  ImGuiButtonFlags_PressedOnDragDropHold = 512;
+  ImGuiButtonFlags_FlattenChildren = 2048;
+  ImGuiButtonFlags_AllowOverlap = 4096;
+  ImGuiButtonFlags_AlignTextBaseLine = 32768;
+  ImGuiButtonFlags_NoKeyModsAllowed = 65536;
+  ImGuiButtonFlags_NoHoldingActiveId = 131072;
+  ImGuiButtonFlags_NoNavFocus = 262144;
+  ImGuiButtonFlags_NoHoveredOnFocus = 524288;
+  ImGuiButtonFlags_NoSetKeyOwner = 1048576;
+  ImGuiButtonFlags_NoTestKeyOwner = 2097152;
+  ImGuiButtonFlags_PressedOnMask_ = 1008;
+  ImGuiButtonFlags_PressedOnDefault_ = 32;
+
+type
+  ImGuiComboFlagsPrivate_ = Integer;
+  PImGuiComboFlagsPrivate_ = ^ImGuiComboFlagsPrivate_;
+
+const
+  ImGuiComboFlags_CustomPreview = 1048576;
+
+type
+  ImGuiSliderFlagsPrivate_ = Integer;
+  PImGuiSliderFlagsPrivate_ = ^ImGuiSliderFlagsPrivate_;
+
+const
+  ImGuiSliderFlags_Vertical = 1048576;
+  ImGuiSliderFlags_ReadOnly = 2097152;
+
+type
+  ImGuiSelectableFlagsPrivate_ = Integer;
+  PImGuiSelectableFlagsPrivate_ = ^ImGuiSelectableFlagsPrivate_;
+
+const
+  ImGuiSelectableFlags_NoHoldingActiveID = 1048576;
+  ImGuiSelectableFlags_SelectOnNav = 2097152;
+  ImGuiSelectableFlags_SelectOnClick = 4194304;
+  ImGuiSelectableFlags_SelectOnRelease = 8388608;
+  ImGuiSelectableFlags_SpanAvailWidth = 16777216;
+  ImGuiSelectableFlags_SetNavIdOnHover = 33554432;
+  ImGuiSelectableFlags_NoPadWithHalfSpacing = 67108864;
+  ImGuiSelectableFlags_NoSetKeyOwner = 134217728;
+
+type
+  ImGuiTreeNodeFlagsPrivate_ = Integer;
+  PImGuiTreeNodeFlagsPrivate_ = ^ImGuiTreeNodeFlagsPrivate_;
+
+const
+  ImGuiTreeNodeFlags_ClipLabelForTrailingButton = 268435456;
+  ImGuiTreeNodeFlags_UpsideDownArrow = 536870912;
+  ImGuiTreeNodeFlags_OpenOnMask_ = 192;
+
+type
+  ImGuiSeparatorFlags_ = Integer;
+  PImGuiSeparatorFlags_ = ^ImGuiSeparatorFlags_;
+
+const
+  ImGuiSeparatorFlags_None = 0;
+  ImGuiSeparatorFlags_Horizontal = 1;
+  ImGuiSeparatorFlags_Vertical = 2;
+  ImGuiSeparatorFlags_SpanAllColumns = 4;
+
+type
+  ImGuiFocusRequestFlags_ = Integer;
+  PImGuiFocusRequestFlags_ = ^ImGuiFocusRequestFlags_;
+
+const
+  ImGuiFocusRequestFlags_None = 0;
+  ImGuiFocusRequestFlags_RestoreFocusedChild = 1;
+  ImGuiFocusRequestFlags_UnlessBelowModal = 2;
+
+type
+  ImGuiTextFlags_ = Integer;
+  PImGuiTextFlags_ = ^ImGuiTextFlags_;
+
+const
+  ImGuiTextFlags_None = 0;
+  ImGuiTextFlags_NoWidthForLargeClippedText = 1;
+
+type
+  ImGuiTooltipFlags_ = Integer;
+  PImGuiTooltipFlags_ = ^ImGuiTooltipFlags_;
+
+const
+  ImGuiTooltipFlags_None = 0;
+  ImGuiTooltipFlags_OverridePrevious = 2;
+
+type
+  ImGuiLayoutType_ = Integer;
+  PImGuiLayoutType_ = ^ImGuiLayoutType_;
+
+const
+  ImGuiLayoutType_Horizontal = 0;
+  ImGuiLayoutType_Vertical = 1;
+
+type
+  ImGuiLogFlags_ = Integer;
+  PImGuiLogFlags_ = ^ImGuiLogFlags_;
+
+const
+  ImGuiLogFlags_None = 0;
+  ImGuiLogFlags_OutputTTY = 1;
+  ImGuiLogFlags_OutputFile = 2;
+  ImGuiLogFlags_OutputBuffer = 4;
+  ImGuiLogFlags_OutputClipboard = 8;
+  ImGuiLogFlags_OutputMask_ = 15;
+
+type
+  ImGuiAxis = Integer;
+  PImGuiAxis = ^ImGuiAxis;
+
+const
+  ImGuiAxis_None = -1;
+  ImGuiAxis_X = 0;
+  ImGuiAxis_Y = 1;
+
+type
+  ImGuiPlotType = Integer;
+  PImGuiPlotType = ^ImGuiPlotType;
+
+const
+  ImGuiPlotType_Lines = 0;
+  ImGuiPlotType_Histogram = 1;
+
+type
+  ImGuiWindowRefreshFlags_ = Integer;
+  PImGuiWindowRefreshFlags_ = ^ImGuiWindowRefreshFlags_;
+
+const
+  ImGuiWindowRefreshFlags_None = 0;
+  ImGuiWindowRefreshFlags_TryToAvoidRefresh = 1;
+  ImGuiWindowRefreshFlags_RefreshOnHover = 2;
+  ImGuiWindowRefreshFlags_RefreshOnFocus = 4;
+
+type
+  ImGuiNextWindowDataFlags_ = Integer;
+  PImGuiNextWindowDataFlags_ = ^ImGuiNextWindowDataFlags_;
+
+const
+  ImGuiNextWindowDataFlags_None = 0;
+  ImGuiNextWindowDataFlags_HasPos = 1;
+  ImGuiNextWindowDataFlags_HasSize = 2;
+  ImGuiNextWindowDataFlags_HasContentSize = 4;
+  ImGuiNextWindowDataFlags_HasCollapsed = 8;
+  ImGuiNextWindowDataFlags_HasSizeConstraint = 16;
+  ImGuiNextWindowDataFlags_HasFocus = 32;
+  ImGuiNextWindowDataFlags_HasBgAlpha = 64;
+  ImGuiNextWindowDataFlags_HasScroll = 128;
+  ImGuiNextWindowDataFlags_HasChildFlags = 256;
+  ImGuiNextWindowDataFlags_HasRefreshPolicy = 512;
+  ImGuiNextWindowDataFlags_HasViewport = 1024;
+  ImGuiNextWindowDataFlags_HasDock = 2048;
+  ImGuiNextWindowDataFlags_HasWindowClass = 4096;
+
+type
+  ImGuiNextItemDataFlags_ = Integer;
+  PImGuiNextItemDataFlags_ = ^ImGuiNextItemDataFlags_;
+
+const
+  ImGuiNextItemDataFlags_None = 0;
+  ImGuiNextItemDataFlags_HasWidth = 1;
+  ImGuiNextItemDataFlags_HasOpen = 2;
+  ImGuiNextItemDataFlags_HasShortcut = 4;
+  ImGuiNextItemDataFlags_HasRefVal = 8;
+  ImGuiNextItemDataFlags_HasStorageID = 16;
+
+type
+  ImGuiPopupPositionPolicy = Integer;
+  PImGuiPopupPositionPolicy = ^ImGuiPopupPositionPolicy;
+
+const
+  ImGuiPopupPositionPolicy_Default = 0;
+  ImGuiPopupPositionPolicy_ComboBox = 1;
+  ImGuiPopupPositionPolicy_Tooltip = 2;
+
+type
+  ImGuiInputEventType = Integer;
+  PImGuiInputEventType = ^ImGuiInputEventType;
+
+const
+  ImGuiInputEventType_None = 0;
+  ImGuiInputEventType_MousePos = 1;
+  ImGuiInputEventType_MouseWheel = 2;
+  ImGuiInputEventType_MouseButton = 3;
+  ImGuiInputEventType_MouseViewport = 4;
+  ImGuiInputEventType_Key = 5;
+  ImGuiInputEventType_Text = 6;
+  ImGuiInputEventType_Focus = 7;
+  ImGuiInputEventType_COUNT = 8;
+
+type
+  ImGuiInputSource = Integer;
+  PImGuiInputSource = ^ImGuiInputSource;
+
+const
+  ImGuiInputSource_None = 0;
+  ImGuiInputSource_Mouse = 1;
+  ImGuiInputSource_Keyboard = 2;
+  ImGuiInputSource_Gamepad = 3;
+  ImGuiInputSource_COUNT = 4;
+
+type
+  ImGuiInputFlagsPrivate_ = Integer;
+  PImGuiInputFlagsPrivate_ = ^ImGuiInputFlagsPrivate_;
+
+const
+  ImGuiInputFlags_RepeatRateDefault = 2;
+  ImGuiInputFlags_RepeatRateNavMove = 4;
+  ImGuiInputFlags_RepeatRateNavTweak = 8;
+  ImGuiInputFlags_RepeatUntilRelease = 16;
+  ImGuiInputFlags_RepeatUntilKeyModsChange = 32;
+  ImGuiInputFlags_RepeatUntilKeyModsChangeFromNone = 64;
+  ImGuiInputFlags_RepeatUntilOtherKeyPress = 128;
+  ImGuiInputFlags_LockThisFrame = 1048576;
+  ImGuiInputFlags_LockUntilRelease = 2097152;
+  ImGuiInputFlags_CondHovered = 4194304;
+  ImGuiInputFlags_CondActive = 8388608;
+  ImGuiInputFlags_CondDefault_ = 12582912;
+  ImGuiInputFlags_RepeatRateMask_ = 14;
+  ImGuiInputFlags_RepeatUntilMask_ = 240;
+  ImGuiInputFlags_RepeatMask_ = 255;
+  ImGuiInputFlags_CondMask_ = 12582912;
+  ImGuiInputFlags_RouteTypeMask_ = 15360;
+  ImGuiInputFlags_RouteOptionsMask_ = 245760;
+  ImGuiInputFlags_SupportedByIsKeyPressed = 255;
+  ImGuiInputFlags_SupportedByIsMouseClicked = 1;
+  ImGuiInputFlags_SupportedByShortcut = 261375;
+  ImGuiInputFlags_SupportedBySetNextItemShortcut = 523519;
+  ImGuiInputFlags_SupportedBySetKeyOwner = 3145728;
+  ImGuiInputFlags_SupportedBySetItemKeyOwner = 15728640;
+
+type
+  ImGuiActivateFlags_ = Integer;
+  PImGuiActivateFlags_ = ^ImGuiActivateFlags_;
+
+const
+  ImGuiActivateFlags_None = 0;
+  ImGuiActivateFlags_PreferInput = 1;
+  ImGuiActivateFlags_PreferTweak = 2;
+  ImGuiActivateFlags_TryToPreserveState = 4;
+  ImGuiActivateFlags_FromTabbing = 8;
+  ImGuiActivateFlags_FromShortcut = 16;
+
+type
+  ImGuiScrollFlags_ = Integer;
+  PImGuiScrollFlags_ = ^ImGuiScrollFlags_;
+
+const
+  ImGuiScrollFlags_None = 0;
+  ImGuiScrollFlags_KeepVisibleEdgeX = 1;
+  ImGuiScrollFlags_KeepVisibleEdgeY = 2;
+  ImGuiScrollFlags_KeepVisibleCenterX = 4;
+  ImGuiScrollFlags_KeepVisibleCenterY = 8;
+  ImGuiScrollFlags_AlwaysCenterX = 16;
+  ImGuiScrollFlags_AlwaysCenterY = 32;
+  ImGuiScrollFlags_NoScrollParent = 64;
+  ImGuiScrollFlags_MaskX_ = 21;
+  ImGuiScrollFlags_MaskY_ = 42;
+
+type
+  ImGuiNavRenderCursorFlags_ = Integer;
+  PImGuiNavRenderCursorFlags_ = ^ImGuiNavRenderCursorFlags_;
+
+const
+  ImGuiNavRenderCursorFlags_None = 0;
+  ImGuiNavRenderCursorFlags_Compact = 2;
+  ImGuiNavRenderCursorFlags_AlwaysDraw = 4;
+  ImGuiNavRenderCursorFlags_NoRounding = 8;
+
+type
+  ImGuiNavMoveFlags_ = Integer;
+  PImGuiNavMoveFlags_ = ^ImGuiNavMoveFlags_;
+
+const
+  ImGuiNavMoveFlags_None = 0;
+  ImGuiNavMoveFlags_LoopX = 1;
+  ImGuiNavMoveFlags_LoopY = 2;
+  ImGuiNavMoveFlags_WrapX = 4;
+  ImGuiNavMoveFlags_WrapY = 8;
+  ImGuiNavMoveFlags_WrapMask_ = 15;
+  ImGuiNavMoveFlags_AllowCurrentNavId = 16;
+  ImGuiNavMoveFlags_AlsoScoreVisibleSet = 32;
+  ImGuiNavMoveFlags_ScrollToEdgeY = 64;
+  ImGuiNavMoveFlags_Forwarded = 128;
+  ImGuiNavMoveFlags_DebugNoResult = 256;
+  ImGuiNavMoveFlags_FocusApi = 512;
+  ImGuiNavMoveFlags_IsTabbing = 1024;
+  ImGuiNavMoveFlags_IsPageMove = 2048;
+  ImGuiNavMoveFlags_Activate = 4096;
+  ImGuiNavMoveFlags_NoSelect = 8192;
+  ImGuiNavMoveFlags_NoSetNavCursorVisible = 16384;
+  ImGuiNavMoveFlags_NoClearActiveId = 32768;
+
+type
+  ImGuiNavLayer = Integer;
+  PImGuiNavLayer = ^ImGuiNavLayer;
+
+const
+  ImGuiNavLayer_Main = 0;
+  ImGuiNavLayer_Menu = 1;
+  ImGuiNavLayer_COUNT = 2;
+
+type
+  ImGuiTypingSelectFlags_ = Integer;
+  PImGuiTypingSelectFlags_ = ^ImGuiTypingSelectFlags_;
+
+const
+  ImGuiTypingSelectFlags_None = 0;
+  ImGuiTypingSelectFlags_AllowBackspace = 1;
+  ImGuiTypingSelectFlags_AllowSingleCharMode = 2;
+
+type
+  ImGuiOldColumnFlags_ = Integer;
+  PImGuiOldColumnFlags_ = ^ImGuiOldColumnFlags_;
+
+const
+  ImGuiOldColumnFlags_None = 0;
+  ImGuiOldColumnFlags_NoBorder = 1;
+  ImGuiOldColumnFlags_NoResize = 2;
+  ImGuiOldColumnFlags_NoPreserveWidths = 4;
+  ImGuiOldColumnFlags_NoForceWithinWindow = 8;
+  ImGuiOldColumnFlags_GrowParentContentsSize = 16;
+
+type
+  ImGuiDockNodeFlagsPrivate_ = Integer;
+  PImGuiDockNodeFlagsPrivate_ = ^ImGuiDockNodeFlagsPrivate_;
+
+const
+  ImGuiDockNodeFlags_DockSpace = 1024;
+  ImGuiDockNodeFlags_CentralNode = 2048;
+  ImGuiDockNodeFlags_NoTabBar = 4096;
+  ImGuiDockNodeFlags_HiddenTabBar = 8192;
+  ImGuiDockNodeFlags_NoWindowMenuButton = 16384;
+  ImGuiDockNodeFlags_NoCloseButton = 32768;
+  ImGuiDockNodeFlags_NoResizeX = 65536;
+  ImGuiDockNodeFlags_NoResizeY = 131072;
+  ImGuiDockNodeFlags_DockedWindowsInFocusRoute = 262144;
+  ImGuiDockNodeFlags_NoDockingSplitOther = 524288;
+  ImGuiDockNodeFlags_NoDockingOverMe = 1048576;
+  ImGuiDockNodeFlags_NoDockingOverOther = 2097152;
+  ImGuiDockNodeFlags_NoDockingOverEmpty = 4194304;
+  ImGuiDockNodeFlags_NoDocking = 7864336;
+  ImGuiDockNodeFlags_SharedFlagsInheritMask_ = -1;
+  ImGuiDockNodeFlags_NoResizeFlagsMask_ = 196640;
+  ImGuiDockNodeFlags_LocalFlagsTransferMask_ = 260208;
+  ImGuiDockNodeFlags_SavedFlagsMask_ = 261152;
+
+type
+  ImGuiDataAuthority_ = Integer;
+  PImGuiDataAuthority_ = ^ImGuiDataAuthority_;
+
+const
+  ImGuiDataAuthority_Auto = 0;
+  ImGuiDataAuthority_DockNode = 1;
+  ImGuiDataAuthority_Window = 2;
+
+type
+  ImGuiDockNodeState = Integer;
+  PImGuiDockNodeState = ^ImGuiDockNodeState;
+
+const
+  ImGuiDockNodeState_Unknown = 0;
+  ImGuiDockNodeState_HostWindowHiddenBecauseSingleWindow = 1;
+  ImGuiDockNodeState_HostWindowHiddenBecauseWindowsAreResizing = 2;
+  ImGuiDockNodeState_HostWindowVisible = 3;
+
+type
+  ImGuiWindowDockStyleCol = Integer;
+  PImGuiWindowDockStyleCol = ^ImGuiWindowDockStyleCol;
+
+const
+  ImGuiWindowDockStyleCol_Text = 0;
+  ImGuiWindowDockStyleCol_TabHovered = 1;
+  ImGuiWindowDockStyleCol_TabFocused = 2;
+  ImGuiWindowDockStyleCol_TabSelected = 3;
+  ImGuiWindowDockStyleCol_TabSelectedOverline = 4;
+  ImGuiWindowDockStyleCol_TabDimmed = 5;
+  ImGuiWindowDockStyleCol_TabDimmedSelected = 6;
+  ImGuiWindowDockStyleCol_TabDimmedSelectedOverline = 7;
+  ImGuiWindowDockStyleCol_COUNT = 8;
+
+type
+  ImGuiLocKey = Integer;
+  PImGuiLocKey = ^ImGuiLocKey;
+
+const
+  ImGuiLocKey_VersionStr = 0;
+  ImGuiLocKey_TableSizeOne = 1;
+  ImGuiLocKey_TableSizeAllFit = 2;
+  ImGuiLocKey_TableSizeAllDefault = 3;
+  ImGuiLocKey_TableResetOrder = 4;
+  ImGuiLocKey_WindowingMainMenuBar = 5;
+  ImGuiLocKey_WindowingPopup = 6;
+  ImGuiLocKey_WindowingUntitled = 7;
+  ImGuiLocKey_OpenLink_s = 8;
+  ImGuiLocKey_CopyLink = 9;
+  ImGuiLocKey_DockingHideTabBar = 10;
+  ImGuiLocKey_DockingHoldShiftToDock = 11;
+  ImGuiLocKey_DockingDragToUndockOrMoveNode = 12;
+  ImGuiLocKey_COUNT = 13;
+
+type
+  ImGuiDebugLogFlags_ = Integer;
+  PImGuiDebugLogFlags_ = ^ImGuiDebugLogFlags_;
+
+const
+  ImGuiDebugLogFlags_None = 0;
+  ImGuiDebugLogFlags_EventError = 1;
+  ImGuiDebugLogFlags_EventActiveId = 2;
+  ImGuiDebugLogFlags_EventFocus = 4;
+  ImGuiDebugLogFlags_EventPopup = 8;
+  ImGuiDebugLogFlags_EventNav = 16;
+  ImGuiDebugLogFlags_EventClipper = 32;
+  ImGuiDebugLogFlags_EventSelection = 64;
+  ImGuiDebugLogFlags_EventIO = 128;
+  ImGuiDebugLogFlags_EventFont = 256;
+  ImGuiDebugLogFlags_EventInputRouting = 512;
+  ImGuiDebugLogFlags_EventDocking = 1024;
+  ImGuiDebugLogFlags_EventViewport = 2048;
+  ImGuiDebugLogFlags_EventMask_ = 4095;
+  ImGuiDebugLogFlags_OutputToTTY = 1048576;
+  ImGuiDebugLogFlags_OutputToTestEngine = 2097152;
+
+type
+  ImGuiContextHookType = Integer;
+  PImGuiContextHookType = ^ImGuiContextHookType;
+
+const
+  ImGuiContextHookType_NewFramePre = 0;
+  ImGuiContextHookType_NewFramePost = 1;
+  ImGuiContextHookType_EndFramePre = 2;
+  ImGuiContextHookType_EndFramePost = 3;
+  ImGuiContextHookType_RenderPre = 4;
+  ImGuiContextHookType_RenderPost = 5;
+  ImGuiContextHookType_Shutdown = 6;
+  ImGuiContextHookType_PendingRemoval_ = 7;
+
+type
+  ImGuiTabBarFlagsPrivate_ = Integer;
+  PImGuiTabBarFlagsPrivate_ = ^ImGuiTabBarFlagsPrivate_;
+
+const
+  ImGuiTabBarFlags_DockNode = 1048576;
+  ImGuiTabBarFlags_IsFocused = 2097152;
+  ImGuiTabBarFlags_SaveSettings = 4194304;
+
+type
+  ImGuiTabItemFlagsPrivate_ = Integer;
+  PImGuiTabItemFlagsPrivate_ = ^ImGuiTabItemFlagsPrivate_;
+
+const
+  ImGuiTabItemFlags_SectionMask_ = 192;
+  ImGuiTabItemFlags_NoCloseButton = 1048576;
+  ImGuiTabItemFlags_Button = 2097152;
+  ImGuiTabItemFlags_Unsorted = 4194304;
+
+type
   // Forward declarations
   PPUTF8Char = ^PUTF8Char;
   PPPUTF8Char = ^PPUTF8Char;
+  PPByte = ^PByte;
   PPInteger = ^PInteger;
   PPSingle = ^PSingle;
   PPDouble = ^PDouble;
@@ -4679,6 +6150,193 @@ type
   Pfts5_tokenizer = ^fts5_tokenizer;
   Pfts5_api = ^fts5_api;
   Psqlite3_api_routines = ^sqlite3_api_routines;
+  PImVector_const_charPtr = ^ImVector_const_charPtr;
+  PImVec2 = ^ImVec2;
+  PImVec4 = ^ImVec4;
+  PImGuiTableSortSpecs = ^ImGuiTableSortSpecs;
+  PImGuiTableColumnSortSpecs = ^ImGuiTableColumnSortSpecs;
+  PImGuiStyle = ^ImGuiStyle;
+  PImGuiKeyData = ^ImGuiKeyData;
+  PImVector_ImWchar = ^ImVector_ImWchar;
+  PImGuiIO = ^ImGuiIO;
+  PImGuiInputTextCallbackData = ^ImGuiInputTextCallbackData;
+  PImGuiSizeCallbackData = ^ImGuiSizeCallbackData;
+  PImGuiWindowClass = ^ImGuiWindowClass;
+  PImGuiPayload = ^ImGuiPayload;
+  PImGuiOnceUponAFrame = ^ImGuiOnceUponAFrame;
+  PImGuiTextRange = ^ImGuiTextRange;
+  PImVector_ImGuiTextRange = ^ImVector_ImGuiTextRange;
+  PImGuiTextFilter = ^ImGuiTextFilter;
+  PImVector_char = ^ImVector_char;
+  PImGuiTextBuffer = ^ImGuiTextBuffer;
+  PImGuiStoragePair = ^ImGuiStoragePair;
+  PImVector_ImGuiStoragePair = ^ImVector_ImGuiStoragePair;
+  PImGuiStorage = ^ImGuiStorage;
+  PImGuiListClipper = ^ImGuiListClipper;
+  PImColor = ^ImColor;
+  PImVector_ImGuiSelectionRequest = ^ImVector_ImGuiSelectionRequest;
+  PImGuiMultiSelectIO = ^ImGuiMultiSelectIO;
+  PImGuiSelectionRequest = ^ImGuiSelectionRequest;
+  PImGuiSelectionBasicStorage = ^ImGuiSelectionBasicStorage;
+  PImGuiSelectionExternalStorage = ^ImGuiSelectionExternalStorage;
+  PImDrawCmd = ^ImDrawCmd;
+  PImDrawVert = ^ImDrawVert;
+  PImDrawCmdHeader = ^ImDrawCmdHeader;
+  PImVector_ImDrawCmd = ^ImVector_ImDrawCmd;
+  PImVector_ImDrawIdx = ^ImVector_ImDrawIdx;
+  PImDrawChannel = ^ImDrawChannel;
+  PImVector_ImDrawChannel = ^ImVector_ImDrawChannel;
+  PImDrawListSplitter = ^ImDrawListSplitter;
+  PImVector_ImDrawVert = ^ImVector_ImDrawVert;
+  PImVector_ImVec2 = ^ImVector_ImVec2;
+  PImVector_ImVec4 = ^ImVector_ImVec4;
+  PImVector_ImTextureID = ^ImVector_ImTextureID;
+  PImVector_ImU8 = ^ImVector_ImU8;
+  PImDrawList = ^ImDrawList;
+  PPImDrawList = ^PImDrawList;
+  PImVector_ImDrawListPtr = ^ImVector_ImDrawListPtr;
+  PImDrawData = ^ImDrawData;
+  PImFontConfig = ^ImFontConfig;
+  PImFontGlyph = ^ImFontGlyph;
+  PImVector_ImU32 = ^ImVector_ImU32;
+  PImFontGlyphRangesBuilder = ^ImFontGlyphRangesBuilder;
+  PImFontAtlasCustomRect = ^ImFontAtlasCustomRect;
+  PImVector_ImFontPtr = ^ImVector_ImFontPtr;
+  PImVector_ImFontAtlasCustomRect = ^ImVector_ImFontAtlasCustomRect;
+  PImVector_ImFontConfig = ^ImVector_ImFontConfig;
+  PImFontAtlas = ^ImFontAtlas;
+  PImVector_float = ^ImVector_float;
+  PImVector_ImFontGlyph = ^ImVector_ImFontGlyph;
+  PImFont = ^ImFont;
+  PPImFont = ^PImFont;
+  PImGuiViewport = ^ImGuiViewport;
+  PPImGuiViewport = ^PImGuiViewport;
+  PImVector_ImGuiPlatformMonitor = ^ImVector_ImGuiPlatformMonitor;
+  PImVector_ImGuiViewportPtr = ^ImVector_ImGuiViewportPtr;
+  PImGuiPlatformIO = ^ImGuiPlatformIO;
+  PImGuiPlatformMonitor = ^ImGuiPlatformMonitor;
+  PImGuiPlatformImeData = ^ImGuiPlatformImeData;
+  PImVec1 = ^ImVec1;
+  PImVec2ih = ^ImVec2ih;
+  PImRect = ^ImRect;
+  PImBitVector = ^ImBitVector;
+  PImVector_int = ^ImVector_int;
+  PImGuiTextIndex = ^ImGuiTextIndex;
+  PImDrawListSharedData = ^ImDrawListSharedData;
+  PImDrawDataBuilder = ^ImDrawDataBuilder;
+  PImGuiDataVarInfo = ^ImGuiDataVarInfo;
+  PImGuiDataTypeStorage = ^ImGuiDataTypeStorage;
+  PImGuiDataTypeInfo = ^ImGuiDataTypeInfo;
+  PImGuiColorMod = ^ImGuiColorMod;
+  PImGuiStyleMod = ^ImGuiStyleMod;
+  PImGuiComboPreviewData = ^ImGuiComboPreviewData;
+  PImGuiGroupData = ^ImGuiGroupData;
+  PImGuiMenuColumns = ^ImGuiMenuColumns;
+  PImGuiInputTextDeactivatedState = ^ImGuiInputTextDeactivatedState;
+  PImGuiInputTextState = ^ImGuiInputTextState;
+  PImGuiNextWindowData = ^ImGuiNextWindowData;
+  PImGuiNextItemData = ^ImGuiNextItemData;
+  PImGuiLastItemData = ^ImGuiLastItemData;
+  PImGuiTreeNodeStackData = ^ImGuiTreeNodeStackData;
+  PImGuiErrorRecoveryState = ^ImGuiErrorRecoveryState;
+  PImGuiWindowStackData = ^ImGuiWindowStackData;
+  PImGuiShrinkWidthItem = ^ImGuiShrinkWidthItem;
+  PImGuiPtrOrIndex = ^ImGuiPtrOrIndex;
+  PImGuiPopupData = ^ImGuiPopupData;
+  PImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN = ^ImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN;
+  PImGuiInputEventMousePos = ^ImGuiInputEventMousePos;
+  PImGuiInputEventMouseWheel = ^ImGuiInputEventMouseWheel;
+  PImGuiInputEventMouseButton = ^ImGuiInputEventMouseButton;
+  PImGuiInputEventMouseViewport = ^ImGuiInputEventMouseViewport;
+  PImGuiInputEventKey = ^ImGuiInputEventKey;
+  PImGuiInputEventText = ^ImGuiInputEventText;
+  PImGuiInputEventAppFocused = ^ImGuiInputEventAppFocused;
+  PImGuiInputEvent = ^ImGuiInputEvent;
+  PImGuiKeyRoutingData = ^ImGuiKeyRoutingData;
+  PImVector_ImGuiKeyRoutingData = ^ImVector_ImGuiKeyRoutingData;
+  PImGuiKeyRoutingTable = ^ImGuiKeyRoutingTable;
+  PImGuiKeyOwnerData = ^ImGuiKeyOwnerData;
+  PImGuiListClipperRange = ^ImGuiListClipperRange;
+  PImVector_ImGuiListClipperRange = ^ImVector_ImGuiListClipperRange;
+  PImGuiListClipperData = ^ImGuiListClipperData;
+  PImGuiNavItemData = ^ImGuiNavItemData;
+  PImGuiFocusScopeData = ^ImGuiFocusScopeData;
+  PImGuiTypingSelectRequest = ^ImGuiTypingSelectRequest;
+  PImGuiTypingSelectState = ^ImGuiTypingSelectState;
+  PImGuiOldColumnData = ^ImGuiOldColumnData;
+  PImVector_ImGuiOldColumnData = ^ImVector_ImGuiOldColumnData;
+  PImGuiOldColumns = ^ImGuiOldColumns;
+  PImGuiBoxSelectState = ^ImGuiBoxSelectState;
+  PImGuiMultiSelectTempData = ^ImGuiMultiSelectTempData;
+  PImGuiMultiSelectState = ^ImGuiMultiSelectState;
+  PImVector_ImGuiWindowPtr = ^ImVector_ImGuiWindowPtr;
+  PImGuiDockNode = ^ImGuiDockNode;
+  PImGuiWindowDockStyle = ^ImGuiWindowDockStyle;
+  PImVector_ImGuiDockRequest = ^ImVector_ImGuiDockRequest;
+  PImVector_ImGuiDockNodeSettings = ^ImVector_ImGuiDockNodeSettings;
+  PImGuiDockContext = ^ImGuiDockContext;
+  PImGuiViewportP = ^ImGuiViewportP;
+  PPImGuiViewportP = ^PImGuiViewportP;
+  PImGuiWindowSettings = ^ImGuiWindowSettings;
+  PImGuiSettingsHandler = ^ImGuiSettingsHandler;
+  PImGuiLocEntry = ^ImGuiLocEntry;
+  PImGuiDebugAllocEntry = ^ImGuiDebugAllocEntry;
+  PImGuiDebugAllocInfo = ^ImGuiDebugAllocInfo;
+  PImGuiMetricsConfig = ^ImGuiMetricsConfig;
+  PImGuiStackLevelInfo = ^ImGuiStackLevelInfo;
+  PImVector_ImGuiStackLevelInfo = ^ImVector_ImGuiStackLevelInfo;
+  PImGuiIDStackTool = ^ImGuiIDStackTool;
+  PImGuiContextHook = ^ImGuiContextHook;
+  PImVector_ImGuiInputEvent = ^ImVector_ImGuiInputEvent;
+  PImVector_ImGuiWindowStackData = ^ImVector_ImGuiWindowStackData;
+  PImVector_ImGuiColorMod = ^ImVector_ImGuiColorMod;
+  PImVector_ImGuiStyleMod = ^ImVector_ImGuiStyleMod;
+  PImVector_ImGuiFocusScopeData = ^ImVector_ImGuiFocusScopeData;
+  PImVector_ImGuiItemFlags = ^ImVector_ImGuiItemFlags;
+  PImVector_ImGuiGroupData = ^ImVector_ImGuiGroupData;
+  PImVector_ImGuiPopupData = ^ImVector_ImGuiPopupData;
+  PImVector_ImGuiTreeNodeStackData = ^ImVector_ImGuiTreeNodeStackData;
+  PImVector_ImGuiViewportPPtr = ^ImVector_ImGuiViewportPPtr;
+  PImVector_unsigned_char = ^ImVector_unsigned_char;
+  PImVector_ImGuiListClipperData = ^ImVector_ImGuiListClipperData;
+  PImVector_ImGuiTableTempData = ^ImVector_ImGuiTableTempData;
+  PImVector_ImGuiTable = ^ImVector_ImGuiTable;
+  PImPool_ImGuiTable = ^ImPool_ImGuiTable;
+  PImVector_ImGuiTabBar = ^ImVector_ImGuiTabBar;
+  PImPool_ImGuiTabBar = ^ImPool_ImGuiTabBar;
+  PImVector_ImGuiPtrOrIndex = ^ImVector_ImGuiPtrOrIndex;
+  PImVector_ImGuiShrinkWidthItem = ^ImVector_ImGuiShrinkWidthItem;
+  PImVector_ImGuiMultiSelectTempData = ^ImVector_ImGuiMultiSelectTempData;
+  PImVector_ImGuiMultiSelectState = ^ImVector_ImGuiMultiSelectState;
+  PImPool_ImGuiMultiSelectState = ^ImPool_ImGuiMultiSelectState;
+  PImVector_ImGuiID = ^ImVector_ImGuiID;
+  PImVector_ImGuiSettingsHandler = ^ImVector_ImGuiSettingsHandler;
+  PImChunkStream_ImGuiWindowSettings = ^ImChunkStream_ImGuiWindowSettings;
+  PImChunkStream_ImGuiTableSettings = ^ImChunkStream_ImGuiTableSettings;
+  PImVector_ImGuiContextHook = ^ImVector_ImGuiContextHook;
+  PImGuiContext = ^ImGuiContext;
+  PImGuiWindowTempData = ^ImGuiWindowTempData;
+  PImVector_ImGuiOldColumns = ^ImVector_ImGuiOldColumns;
+  PImGuiWindow = ^ImGuiWindow;
+  PPImGuiWindow = ^PImGuiWindow;
+  PImGuiTabItem = ^ImGuiTabItem;
+  PImVector_ImGuiTabItem = ^ImVector_ImGuiTabItem;
+  PImGuiTabBar = ^ImGuiTabBar;
+  PImGuiTableColumn = ^ImGuiTableColumn;
+  PImGuiTableCellData = ^ImGuiTableCellData;
+  PImGuiTableHeaderData = ^ImGuiTableHeaderData;
+  PImGuiTableInstanceData = ^ImGuiTableInstanceData;
+  PImSpan_ImGuiTableColumn = ^ImSpan_ImGuiTableColumn;
+  PImSpan_ImGuiTableColumnIdx = ^ImSpan_ImGuiTableColumnIdx;
+  PImSpan_ImGuiTableCellData = ^ImSpan_ImGuiTableCellData;
+  PImVector_ImGuiTableInstanceData = ^ImVector_ImGuiTableInstanceData;
+  PImVector_ImGuiTableColumnSortSpecs = ^ImVector_ImGuiTableColumnSortSpecs;
+  PImGuiTable = ^ImGuiTable;
+  PImVector_ImGuiTableHeaderData = ^ImVector_ImGuiTableHeaderData;
+  PImGuiTableTempData = ^ImGuiTableTempData;
+  PImGuiTableColumnSettings = ^ImGuiTableColumnSettings;
+  PImGuiTableSettings = ^ImGuiTableSettings;
+  PImFontBuilderIO = ^ImFontBuilderIO;
 
   Plua_State = Pointer;
   PPlua_State = ^Plua_State;
@@ -10070,6 +11728,2526 @@ type
   end;
 
   sqlite3_loadext_entry = function(db: Psqlite3; pzErrMsg: PPUTF8Char; const pThunk: Psqlite3_api_routines): Integer; cdecl;
+  ImU64 = UInt64;
+  PImU64 = ^ImU64;
+  PImGuiDockRequest = Pointer;
+  PPImGuiDockRequest = ^PImGuiDockRequest;
+  PImGuiDockNodeSettings = Pointer;
+  PPImGuiDockNodeSettings = ^PImGuiDockNodeSettings;
+  PImGuiInputTextDeactivateData = Pointer;
+  PPImGuiInputTextDeactivateData = ^PImGuiInputTextDeactivateData;
+  PImGuiTableColumnsSettings = Pointer;
+  PPImGuiTableColumnsSettings = ^PImGuiTableColumnsSettings;
+  PSTB_TexteditState = Pointer;
+  PPSTB_TexteditState = ^PSTB_TexteditState;
+
+  ImVector_const_charPtr = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PPUTF8Char;
+  end;
+
+  ImGuiID = Cardinal;
+  PImGuiID = ^ImGuiID;
+  ImS8 = UTF8Char;
+  ImU8 = Byte;
+  PImU8 = ^ImU8;
+  ImS16 = Smallint;
+  ImU16 = Word;
+  ImS32 = Integer;
+  ImU32 = Cardinal;
+  PImU32 = ^ImU32;
+  ImS64 = Int64;
+  PImS64 = ^ImS64;
+  ImGuiCol = Integer;
+  ImGuiCond = Integer;
+  ImGuiDataType = Integer;
+  ImGuiMouseButton = Integer;
+  ImGuiMouseCursor = Integer;
+  ImGuiStyleVar = Integer;
+  ImGuiTableBgTarget = Integer;
+  ImDrawFlags = Integer;
+  ImDrawListFlags = Integer;
+  ImFontAtlasFlags = Integer;
+  ImGuiBackendFlags = Integer;
+  ImGuiButtonFlags = Integer;
+  PImGuiButtonFlags = ^ImGuiButtonFlags;
+  ImGuiChildFlags = Integer;
+  ImGuiColorEditFlags = Integer;
+  ImGuiConfigFlags = Integer;
+  ImGuiComboFlags = Integer;
+  ImGuiDockNodeFlags = Integer;
+  ImGuiDragDropFlags = Integer;
+  ImGuiFocusedFlags = Integer;
+  ImGuiHoveredFlags = Integer;
+  ImGuiInputFlags = Integer;
+  ImGuiInputTextFlags = Integer;
+  ImGuiItemFlags = Integer;
+  PImGuiItemFlags = ^ImGuiItemFlags;
+  ImGuiKeyChord = Integer;
+  ImGuiPopupFlags = Integer;
+  ImGuiMultiSelectFlags = Integer;
+  ImGuiSelectableFlags = Integer;
+  ImGuiSliderFlags = Integer;
+  ImGuiTabBarFlags = Integer;
+  ImGuiTabItemFlags = Integer;
+  ImGuiTableFlags = Integer;
+  ImGuiTableColumnFlags = Integer;
+  ImGuiTableRowFlags = Integer;
+  ImGuiTreeNodeFlags = Integer;
+  ImGuiViewportFlags = Integer;
+  ImGuiWindowFlags = Integer;
+  ImTextureID = ImU64;
+  PImTextureID = ^ImTextureID;
+  ImDrawIdx = Word;
+  PImDrawIdx = ^ImDrawIdx;
+  ImWchar32 = Cardinal;
+  ImWchar16 = Word;
+  ImWchar = ImWchar16;
+  PImWchar = ^ImWchar;
+  ImGuiSelectionUserData = ImS64;
+
+  ImGuiInputTextCallback = function(data: PImGuiInputTextCallbackData): Integer; cdecl;
+  ImGuiSizeCallback = procedure(data: PImGuiSizeCallbackData); cdecl;
+  ImGuiMemAllocFunc = function(sz: NativeUInt; user_data: Pointer): Pointer; cdecl;
+  PImGuiMemAllocFunc = ^ImGuiMemAllocFunc;
+
+  ImGuiMemFreeFunc = procedure(ptr: Pointer; user_data: Pointer); cdecl;
+  PImGuiMemFreeFunc = ^ImGuiMemFreeFunc;
+
+  ImVec2 = record
+    x: Single;
+    y: Single;
+  end;
+
+  ImVec4 = record
+    x: Single;
+    y: Single;
+    z: Single;
+    w: Single;
+  end;
+
+  ImGuiTableSortSpecs = record
+    Specs: PImGuiTableColumnSortSpecs;
+    SpecsCount: Integer;
+    SpecsDirty: Boolean;
+  end;
+
+  ImGuiTableColumnSortSpecs = record
+    ColumnUserID: ImGuiID;
+    ColumnIndex: ImS16;
+    SortOrder: ImS16;
+    SortDirection: ImGuiSortDirection;
+  end;
+
+  ImGuiStyle = record
+    Alpha: Single;
+    DisabledAlpha: Single;
+    WindowPadding: ImVec2;
+    WindowRounding: Single;
+    WindowBorderSize: Single;
+    WindowMinSize: ImVec2;
+    WindowTitleAlign: ImVec2;
+    WindowMenuButtonPosition: ImGuiDir;
+    ChildRounding: Single;
+    ChildBorderSize: Single;
+    PopupRounding: Single;
+    PopupBorderSize: Single;
+    FramePadding: ImVec2;
+    FrameRounding: Single;
+    FrameBorderSize: Single;
+    ItemSpacing: ImVec2;
+    ItemInnerSpacing: ImVec2;
+    CellPadding: ImVec2;
+    TouchExtraPadding: ImVec2;
+    IndentSpacing: Single;
+    ColumnsMinSpacing: Single;
+    ScrollbarSize: Single;
+    ScrollbarRounding: Single;
+    GrabMinSize: Single;
+    GrabRounding: Single;
+    LogSliderDeadzone: Single;
+    TabRounding: Single;
+    TabBorderSize: Single;
+    TabMinWidthForCloseButton: Single;
+    TabBarBorderSize: Single;
+    TabBarOverlineSize: Single;
+    TableAngledHeadersAngle: Single;
+    TableAngledHeadersTextAlign: ImVec2;
+    ColorButtonPosition: ImGuiDir;
+    ButtonTextAlign: ImVec2;
+    SelectableTextAlign: ImVec2;
+    SeparatorTextBorderSize: Single;
+    SeparatorTextAlign: ImVec2;
+    SeparatorTextPadding: ImVec2;
+    DisplayWindowPadding: ImVec2;
+    DisplaySafeAreaPadding: ImVec2;
+    DockingSeparatorSize: Single;
+    MouseCursorScale: Single;
+    AntiAliasedLines: Boolean;
+    AntiAliasedLinesUseTex: Boolean;
+    AntiAliasedFill: Boolean;
+    CurveTessellationTol: Single;
+    CircleTessellationMaxError: Single;
+    Colors: array [0..57] of ImVec4;
+    HoverStationaryDelay: Single;
+    HoverDelayShort: Single;
+    HoverDelayNormal: Single;
+    HoverFlagsForTooltipMouse: ImGuiHoveredFlags;
+    HoverFlagsForTooltipNav: ImGuiHoveredFlags;
+  end;
+
+  ImGuiKeyData = record
+    Down: Boolean;
+    DownDuration: Single;
+    DownDurationPrev: Single;
+    AnalogValue: Single;
+  end;
+
+  ImVector_ImWchar = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImWchar;
+  end;
+
+  ImGuiIO = record
+    ConfigFlags: ImGuiConfigFlags;
+    BackendFlags: ImGuiBackendFlags;
+    DisplaySize: ImVec2;
+    DeltaTime: Single;
+    IniSavingRate: Single;
+    IniFilename: PUTF8Char;
+    LogFilename: PUTF8Char;
+    UserData: Pointer;
+    Fonts: PImFontAtlas;
+    FontGlobalScale: Single;
+    FontAllowUserScaling: Boolean;
+    FontDefault: PImFont;
+    DisplayFramebufferScale: ImVec2;
+    ConfigNavSwapGamepadButtons: Boolean;
+    ConfigNavMoveSetMousePos: Boolean;
+    ConfigNavCaptureKeyboard: Boolean;
+    ConfigNavEscapeClearFocusItem: Boolean;
+    ConfigNavEscapeClearFocusWindow: Boolean;
+    ConfigNavCursorVisibleAuto: Boolean;
+    ConfigNavCursorVisibleAlways: Boolean;
+    ConfigDockingNoSplit: Boolean;
+    ConfigDockingWithShift: Boolean;
+    ConfigDockingAlwaysTabBar: Boolean;
+    ConfigDockingTransparentPayload: Boolean;
+    ConfigViewportsNoAutoMerge: Boolean;
+    ConfigViewportsNoTaskBarIcon: Boolean;
+    ConfigViewportsNoDecoration: Boolean;
+    ConfigViewportsNoDefaultParent: Boolean;
+    MouseDrawCursor: Boolean;
+    ConfigMacOSXBehaviors: Boolean;
+    ConfigInputTrickleEventQueue: Boolean;
+    ConfigInputTextCursorBlink: Boolean;
+    ConfigInputTextEnterKeepActive: Boolean;
+    ConfigDragClickToInputText: Boolean;
+    ConfigWindowsResizeFromEdges: Boolean;
+    ConfigWindowsMoveFromTitleBarOnly: Boolean;
+    ConfigWindowsCopyContentsWithCtrlC: Boolean;
+    ConfigScrollbarScrollByPage: Boolean;
+    ConfigMemoryCompactTimer: Single;
+    MouseDoubleClickTime: Single;
+    MouseDoubleClickMaxDist: Single;
+    MouseDragThreshold: Single;
+    KeyRepeatDelay: Single;
+    KeyRepeatRate: Single;
+    ConfigErrorRecovery: Boolean;
+    ConfigErrorRecoveryEnableAssert: Boolean;
+    ConfigErrorRecoveryEnableDebugLog: Boolean;
+    ConfigErrorRecoveryEnableTooltip: Boolean;
+    ConfigDebugIsDebuggerPresent: Boolean;
+    ConfigDebugHighlightIdConflicts: Boolean;
+    ConfigDebugBeginReturnValueOnce: Boolean;
+    ConfigDebugBeginReturnValueLoop: Boolean;
+    ConfigDebugIgnoreFocusLoss: Boolean;
+    ConfigDebugIniSettings: Boolean;
+    BackendPlatformName: PUTF8Char;
+    BackendRendererName: PUTF8Char;
+    BackendPlatformUserData: Pointer;
+    BackendRendererUserData: Pointer;
+    BackendLanguageUserData: Pointer;
+    WantCaptureMouse: Boolean;
+    WantCaptureKeyboard: Boolean;
+    WantTextInput: Boolean;
+    WantSetMousePos: Boolean;
+    WantSaveIniSettings: Boolean;
+    NavActive: Boolean;
+    NavVisible: Boolean;
+    Framerate: Single;
+    MetricsRenderVertices: Integer;
+    MetricsRenderIndices: Integer;
+    MetricsRenderWindows: Integer;
+    MetricsActiveWindows: Integer;
+    MouseDelta: ImVec2;
+    Ctx: PImGuiContext;
+    MousePos: ImVec2;
+    MouseDown: array [0..4] of Boolean;
+    MouseWheel: Single;
+    MouseWheelH: Single;
+    MouseSource: ImGuiMouseSource;
+    MouseHoveredViewport: ImGuiID;
+    KeyCtrl: Boolean;
+    KeyShift: Boolean;
+    KeyAlt: Boolean;
+    KeySuper: Boolean;
+    KeyMods: ImGuiKeyChord;
+    KeysData: array [0..153] of ImGuiKeyData;
+    WantCaptureMouseUnlessPopupClose: Boolean;
+    MousePosPrev: ImVec2;
+    MouseClickedPos: array [0..4] of ImVec2;
+    MouseClickedTime: array [0..4] of Double;
+    MouseClicked: array [0..4] of Boolean;
+    MouseDoubleClicked: array [0..4] of Boolean;
+    MouseClickedCount: array [0..4] of ImU16;
+    MouseClickedLastCount: array [0..4] of ImU16;
+    MouseReleased: array [0..4] of Boolean;
+    MouseDownOwned: array [0..4] of Boolean;
+    MouseDownOwnedUnlessPopupClose: array [0..4] of Boolean;
+    MouseWheelRequestAxisSwap: Boolean;
+    MouseCtrlLeftAsRightClick: Boolean;
+    MouseDownDuration: array [0..4] of Single;
+    MouseDownDurationPrev: array [0..4] of Single;
+    MouseDragMaxDistanceAbs: array [0..4] of ImVec2;
+    MouseDragMaxDistanceSqr: array [0..4] of Single;
+    PenPressure: Single;
+    AppFocusLost: Boolean;
+    AppAcceptingEvents: Boolean;
+    InputQueueSurrogate: ImWchar16;
+    InputQueueCharacters: ImVector_ImWchar;
+  end;
+
+  ImGuiInputTextCallbackData = record
+    Ctx: PImGuiContext;
+    EventFlag: ImGuiInputTextFlags;
+    Flags: ImGuiInputTextFlags;
+    UserData: Pointer;
+    EventChar: ImWchar;
+    EventKey: ImGuiKey;
+    Buf: PUTF8Char;
+    BufTextLen: Integer;
+    BufSize: Integer;
+    BufDirty: Boolean;
+    CursorPos: Integer;
+    SelectionStart: Integer;
+    SelectionEnd: Integer;
+  end;
+
+  ImGuiSizeCallbackData = record
+    UserData: Pointer;
+    Pos: ImVec2;
+    CurrentSize: ImVec2;
+    DesiredSize: ImVec2;
+  end;
+
+  ImGuiWindowClass = record
+    ClassId: ImGuiID;
+    ParentViewportId: ImGuiID;
+    FocusRouteParentWindowId: ImGuiID;
+    ViewportFlagsOverrideSet: ImGuiViewportFlags;
+    ViewportFlagsOverrideClear: ImGuiViewportFlags;
+    TabItemFlagsOverrideSet: ImGuiTabItemFlags;
+    DockNodeFlagsOverrideSet: ImGuiDockNodeFlags;
+    DockingAlwaysTabBar: Boolean;
+    DockingAllowUnclassed: Boolean;
+  end;
+
+  ImGuiPayload = record
+    Data: Pointer;
+    DataSize: Integer;
+    SourceId: ImGuiID;
+    SourceParentId: ImGuiID;
+    DataFrameCount: Integer;
+    DataType: array [0..32] of UTF8Char;
+    Preview: Boolean;
+    Delivery: Boolean;
+  end;
+
+  ImGuiOnceUponAFrame = record
+    RefFrame: Integer;
+  end;
+
+  ImGuiTextRange = record
+    b: PUTF8Char;
+    e: PUTF8Char;
+  end;
+
+  ImVector_ImGuiTextRange = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiTextRange;
+  end;
+
+  ImGuiTextFilter = record
+    InputBuf: array [0..255] of UTF8Char;
+    Filters: ImVector_ImGuiTextRange;
+    CountGrep: Integer;
+  end;
+
+  ImVector_char = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PUTF8Char;
+  end;
+
+  ImGuiTextBuffer = record
+    Buf: ImVector_char;
+  end;
+
+  P_anonymous_type_90 = ^_anonymous_type_90;
+  _anonymous_type_90 = record
+    case Integer of
+      0: (val_i: Integer);
+      1: (val_f: Single);
+      2: (val_p: Pointer);
+  end;
+
+  ImGuiStoragePair = record
+    key: ImGuiID;
+    f2: _anonymous_type_90;
+  end;
+
+  ImVector_ImGuiStoragePair = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiStoragePair;
+  end;
+
+  ImGuiStorage = record
+    Data: ImVector_ImGuiStoragePair;
+  end;
+
+  ImGuiListClipper = record
+    Ctx: PImGuiContext;
+    DisplayStart: Integer;
+    DisplayEnd: Integer;
+    ItemsCount: Integer;
+    ItemsHeight: Single;
+    StartPosY: Single;
+    StartSeekOffsetY: Double;
+    TempData: Pointer;
+  end;
+
+  ImColor = record
+    Value: ImVec4;
+  end;
+
+  ImVector_ImGuiSelectionRequest = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiSelectionRequest;
+  end;
+
+  ImGuiMultiSelectIO = record
+    Requests: ImVector_ImGuiSelectionRequest;
+    RangeSrcItem: ImGuiSelectionUserData;
+    NavIdItem: ImGuiSelectionUserData;
+    NavIdSelected: Boolean;
+    RangeSrcReset: Boolean;
+    ItemsCount: Integer;
+  end;
+
+  ImGuiSelectionRequest = record
+    &Type: ImGuiSelectionRequestType;
+    Selected: Boolean;
+    RangeDirection: ImS8;
+    RangeFirstItem: ImGuiSelectionUserData;
+    RangeLastItem: ImGuiSelectionUserData;
+  end;
+
+  ImGuiSelectionBasicStorage = record
+    Size: Integer;
+    PreserveOrder: Boolean;
+    UserData: Pointer;
+    AdapterIndexToStorageId: function(self: PImGuiSelectionBasicStorage; idx: Integer): ImGuiID; cdecl;
+    _SelectionOrder: Integer;
+    _Storage: ImGuiStorage;
+  end;
+
+  ImGuiSelectionExternalStorage = record
+    UserData: Pointer;
+    AdapterSetItemSelected: procedure(self: PImGuiSelectionExternalStorage; idx: Integer; selected: Boolean); cdecl;
+  end;
+
+  ImDrawCallback = procedure(const parent_list: PImDrawList; const cmd: PImDrawCmd); cdecl;
+
+  ImDrawCmd = record
+    ClipRect: ImVec4;
+    TextureId: ImTextureID;
+    VtxOffset: Cardinal;
+    IdxOffset: Cardinal;
+    ElemCount: Cardinal;
+    UserCallback: ImDrawCallback;
+    UserCallbackData: Pointer;
+    UserCallbackDataSize: Integer;
+    UserCallbackDataOffset: Integer;
+  end;
+
+  ImDrawVert = record
+    pos: ImVec2;
+    uv: ImVec2;
+    col: ImU32;
+  end;
+
+  ImDrawCmdHeader = record
+    ClipRect: ImVec4;
+    TextureId: ImTextureID;
+    VtxOffset: Cardinal;
+  end;
+
+  ImVector_ImDrawCmd = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImDrawCmd;
+  end;
+
+  ImVector_ImDrawIdx = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImDrawIdx;
+  end;
+
+  ImDrawChannel = record
+    _CmdBuffer: ImVector_ImDrawCmd;
+    _IdxBuffer: ImVector_ImDrawIdx;
+  end;
+
+  ImVector_ImDrawChannel = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImDrawChannel;
+  end;
+
+  ImDrawListSplitter = record
+    _Current: Integer;
+    _Count: Integer;
+    _Channels: ImVector_ImDrawChannel;
+  end;
+
+  ImVector_ImDrawVert = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImDrawVert;
+  end;
+
+  ImVector_ImVec2 = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImVec2;
+  end;
+
+  ImVector_ImVec4 = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImVec4;
+  end;
+
+  ImVector_ImTextureID = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImTextureID;
+  end;
+
+  ImVector_ImU8 = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImU8;
+  end;
+
+  ImDrawList = record
+    CmdBuffer: ImVector_ImDrawCmd;
+    IdxBuffer: ImVector_ImDrawIdx;
+    VtxBuffer: ImVector_ImDrawVert;
+    Flags: ImDrawListFlags;
+    _VtxCurrentIdx: Cardinal;
+    _Data: PImDrawListSharedData;
+    _VtxWritePtr: PImDrawVert;
+    _IdxWritePtr: PImDrawIdx;
+    _Path: ImVector_ImVec2;
+    _CmdHeader: ImDrawCmdHeader;
+    _Splitter: ImDrawListSplitter;
+    _ClipRectStack: ImVector_ImVec4;
+    _TextureIdStack: ImVector_ImTextureID;
+    _CallbacksDataBuf: ImVector_ImU8;
+    _FringeScale: Single;
+    _OwnerName: PUTF8Char;
+  end;
+
+  ImVector_ImDrawListPtr = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PPImDrawList;
+  end;
+
+  ImDrawData = record
+    Valid: Boolean;
+    CmdListsCount: Integer;
+    TotalIdxCount: Integer;
+    TotalVtxCount: Integer;
+    CmdLists: ImVector_ImDrawListPtr;
+    DisplayPos: ImVec2;
+    DisplaySize: ImVec2;
+    FramebufferScale: ImVec2;
+    OwnerViewport: PImGuiViewport;
+  end;
+
+  ImFontConfig = record
+    FontData: Pointer;
+    FontDataSize: Integer;
+    FontDataOwnedByAtlas: Boolean;
+    FontNo: Integer;
+    SizePixels: Single;
+    OversampleH: Integer;
+    OversampleV: Integer;
+    PixelSnapH: Boolean;
+    GlyphExtraSpacing: ImVec2;
+    GlyphOffset: ImVec2;
+    GlyphRanges: PImWchar;
+    GlyphMinAdvanceX: Single;
+    GlyphMaxAdvanceX: Single;
+    MergeMode: Boolean;
+    FontBuilderFlags: Cardinal;
+    RasterizerMultiply: Single;
+    RasterizerDensity: Single;
+    EllipsisChar: ImWchar;
+    Name: array [0..39] of UTF8Char;
+    DstFont: PImFont;
+  end;
+
+  ImFontGlyph = record
+  private
+    Data0: Cardinal;
+    function GetData0Value(const AIndex: Integer): Cardinal;
+    procedure SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property Colored: Cardinal index $0001 read GetData0Value write SetData0Value; // 1 bits at offset 0 in Data0
+    property Visible: Cardinal index $0101 read GetData0Value write SetData0Value; // 1 bits at offset 1 in Data0
+    property Codepoint: Cardinal index $021E read GetData0Value write SetData0Value; // 30 bits at offset 2 in Data0
+  var
+    AdvanceX: Single;
+    X0: Single;
+    Y0: Single;
+    X1: Single;
+    Y1: Single;
+    U0: Single;
+    V0: Single;
+    U1: Single;
+    V1: Single;
+  end;
+
+  ImVector_ImU32 = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImU32;
+  end;
+
+  ImFontGlyphRangesBuilder = record
+    UsedChars: ImVector_ImU32;
+  end;
+
+  ImFontAtlasCustomRect = record
+    X: Word;
+    Y: Word;
+    Width: Word;
+    Height: Word;
+  private
+    Data0: Cardinal;
+    function GetData0Value(const AIndex: Integer): Cardinal;
+    procedure SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property GlyphID: Cardinal index $001F read GetData0Value write SetData0Value; // 31 bits at offset 0 in Data0
+    property GlyphColored: Cardinal index $1F01 read GetData0Value write SetData0Value; // 1 bits at offset 31 in Data0
+  var
+    GlyphAdvanceX: Single;
+    GlyphOffset: ImVec2;
+    Font: PImFont;
+  end;
+
+  ImVector_ImFontPtr = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PPImFont;
+  end;
+
+  ImVector_ImFontAtlasCustomRect = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImFontAtlasCustomRect;
+  end;
+
+  ImVector_ImFontConfig = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImFontConfig;
+  end;
+
+  ImFontAtlas = record
+    Flags: ImFontAtlasFlags;
+    TexID: ImTextureID;
+    TexDesiredWidth: Integer;
+    TexGlyphPadding: Integer;
+    Locked: Boolean;
+    UserData: Pointer;
+    TexReady: Boolean;
+    TexPixelsUseColors: Boolean;
+    TexPixelsAlpha8: PByte;
+    TexPixelsRGBA32: PCardinal;
+    TexWidth: Integer;
+    TexHeight: Integer;
+    TexUvScale: ImVec2;
+    TexUvWhitePixel: ImVec2;
+    Fonts: ImVector_ImFontPtr;
+    CustomRects: ImVector_ImFontAtlasCustomRect;
+    ConfigData: ImVector_ImFontConfig;
+    TexUvLines: array [0..63] of ImVec4;
+    FontBuilderIO: PImFontBuilderIO;
+    FontBuilderFlags: Cardinal;
+    PackIdMouseCursors: Integer;
+    PackIdLines: Integer;
+  end;
+
+  ImVector_float = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PSingle;
+  end;
+
+  ImVector_ImFontGlyph = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImFontGlyph;
+  end;
+
+  ImFont = record
+    IndexAdvanceX: ImVector_float;
+    FallbackAdvanceX: Single;
+    FontSize: Single;
+    IndexLookup: ImVector_ImWchar;
+    Glyphs: ImVector_ImFontGlyph;
+    FallbackGlyph: PImFontGlyph;
+    ContainerAtlas: PImFontAtlas;
+    ConfigData: PImFontConfig;
+    ConfigDataCount: Smallint;
+    EllipsisCharCount: Smallint;
+    EllipsisChar: ImWchar;
+    FallbackChar: ImWchar;
+    EllipsisWidth: Single;
+    EllipsisCharStep: Single;
+    DirtyLookupTables: Boolean;
+    Scale: Single;
+    Ascent: Single;
+    Descent: Single;
+    MetricsTotalSurface: Integer;
+    Used4kPagesMap: array [0..1] of ImU8;
+  end;
+
+  ImGuiViewport = record
+    ID: ImGuiID;
+    Flags: ImGuiViewportFlags;
+    Pos: ImVec2;
+    Size: ImVec2;
+    WorkPos: ImVec2;
+    WorkSize: ImVec2;
+    DpiScale: Single;
+    ParentViewportId: ImGuiID;
+    DrawData: PImDrawData;
+    RendererUserData: Pointer;
+    PlatformUserData: Pointer;
+    PlatformHandle: Pointer;
+    PlatformHandleRaw: Pointer;
+    PlatformWindowCreated: Boolean;
+    PlatformRequestMove: Boolean;
+    PlatformRequestResize: Boolean;
+    PlatformRequestClose: Boolean;
+  end;
+
+  ImVector_ImGuiPlatformMonitor = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiPlatformMonitor;
+  end;
+
+  ImVector_ImGuiViewportPtr = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PPImGuiViewport;
+  end;
+
+  ImGuiPlatformIO = record
+    Platform_GetClipboardTextFn: function(ctx: PImGuiContext): PUTF8Char; cdecl;
+    Platform_SetClipboardTextFn: procedure(ctx: PImGuiContext; const text: PUTF8Char); cdecl;
+    Platform_ClipboardUserData: Pointer;
+    Platform_OpenInShellFn: function(ctx: PImGuiContext; const path: PUTF8Char): Boolean; cdecl;
+    Platform_OpenInShellUserData: Pointer;
+    Platform_SetImeDataFn: procedure(ctx: PImGuiContext; viewport: PImGuiViewport; data: PImGuiPlatformImeData); cdecl;
+    Platform_ImeUserData: Pointer;
+    Platform_LocaleDecimalPoint: ImWchar;
+    Renderer_RenderState: Pointer;
+    Platform_CreateWindow: procedure(vp: PImGuiViewport); cdecl;
+    Platform_DestroyWindow: procedure(vp: PImGuiViewport); cdecl;
+    Platform_ShowWindow: procedure(vp: PImGuiViewport); cdecl;
+    Platform_SetWindowPos: procedure(vp: PImGuiViewport; pos: ImVec2); cdecl;
+    Platform_GetWindowPos: function(vp: PImGuiViewport): ImVec2; cdecl;
+    Platform_SetWindowSize: procedure(vp: PImGuiViewport; size: ImVec2); cdecl;
+    Platform_GetWindowSize: function(vp: PImGuiViewport): ImVec2; cdecl;
+    Platform_SetWindowFocus: procedure(vp: PImGuiViewport); cdecl;
+    Platform_GetWindowFocus: function(vp: PImGuiViewport): Boolean; cdecl;
+    Platform_GetWindowMinimized: function(vp: PImGuiViewport): Boolean; cdecl;
+    Platform_SetWindowTitle: procedure(vp: PImGuiViewport; const str: PUTF8Char); cdecl;
+    Platform_SetWindowAlpha: procedure(vp: PImGuiViewport; alpha: Single); cdecl;
+    Platform_UpdateWindow: procedure(vp: PImGuiViewport); cdecl;
+    Platform_RenderWindow: procedure(vp: PImGuiViewport; render_arg: Pointer); cdecl;
+    Platform_SwapBuffers: procedure(vp: PImGuiViewport; render_arg: Pointer); cdecl;
+    Platform_GetWindowDpiScale: function(vp: PImGuiViewport): Single; cdecl;
+    Platform_OnChangedViewport: procedure(vp: PImGuiViewport); cdecl;
+    Platform_GetWindowWorkAreaInsets: function(vp: PImGuiViewport): ImVec4; cdecl;
+    Platform_CreateVkSurface: function(vp: PImGuiViewport; vk_inst: ImU64; const vk_allocators: Pointer; out_vk_surface: PImU64): Integer; cdecl;
+    Renderer_CreateWindow: procedure(vp: PImGuiViewport); cdecl;
+    Renderer_DestroyWindow: procedure(vp: PImGuiViewport); cdecl;
+    Renderer_SetWindowSize: procedure(vp: PImGuiViewport; size: ImVec2); cdecl;
+    Renderer_RenderWindow: procedure(vp: PImGuiViewport; render_arg: Pointer); cdecl;
+    Renderer_SwapBuffers: procedure(vp: PImGuiViewport; render_arg: Pointer); cdecl;
+    Monitors: ImVector_ImGuiPlatformMonitor;
+    Viewports: ImVector_ImGuiViewportPtr;
+  end;
+
+  ImGuiPlatformMonitor = record
+    MainPos: ImVec2;
+    MainSize: ImVec2;
+    WorkPos: ImVec2;
+    WorkSize: ImVec2;
+    DpiScale: Single;
+    PlatformHandle: Pointer;
+  end;
+
+  ImGuiPlatformImeData = record
+    WantVisible: Boolean;
+    InputPos: ImVec2;
+    InputLineHeight: Single;
+  end;
+
+  ImGuiDataAuthority = Integer;
+  ImGuiLayoutType = Integer;
+  ImGuiActivateFlags = Integer;
+  ImGuiDebugLogFlags = Integer;
+  ImGuiFocusRequestFlags = Integer;
+  ImGuiItemStatusFlags = Integer;
+  ImGuiOldColumnFlags = Integer;
+  ImGuiLogFlags = Integer;
+  ImGuiNavRenderCursorFlags = Integer;
+  ImGuiNavMoveFlags = Integer;
+  ImGuiNextItemDataFlags = Integer;
+  ImGuiNextWindowDataFlags = Integer;
+  ImGuiScrollFlags = Integer;
+  ImGuiSeparatorFlags = Integer;
+  ImGuiTextFlags = Integer;
+  ImGuiTooltipFlags = Integer;
+  ImGuiTypingSelectFlags = Integer;
+  ImGuiWindowRefreshFlags = Integer;
+  ImFileHandle = PPointer;
+
+  ImVec1 = record
+    x: Single;
+  end;
+
+  ImVec2ih = record
+    x: Smallint;
+    y: Smallint;
+  end;
+
+  ImRect = record
+    Min: ImVec2;
+    Max: ImVec2;
+  end;
+
+  ImBitArrayPtr = PImU32;
+
+  ImBitVector = record
+    Storage: ImVector_ImU32;
+  end;
+
+  ImPoolIdx = Integer;
+
+  ImVector_int = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PInteger;
+  end;
+
+  ImGuiTextIndex = record
+    LineOffsets: ImVector_int;
+    EndOffset: Integer;
+  end;
+
+  ImDrawListSharedData = record
+    TexUvWhitePixel: ImVec2;
+    TexUvLines: PImVec4;
+    Font: PImFont;
+    FontSize: Single;
+    FontScale: Single;
+    CurveTessellationTol: Single;
+    CircleSegmentMaxError: Single;
+    ClipRectFullscreen: ImVec4;
+    InitialFlags: ImDrawListFlags;
+    TempBuffer: ImVector_ImVec2;
+    ArcFastVtx: array [0..47] of ImVec2;
+    ArcFastRadiusCutoff: Single;
+    CircleSegmentCounts: array [0..63] of ImU8;
+  end;
+
+  ImDrawDataBuilder = record
+    Layers: array [0..1] of PImVector_ImDrawListPtr;
+    LayerData1: ImVector_ImDrawListPtr;
+  end;
+
+  ImGuiDataVarInfo = record
+    &Type: ImGuiDataType;
+    Count: ImU32;
+    Offset: ImU32;
+  end;
+
+  ImGuiDataTypeStorage = record
+    Data: array [0..7] of ImU8;
+  end;
+
+  ImGuiDataTypeInfo = record
+    Size: NativeUInt;
+    Name: PUTF8Char;
+    PrintFmt: PUTF8Char;
+    ScanFmt: PUTF8Char;
+  end;
+
+  ImGuiColorMod = record
+    Col: ImGuiCol;
+    BackupValue: ImVec4;
+  end;
+
+  P_anonymous_type_91 = ^_anonymous_type_91;
+  _anonymous_type_91 = record
+    case Integer of
+      0: (BackupInt: array [0..1] of Integer);
+      1: (BackupFloat: array [0..1] of Single);
+  end;
+
+  ImGuiStyleMod = record
+    VarIdx: ImGuiStyleVar;
+    f2: _anonymous_type_91;
+  end;
+
+  ImGuiComboPreviewData = record
+    PreviewRect: ImRect;
+    BackupCursorPos: ImVec2;
+    BackupCursorMaxPos: ImVec2;
+    BackupCursorPosPrevLine: ImVec2;
+    BackupPrevLineTextBaseOffset: Single;
+    BackupLayout: ImGuiLayoutType;
+  end;
+
+  ImGuiGroupData = record
+    WindowID: ImGuiID;
+    BackupCursorPos: ImVec2;
+    BackupCursorMaxPos: ImVec2;
+    BackupCursorPosPrevLine: ImVec2;
+    BackupIndent: ImVec1;
+    BackupGroupOffset: ImVec1;
+    BackupCurrLineSize: ImVec2;
+    BackupCurrLineTextBaseOffset: Single;
+    BackupActiveIdIsAlive: ImGuiID;
+    BackupActiveIdPreviousFrameIsAlive: Boolean;
+    BackupHoveredIdIsAlive: Boolean;
+    BackupIsSameLine: Boolean;
+    EmitItem: Boolean;
+  end;
+
+  ImGuiMenuColumns = record
+    TotalWidth: ImU32;
+    NextTotalWidth: ImU32;
+    Spacing: ImU16;
+    OffsetIcon: ImU16;
+    OffsetLabel: ImU16;
+    OffsetShortcut: ImU16;
+    OffsetMark: ImU16;
+    Widths: array [0..3] of ImU16;
+  end;
+
+  ImGuiInputTextDeactivatedState = record
+    ID: ImGuiID;
+    TextA: ImVector_char;
+  end;
+
+  PImStbTexteditState = Pointer;
+  PPImStbTexteditState = ^PImStbTexteditState;
+
+  ImGuiInputTextState = record
+    Ctx: PImGuiContext;
+    Stb: PImStbTexteditState;
+    ID: ImGuiID;
+    TextLen: Integer;
+    TextA: ImVector_char;
+    TextToRevertTo: ImVector_char;
+    CallbackTextBackup: ImVector_char;
+    BufCapacity: Integer;
+    Scroll: ImVec2;
+    CursorAnim: Single;
+    CursorFollow: Boolean;
+    SelectedAllMouseLock: Boolean;
+    Edited: Boolean;
+    Flags: ImGuiInputTextFlags;
+    ReloadUserBuf: Boolean;
+    ReloadSelectionStart: Integer;
+    ReloadSelectionEnd: Integer;
+  end;
+
+  ImGuiNextWindowData = record
+    Flags: ImGuiNextWindowDataFlags;
+    PosCond: ImGuiCond;
+    SizeCond: ImGuiCond;
+    CollapsedCond: ImGuiCond;
+    DockCond: ImGuiCond;
+    PosVal: ImVec2;
+    PosPivotVal: ImVec2;
+    SizeVal: ImVec2;
+    ContentSizeVal: ImVec2;
+    ScrollVal: ImVec2;
+    ChildFlags: ImGuiChildFlags;
+    PosUndock: Boolean;
+    CollapsedVal: Boolean;
+    SizeConstraintRect: ImRect;
+    SizeCallback: ImGuiSizeCallback;
+    SizeCallbackUserData: Pointer;
+    BgAlphaVal: Single;
+    ViewportId: ImGuiID;
+    DockId: ImGuiID;
+    WindowClass: ImGuiWindowClass;
+    MenuBarOffsetMinVal: ImVec2;
+    RefreshFlagsVal: ImGuiWindowRefreshFlags;
+  end;
+
+  ImGuiNextItemData = record
+    HasFlags: ImGuiNextItemDataFlags;
+    ItemFlags: ImGuiItemFlags;
+    FocusScopeId: ImGuiID;
+    SelectionUserData: ImGuiSelectionUserData;
+    Width: Single;
+    Shortcut: ImGuiKeyChord;
+    ShortcutFlags: ImGuiInputFlags;
+    OpenVal: Boolean;
+    OpenCond: ImU8;
+    RefVal: ImGuiDataTypeStorage;
+    StorageId: ImGuiID;
+  end;
+
+  ImGuiLastItemData = record
+    ID: ImGuiID;
+    ItemFlags: ImGuiItemFlags;
+    StatusFlags: ImGuiItemStatusFlags;
+    Rect: ImRect;
+    NavRect: ImRect;
+    DisplayRect: ImRect;
+    ClipRect: ImRect;
+    Shortcut: ImGuiKeyChord;
+  end;
+
+  ImGuiTreeNodeStackData = record
+    ID: ImGuiID;
+    TreeFlags: ImGuiTreeNodeFlags;
+    ItemFlags: ImGuiItemFlags;
+    NavRect: ImRect;
+  end;
+
+  ImGuiErrorRecoveryState = record
+    SizeOfWindowStack: Smallint;
+    SizeOfIDStack: Smallint;
+    SizeOfTreeStack: Smallint;
+    SizeOfColorStack: Smallint;
+    SizeOfStyleVarStack: Smallint;
+    SizeOfFontStack: Smallint;
+    SizeOfFocusScopeStack: Smallint;
+    SizeOfGroupStack: Smallint;
+    SizeOfItemFlagsStack: Smallint;
+    SizeOfBeginPopupStack: Smallint;
+    SizeOfDisabledStack: Smallint;
+  end;
+
+  ImGuiWindowStackData = record
+    Window: PImGuiWindow;
+    ParentLastItemDataBackup: ImGuiLastItemData;
+    StackSizesInBegin: ImGuiErrorRecoveryState;
+    DisabledOverrideReenable: Boolean;
+  end;
+
+  ImGuiShrinkWidthItem = record
+    Index: Integer;
+    Width: Single;
+    InitialWidth: Single;
+  end;
+
+  ImGuiPtrOrIndex = record
+    Ptr: Pointer;
+    Index: Integer;
+  end;
+
+  ImGuiPopupData = record
+    PopupId: ImGuiID;
+    Window: PImGuiWindow;
+    RestoreNavWindow: PImGuiWindow;
+    ParentNavLayer: Integer;
+    OpenFrameCount: Integer;
+    OpenParentId: ImGuiID;
+    OpenPopupPos: ImVec2;
+    OpenMousePos: ImVec2;
+  end;
+
+  ImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN = record
+    Storage: array [0..4] of ImU32;
+  end;
+
+  ImBitArrayForNamedKeys = ImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN;
+
+  ImGuiInputEventMousePos = record
+    PosX: Single;
+    PosY: Single;
+    MouseSource: ImGuiMouseSource;
+  end;
+
+  ImGuiInputEventMouseWheel = record
+    WheelX: Single;
+    WheelY: Single;
+    MouseSource: ImGuiMouseSource;
+  end;
+
+  ImGuiInputEventMouseButton = record
+    Button: Integer;
+    Down: Boolean;
+    MouseSource: ImGuiMouseSource;
+  end;
+
+  ImGuiInputEventMouseViewport = record
+    HoveredViewportID: ImGuiID;
+  end;
+
+  ImGuiInputEventKey = record
+    Key: ImGuiKey;
+    Down: Boolean;
+    AnalogValue: Single;
+  end;
+
+  ImGuiInputEventText = record
+    Char: Cardinal;
+  end;
+
+  ImGuiInputEventAppFocused = record
+    Focused: Boolean;
+  end;
+
+  P_anonymous_type_92 = ^_anonymous_type_92;
+  _anonymous_type_92 = record
+    case Integer of
+      0: (MousePos: ImGuiInputEventMousePos);
+      1: (MouseWheel: ImGuiInputEventMouseWheel);
+      2: (MouseButton: ImGuiInputEventMouseButton);
+      3: (MouseViewport: ImGuiInputEventMouseViewport);
+      4: (Key: ImGuiInputEventKey);
+      5: (Text: ImGuiInputEventText);
+      6: (AppFocused: ImGuiInputEventAppFocused);
+  end;
+
+  ImGuiInputEvent = record
+    &Type: ImGuiInputEventType;
+    Source: ImGuiInputSource;
+    EventId: ImU32;
+    f4: _anonymous_type_92;
+    AddedByTestEngine: Boolean;
+  end;
+
+  ImGuiKeyRoutingIndex = ImS16;
+
+  ImGuiKeyRoutingData = record
+    NextEntryIndex: ImGuiKeyRoutingIndex;
+    Mods: ImU16;
+    RoutingCurrScore: ImU8;
+    RoutingNextScore: ImU8;
+    RoutingCurr: ImGuiID;
+    RoutingNext: ImGuiID;
+  end;
+
+  ImVector_ImGuiKeyRoutingData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiKeyRoutingData;
+  end;
+
+  ImGuiKeyRoutingTable = record
+    Index: array [0..153] of ImGuiKeyRoutingIndex;
+    Entries: ImVector_ImGuiKeyRoutingData;
+    EntriesNext: ImVector_ImGuiKeyRoutingData;
+  end;
+
+  ImGuiKeyOwnerData = record
+    OwnerCurr: ImGuiID;
+    OwnerNext: ImGuiID;
+    LockThisFrame: Boolean;
+    LockUntilRelease: Boolean;
+  end;
+
+  ImGuiListClipperRange = record
+    Min: Integer;
+    Max: Integer;
+    PosToIndexConvert: Boolean;
+    PosToIndexOffsetMin: ImS8;
+    PosToIndexOffsetMax: ImS8;
+  end;
+
+  ImVector_ImGuiListClipperRange = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiListClipperRange;
+  end;
+
+  ImGuiListClipperData = record
+    ListClipper: PImGuiListClipper;
+    LossynessOffset: Single;
+    StepNo: Integer;
+    ItemsFrozen: Integer;
+    Ranges: ImVector_ImGuiListClipperRange;
+  end;
+
+  ImGuiNavItemData = record
+    Window: PImGuiWindow;
+    ID: ImGuiID;
+    FocusScopeId: ImGuiID;
+    RectRel: ImRect;
+    ItemFlags: ImGuiItemFlags;
+    DistBox: Single;
+    DistCenter: Single;
+    DistAxial: Single;
+    SelectionUserData: ImGuiSelectionUserData;
+  end;
+
+  ImGuiFocusScopeData = record
+    ID: ImGuiID;
+    WindowID: ImGuiID;
+  end;
+
+  ImGuiTypingSelectRequest = record
+    Flags: ImGuiTypingSelectFlags;
+    SearchBufferLen: Integer;
+    SearchBuffer: PUTF8Char;
+    SelectRequest: Boolean;
+    SingleCharMode: Boolean;
+    SingleCharSize: ImS8;
+  end;
+
+  ImGuiTypingSelectState = record
+    Request: ImGuiTypingSelectRequest;
+    SearchBuffer: array [0..63] of UTF8Char;
+    FocusScope: ImGuiID;
+    LastRequestFrame: Integer;
+    LastRequestTime: Single;
+    SingleCharModeLock: Boolean;
+  end;
+
+  ImGuiOldColumnData = record
+    OffsetNorm: Single;
+    OffsetNormBeforeResize: Single;
+    Flags: ImGuiOldColumnFlags;
+    ClipRect: ImRect;
+  end;
+
+  ImVector_ImGuiOldColumnData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiOldColumnData;
+  end;
+
+  ImGuiOldColumns = record
+    ID: ImGuiID;
+    Flags: ImGuiOldColumnFlags;
+    IsFirstFrame: Boolean;
+    IsBeingResized: Boolean;
+    Current: Integer;
+    Count: Integer;
+    OffMinX: Single;
+    OffMaxX: Single;
+    LineMinY: Single;
+    LineMaxY: Single;
+    HostCursorPosY: Single;
+    HostCursorMaxPosX: Single;
+    HostInitialClipRect: ImRect;
+    HostBackupClipRect: ImRect;
+    HostBackupParentWorkRect: ImRect;
+    Columns: ImVector_ImGuiOldColumnData;
+    Splitter: ImDrawListSplitter;
+  end;
+
+  ImGuiBoxSelectState = record
+    ID: ImGuiID;
+    IsActive: Boolean;
+    IsStarting: Boolean;
+    IsStartedFromVoid: Boolean;
+    IsStartedSetNavIdOnce: Boolean;
+    RequestClear: Boolean;
+  private
+    Data0: Cardinal;
+    function GetData0Value(const AIndex: Integer): Cardinal;
+    procedure SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property KeyMods: Cardinal index $0010 read GetData0Value write SetData0Value; // 16 bits at offset 0 in Data0
+  var
+    StartPosRel: ImVec2;
+    EndPosRel: ImVec2;
+    ScrollAccum: ImVec2;
+    Window: PImGuiWindow;
+    UnclipMode: Boolean;
+    UnclipRect: ImRect;
+    BoxSelectRectPrev: ImRect;
+    BoxSelectRectCurr: ImRect;
+  end;
+
+  ImGuiMultiSelectTempData = record
+    IO: ImGuiMultiSelectIO;
+    Storage: PImGuiMultiSelectState;
+    FocusScopeId: ImGuiID;
+    Flags: ImGuiMultiSelectFlags;
+    ScopeRectMin: ImVec2;
+    BackupCursorMaxPos: ImVec2;
+    LastSubmittedItem: ImGuiSelectionUserData;
+    BoxSelectId: ImGuiID;
+    KeyMods: ImGuiKeyChord;
+    LoopRequestSetAll: ImS8;
+    IsEndIO: Boolean;
+    IsFocused: Boolean;
+    IsKeyboardSetRange: Boolean;
+    NavIdPassedBy: Boolean;
+    RangeSrcPassedBy: Boolean;
+    RangeDstPassedBy: Boolean;
+  end;
+
+  ImGuiMultiSelectState = record
+    Window: PImGuiWindow;
+    ID: ImGuiID;
+    LastFrameActive: Integer;
+    LastSelectionSize: Integer;
+    RangeSelected: ImS8;
+    NavIdSelected: ImS8;
+    RangeSrcItem: ImGuiSelectionUserData;
+    NavIdItem: ImGuiSelectionUserData;
+  end;
+
+  ImVector_ImGuiWindowPtr = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PPImGuiWindow;
+  end;
+
+  ImGuiDockNode = record
+    ID: ImGuiID;
+    SharedFlags: ImGuiDockNodeFlags;
+    LocalFlags: ImGuiDockNodeFlags;
+    LocalFlagsInWindows: ImGuiDockNodeFlags;
+    MergedFlags: ImGuiDockNodeFlags;
+    State: ImGuiDockNodeState;
+    ParentNode: PImGuiDockNode;
+    ChildNodes: array [0..1] of PImGuiDockNode;
+    Windows: ImVector_ImGuiWindowPtr;
+    TabBar: PImGuiTabBar;
+    Pos: ImVec2;
+    Size: ImVec2;
+    SizeRef: ImVec2;
+    SplitAxis: ImGuiAxis;
+    WindowClass: ImGuiWindowClass;
+    LastBgColor: ImU32;
+    HostWindow: PImGuiWindow;
+    VisibleWindow: PImGuiWindow;
+    CentralNode: PImGuiDockNode;
+    OnlyNodeWithWindows: PImGuiDockNode;
+    CountNodeWithWindows: Integer;
+    LastFrameAlive: Integer;
+    LastFrameActive: Integer;
+    LastFrameFocused: Integer;
+    LastFocusedNodeId: ImGuiID;
+    SelectedTabId: ImGuiID;
+    WantCloseTabId: ImGuiID;
+    RefViewportId: ImGuiID;
+  private
+    Data0: Cardinal;
+    function GetData0Value(const AIndex: Integer): Cardinal;
+    procedure SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property AuthorityForPos: Cardinal index $0003 read GetData0Value write SetData0Value; // 3 bits at offset 0 in Data0
+    property AuthorityForSize: Cardinal index $0303 read GetData0Value write SetData0Value; // 3 bits at offset 3 in Data0
+    property AuthorityForViewport: Cardinal index $0603 read GetData0Value write SetData0Value; // 3 bits at offset 6 in Data0
+    property IsVisible: Cardinal index $901 read GetData0Value write SetData0Value; // 1 bits at offset 9 in Data0
+    property IsFocused: Cardinal index $A01 read GetData0Value write SetData0Value; // 1 bits at offset 10 in Data0
+    property IsBgDrawnThisFrame: Cardinal index $B01 read GetData0Value write SetData0Value; // 1 bits at offset 11 in Data0
+    property HasCloseButton: Cardinal index $C01 read GetData0Value write SetData0Value; // 1 bits at offset 12 in Data0
+    property HasWindowMenuButton: Cardinal index $D01 read GetData0Value write SetData0Value; // 1 bits at offset 13 in Data0
+    property HasCentralNodeChild: Cardinal index $E01 read GetData0Value write SetData0Value; // 1 bits at offset 14 in Data0
+    property WantCloseAll: Cardinal index $F01 read GetData0Value write SetData0Value; // 1 bits at offset 15 in Data0
+    property WantLockSizeOnce: Cardinal index $1001 read GetData0Value write SetData0Value; // 1 bits at offset 16 in Data0
+    property WantMouseMove: Cardinal index $1101 read GetData0Value write SetData0Value; // 1 bits at offset 17 in Data0
+    property WantHiddenTabBarUpdate: Cardinal index $1201 read GetData0Value write SetData0Value; // 1 bits at offset 18 in Data0
+    property WantHiddenTabBarToggle: Cardinal index $1301 read GetData0Value write SetData0Value; // 1 bits at offset 19 in Data0
+  end;
+
+  ImGuiWindowDockStyle = record
+    Colors: array [0..7] of ImU32;
+  end;
+
+  ImVector_ImGuiDockRequest = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiDockRequest;
+  end;
+
+  ImVector_ImGuiDockNodeSettings = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiDockNodeSettings;
+  end;
+
+  ImGuiDockContext = record
+    Nodes: ImGuiStorage;
+    Requests: ImVector_ImGuiDockRequest;
+    NodesSettings: ImVector_ImGuiDockNodeSettings;
+    WantFullRebuild: Boolean;
+  end;
+
+  ImGuiViewportP = record
+    _ImGuiViewport: ImGuiViewport;
+    Window: PImGuiWindow;
+    Idx: Integer;
+    LastFrameActive: Integer;
+    LastFocusedStampCount: Integer;
+    LastNameHash: ImGuiID;
+    LastPos: ImVec2;
+    LastSize: ImVec2;
+    Alpha: Single;
+    LastAlpha: Single;
+    LastFocusedHadNavWindow: Boolean;
+    PlatformMonitor: Smallint;
+    BgFgDrawListsLastFrame: array [0..1] of Integer;
+    BgFgDrawLists: array [0..1] of PImDrawList;
+    DrawDataP: ImDrawData;
+    DrawDataBuilder: ImDrawDataBuilder;
+    LastPlatformPos: ImVec2;
+    LastPlatformSize: ImVec2;
+    LastRendererSize: ImVec2;
+    WorkInsetMin: ImVec2;
+    WorkInsetMax: ImVec2;
+    BuildWorkInsetMin: ImVec2;
+    BuildWorkInsetMax: ImVec2;
+  end;
+
+  ImGuiWindowSettings = record
+    ID: ImGuiID;
+    Pos: ImVec2ih;
+    Size: ImVec2ih;
+    ViewportPos: ImVec2ih;
+    ViewportId: ImGuiID;
+    DockId: ImGuiID;
+    ClassId: ImGuiID;
+    DockOrder: Smallint;
+    Collapsed: Boolean;
+    IsChild: Boolean;
+    WantApply: Boolean;
+    WantDelete: Boolean;
+  end;
+
+  ImGuiSettingsHandler = record
+    TypeName: PUTF8Char;
+    TypeHash: ImGuiID;
+    ClearAllFn: procedure(ctx: PImGuiContext; handler: PImGuiSettingsHandler); cdecl;
+    ReadInitFn: procedure(ctx: PImGuiContext; handler: PImGuiSettingsHandler); cdecl;
+    ReadOpenFn: function(ctx: PImGuiContext; handler: PImGuiSettingsHandler; const name: PUTF8Char): Pointer; cdecl;
+    ReadLineFn: procedure(ctx: PImGuiContext; handler: PImGuiSettingsHandler; entry: Pointer; const line: PUTF8Char); cdecl;
+    ApplyAllFn: procedure(ctx: PImGuiContext; handler: PImGuiSettingsHandler); cdecl;
+    WriteAllFn: procedure(ctx: PImGuiContext; handler: PImGuiSettingsHandler; out_buf: PImGuiTextBuffer); cdecl;
+    UserData: Pointer;
+  end;
+
+  ImGuiLocEntry = record
+    Key: ImGuiLocKey;
+    Text: PUTF8Char;
+  end;
+
+  ImGuiErrorCallback = procedure(ctx: PImGuiContext; user_data: Pointer; const msg: PUTF8Char); cdecl;
+
+  ImGuiDebugAllocEntry = record
+    FrameCount: Integer;
+    AllocCount: ImS16;
+    FreeCount: ImS16;
+  end;
+
+  ImGuiDebugAllocInfo = record
+    TotalAllocCount: Integer;
+    TotalFreeCount: Integer;
+    LastEntriesIdx: ImS16;
+    LastEntriesBuf: array [0..5] of ImGuiDebugAllocEntry;
+  end;
+
+  ImGuiMetricsConfig = record
+    ShowDebugLog: Boolean;
+    ShowIDStackTool: Boolean;
+    ShowWindowsRects: Boolean;
+    ShowWindowsBeginOrder: Boolean;
+    ShowTablesRects: Boolean;
+    ShowDrawCmdMesh: Boolean;
+    ShowDrawCmdBoundingBoxes: Boolean;
+    ShowTextEncodingViewer: Boolean;
+    ShowAtlasTintedWithTextColor: Boolean;
+    ShowDockingNodes: Boolean;
+    ShowWindowsRectsType: Integer;
+    ShowTablesRectsType: Integer;
+    HighlightMonitorIdx: Integer;
+    HighlightViewportID: ImGuiID;
+  end;
+
+  ImGuiStackLevelInfo = record
+    ID: ImGuiID;
+    QueryFrameCount: ImS8;
+    QuerySuccess: Boolean;
+  private
+    Data0: Cardinal;
+    function GetData0Value(const AIndex: Integer): Cardinal;
+    procedure SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property DataType: Cardinal index $0008 read GetData0Value write SetData0Value; // 8 bits at offset 0 in Data0
+  var
+    Desc: array [0..56] of UTF8Char;
+  end;
+
+  ImVector_ImGuiStackLevelInfo = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiStackLevelInfo;
+  end;
+
+  ImGuiIDStackTool = record
+    LastActiveFrame: Integer;
+    StackLevel: Integer;
+    QueryId: ImGuiID;
+    Results: ImVector_ImGuiStackLevelInfo;
+    CopyToClipboardOnCtrlC: Boolean;
+    CopyToClipboardLastTime: Single;
+  end;
+
+  ImGuiContextHookCallback = procedure(ctx: PImGuiContext; hook: PImGuiContextHook); cdecl;
+
+  ImGuiContextHook = record
+    HookId: ImGuiID;
+    &Type: ImGuiContextHookType;
+    Owner: ImGuiID;
+    Callback: ImGuiContextHookCallback;
+    UserData: Pointer;
+  end;
+
+  ImVector_ImGuiInputEvent = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiInputEvent;
+  end;
+
+  ImVector_ImGuiWindowStackData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiWindowStackData;
+  end;
+
+  ImVector_ImGuiColorMod = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiColorMod;
+  end;
+
+  ImVector_ImGuiStyleMod = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiStyleMod;
+  end;
+
+  ImVector_ImGuiFocusScopeData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiFocusScopeData;
+  end;
+
+  ImVector_ImGuiItemFlags = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiItemFlags;
+  end;
+
+  ImVector_ImGuiGroupData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiGroupData;
+  end;
+
+  ImVector_ImGuiPopupData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiPopupData;
+  end;
+
+  ImVector_ImGuiTreeNodeStackData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiTreeNodeStackData;
+  end;
+
+  ImVector_ImGuiViewportPPtr = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PPImGuiViewportP;
+  end;
+
+  ImVector_unsigned_char = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PByte;
+  end;
+
+  ImVector_ImGuiListClipperData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiListClipperData;
+  end;
+
+  ImVector_ImGuiTableTempData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiTableTempData;
+  end;
+
+  ImVector_ImGuiTable = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiTable;
+  end;
+
+  ImPool_ImGuiTable = record
+    Buf: ImVector_ImGuiTable;
+    Map: ImGuiStorage;
+    FreeIdx: ImPoolIdx;
+    AliveCount: ImPoolIdx;
+  end;
+
+  ImVector_ImGuiTabBar = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiTabBar;
+  end;
+
+  ImPool_ImGuiTabBar = record
+    Buf: ImVector_ImGuiTabBar;
+    Map: ImGuiStorage;
+    FreeIdx: ImPoolIdx;
+    AliveCount: ImPoolIdx;
+  end;
+
+  ImVector_ImGuiPtrOrIndex = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiPtrOrIndex;
+  end;
+
+  ImVector_ImGuiShrinkWidthItem = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiShrinkWidthItem;
+  end;
+
+  ImVector_ImGuiMultiSelectTempData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiMultiSelectTempData;
+  end;
+
+  ImVector_ImGuiMultiSelectState = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiMultiSelectState;
+  end;
+
+  ImPool_ImGuiMultiSelectState = record
+    Buf: ImVector_ImGuiMultiSelectState;
+    Map: ImGuiStorage;
+    FreeIdx: ImPoolIdx;
+    AliveCount: ImPoolIdx;
+  end;
+
+  ImVector_ImGuiID = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiID;
+  end;
+
+  ImVector_ImGuiSettingsHandler = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiSettingsHandler;
+  end;
+
+  ImChunkStream_ImGuiWindowSettings = record
+    Buf: ImVector_char;
+  end;
+
+  ImChunkStream_ImGuiTableSettings = record
+    Buf: ImVector_char;
+  end;
+
+  ImVector_ImGuiContextHook = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiContextHook;
+  end;
+
+  ImGuiContext = record
+    Initialized: Boolean;
+    FontAtlasOwnedByContext: Boolean;
+    IO: ImGuiIO;
+    PlatformIO: ImGuiPlatformIO;
+    Style: ImGuiStyle;
+    ConfigFlagsCurrFrame: ImGuiConfigFlags;
+    ConfigFlagsLastFrame: ImGuiConfigFlags;
+    Font: PImFont;
+    FontSize: Single;
+    FontBaseSize: Single;
+    FontScale: Single;
+    CurrentDpiScale: Single;
+    DrawListSharedData: ImDrawListSharedData;
+    Time: Double;
+    FrameCount: Integer;
+    FrameCountEnded: Integer;
+    FrameCountPlatformEnded: Integer;
+    FrameCountRendered: Integer;
+    WithinFrameScope: Boolean;
+    WithinFrameScopeWithImplicitWindow: Boolean;
+    WithinEndChild: Boolean;
+    GcCompactAll: Boolean;
+    TestEngineHookItems: Boolean;
+    TestEngine: Pointer;
+    ContextName: array [0..15] of UTF8Char;
+    InputEventsQueue: ImVector_ImGuiInputEvent;
+    InputEventsTrail: ImVector_ImGuiInputEvent;
+    InputEventsNextMouseSource: ImGuiMouseSource;
+    InputEventsNextEventId: ImU32;
+    Windows: ImVector_ImGuiWindowPtr;
+    WindowsFocusOrder: ImVector_ImGuiWindowPtr;
+    WindowsTempSortBuffer: ImVector_ImGuiWindowPtr;
+    CurrentWindowStack: ImVector_ImGuiWindowStackData;
+    WindowsById: ImGuiStorage;
+    WindowsActiveCount: Integer;
+    WindowsHoverPadding: ImVec2;
+    DebugBreakInWindow: ImGuiID;
+    CurrentWindow: PImGuiWindow;
+    HoveredWindow: PImGuiWindow;
+    HoveredWindowUnderMovingWindow: PImGuiWindow;
+    HoveredWindowBeforeClear: PImGuiWindow;
+    MovingWindow: PImGuiWindow;
+    WheelingWindow: PImGuiWindow;
+    WheelingWindowRefMousePos: ImVec2;
+    WheelingWindowStartFrame: Integer;
+    WheelingWindowScrolledFrame: Integer;
+    WheelingWindowReleaseTimer: Single;
+    WheelingWindowWheelRemainder: ImVec2;
+    WheelingAxisAvg: ImVec2;
+    DebugDrawIdConflicts: ImGuiID;
+    DebugHookIdInfo: ImGuiID;
+    HoveredId: ImGuiID;
+    HoveredIdPreviousFrame: ImGuiID;
+    HoveredIdPreviousFrameItemCount: Integer;
+    HoveredIdTimer: Single;
+    HoveredIdNotActiveTimer: Single;
+    HoveredIdAllowOverlap: Boolean;
+    HoveredIdIsDisabled: Boolean;
+    ItemUnclipByLog: Boolean;
+    ActiveId: ImGuiID;
+    ActiveIdIsAlive: ImGuiID;
+    ActiveIdTimer: Single;
+    ActiveIdIsJustActivated: Boolean;
+    ActiveIdAllowOverlap: Boolean;
+    ActiveIdNoClearOnFocusLoss: Boolean;
+    ActiveIdHasBeenPressedBefore: Boolean;
+    ActiveIdHasBeenEditedBefore: Boolean;
+    ActiveIdHasBeenEditedThisFrame: Boolean;
+    ActiveIdFromShortcut: Boolean;
+  private
+    Data0: Cardinal;
+    function GetData0Value(const AIndex: Integer): Cardinal;
+    procedure SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property ActiveIdMouseButton: Cardinal index $0008 read GetData0Value write SetData0Value; // 8 bits at offset 0 in Data0
+  var
+    ActiveIdClickOffset: ImVec2;
+    ActiveIdWindow: PImGuiWindow;
+    ActiveIdSource: ImGuiInputSource;
+    ActiveIdPreviousFrame: ImGuiID;
+    ActiveIdPreviousFrameIsAlive: Boolean;
+    ActiveIdPreviousFrameHasBeenEditedBefore: Boolean;
+    ActiveIdPreviousFrameWindow: PImGuiWindow;
+    LastActiveId: ImGuiID;
+    LastActiveIdTimer: Single;
+    LastKeyModsChangeTime: Double;
+    LastKeyModsChangeFromNoneTime: Double;
+    LastKeyboardKeyPressTime: Double;
+    KeysMayBeCharInput: ImBitArrayForNamedKeys;
+    KeysOwnerData: array [0..153] of ImGuiKeyOwnerData;
+    KeysRoutingTable: ImGuiKeyRoutingTable;
+    ActiveIdUsingNavDirMask: ImU32;
+    ActiveIdUsingAllKeyboardKeys: Boolean;
+    DebugBreakInShortcutRouting: ImGuiKeyChord;
+    CurrentFocusScopeId: ImGuiID;
+    CurrentItemFlags: ImGuiItemFlags;
+    DebugLocateId: ImGuiID;
+    NextItemData: ImGuiNextItemData;
+    LastItemData: ImGuiLastItemData;
+    NextWindowData: ImGuiNextWindowData;
+    DebugShowGroupRects: Boolean;
+    DebugFlashStyleColorIdx: ImGuiCol;
+    ColorStack: ImVector_ImGuiColorMod;
+    StyleVarStack: ImVector_ImGuiStyleMod;
+    FontStack: ImVector_ImFontPtr;
+    FocusScopeStack: ImVector_ImGuiFocusScopeData;
+    ItemFlagsStack: ImVector_ImGuiItemFlags;
+    GroupStack: ImVector_ImGuiGroupData;
+    OpenPopupStack: ImVector_ImGuiPopupData;
+    BeginPopupStack: ImVector_ImGuiPopupData;
+    TreeNodeStack: ImVector_ImGuiTreeNodeStackData;
+    Viewports: ImVector_ImGuiViewportPPtr;
+    CurrentViewport: PImGuiViewportP;
+    MouseViewport: PImGuiViewportP;
+    MouseLastHoveredViewport: PImGuiViewportP;
+    PlatformLastFocusedViewportId: ImGuiID;
+    FallbackMonitor: ImGuiPlatformMonitor;
+    PlatformMonitorsFullWorkRect: ImRect;
+    ViewportCreatedCount: Integer;
+    PlatformWindowsCreatedCount: Integer;
+    ViewportFocusedStampCount: Integer;
+    NavCursorVisible: Boolean;
+    NavHighlightItemUnderNav: Boolean;
+    NavMousePosDirty: Boolean;
+    NavIdIsAlive: Boolean;
+    NavId: ImGuiID;
+    NavWindow: PImGuiWindow;
+    NavFocusScopeId: ImGuiID;
+    NavLayer: ImGuiNavLayer;
+    NavActivateId: ImGuiID;
+    NavActivateDownId: ImGuiID;
+    NavActivatePressedId: ImGuiID;
+    NavActivateFlags: ImGuiActivateFlags;
+    NavFocusRoute: ImVector_ImGuiFocusScopeData;
+    NavHighlightActivatedId: ImGuiID;
+    NavHighlightActivatedTimer: Single;
+    NavNextActivateId: ImGuiID;
+    NavNextActivateFlags: ImGuiActivateFlags;
+    NavInputSource: ImGuiInputSource;
+    NavLastValidSelectionUserData: ImGuiSelectionUserData;
+    NavCursorHideFrames: ImS8;
+    NavAnyRequest: Boolean;
+    NavInitRequest: Boolean;
+    NavInitRequestFromMove: Boolean;
+    NavInitResult: ImGuiNavItemData;
+    NavMoveSubmitted: Boolean;
+    NavMoveScoringItems: Boolean;
+    NavMoveForwardToNextFrame: Boolean;
+    NavMoveFlags: ImGuiNavMoveFlags;
+    NavMoveScrollFlags: ImGuiScrollFlags;
+    NavMoveKeyMods: ImGuiKeyChord;
+    NavMoveDir: ImGuiDir;
+    NavMoveDirForDebug: ImGuiDir;
+    NavMoveClipDir: ImGuiDir;
+    NavScoringRect: ImRect;
+    NavScoringNoClipRect: ImRect;
+    NavScoringDebugCount: Integer;
+    NavTabbingDir: Integer;
+    NavTabbingCounter: Integer;
+    NavMoveResultLocal: ImGuiNavItemData;
+    NavMoveResultLocalVisible: ImGuiNavItemData;
+    NavMoveResultOther: ImGuiNavItemData;
+    NavTabbingResultFirst: ImGuiNavItemData;
+    NavJustMovedFromFocusScopeId: ImGuiID;
+    NavJustMovedToId: ImGuiID;
+    NavJustMovedToFocusScopeId: ImGuiID;
+    NavJustMovedToKeyMods: ImGuiKeyChord;
+    NavJustMovedToIsTabbing: Boolean;
+    NavJustMovedToHasSelectionData: Boolean;
+    ConfigNavWindowingKeyNext: ImGuiKeyChord;
+    ConfigNavWindowingKeyPrev: ImGuiKeyChord;
+    NavWindowingTarget: PImGuiWindow;
+    NavWindowingTargetAnim: PImGuiWindow;
+    NavWindowingListWindow: PImGuiWindow;
+    NavWindowingTimer: Single;
+    NavWindowingHighlightAlpha: Single;
+    NavWindowingToggleLayer: Boolean;
+    NavWindowingToggleKey: ImGuiKey;
+    NavWindowingAccumDeltaPos: ImVec2;
+    NavWindowingAccumDeltaSize: ImVec2;
+    DimBgRatio: Single;
+    DragDropActive: Boolean;
+    DragDropWithinSource: Boolean;
+    DragDropWithinTarget: Boolean;
+    DragDropSourceFlags: ImGuiDragDropFlags;
+    DragDropSourceFrameCount: Integer;
+    DragDropMouseButton: Integer;
+    DragDropPayload: ImGuiPayload;
+    DragDropTargetRect: ImRect;
+    DragDropTargetClipRect: ImRect;
+    DragDropTargetId: ImGuiID;
+    DragDropAcceptFlags: ImGuiDragDropFlags;
+    DragDropAcceptIdCurrRectSurface: Single;
+    DragDropAcceptIdCurr: ImGuiID;
+    DragDropAcceptIdPrev: ImGuiID;
+    DragDropAcceptFrameCount: Integer;
+    DragDropHoldJustPressedId: ImGuiID;
+    DragDropPayloadBufHeap: ImVector_unsigned_char;
+    DragDropPayloadBufLocal: array [0..15] of Byte;
+    ClipperTempDataStacked: Integer;
+    ClipperTempData: ImVector_ImGuiListClipperData;
+    CurrentTable: PImGuiTable;
+    DebugBreakInTable: ImGuiID;
+    TablesTempDataStacked: Integer;
+    TablesTempData: ImVector_ImGuiTableTempData;
+    Tables: ImPool_ImGuiTable;
+    TablesLastTimeActive: ImVector_float;
+    DrawChannelsTempMergeBuffer: ImVector_ImDrawChannel;
+    CurrentTabBar: PImGuiTabBar;
+    TabBars: ImPool_ImGuiTabBar;
+    CurrentTabBarStack: ImVector_ImGuiPtrOrIndex;
+    ShrinkWidthBuffer: ImVector_ImGuiShrinkWidthItem;
+    BoxSelectState: ImGuiBoxSelectState;
+    CurrentMultiSelect: PImGuiMultiSelectTempData;
+    MultiSelectTempDataStacked: Integer;
+    MultiSelectTempData: ImVector_ImGuiMultiSelectTempData;
+    MultiSelectStorage: ImPool_ImGuiMultiSelectState;
+    HoverItemDelayId: ImGuiID;
+    HoverItemDelayIdPreviousFrame: ImGuiID;
+    HoverItemDelayTimer: Single;
+    HoverItemDelayClearTimer: Single;
+    HoverItemUnlockedStationaryId: ImGuiID;
+    HoverWindowUnlockedStationaryId: ImGuiID;
+    MouseCursor: ImGuiMouseCursor;
+    MouseStationaryTimer: Single;
+    MouseLastValidPos: ImVec2;
+    InputTextState: ImGuiInputTextState;
+    InputTextDeactivatedState: ImGuiInputTextDeactivatedState;
+    InputTextPasswordFont: ImFont;
+    TempInputId: ImGuiID;
+    DataTypeZeroValue: ImGuiDataTypeStorage;
+    BeginMenuDepth: Integer;
+    BeginComboDepth: Integer;
+    ColorEditOptions: ImGuiColorEditFlags;
+    ColorEditCurrentID: ImGuiID;
+    ColorEditSavedID: ImGuiID;
+    ColorEditSavedHue: Single;
+    ColorEditSavedSat: Single;
+    ColorEditSavedColor: ImU32;
+    ColorPickerRef: ImVec4;
+    ComboPreviewData: ImGuiComboPreviewData;
+    WindowResizeBorderExpectedRect: ImRect;
+    WindowResizeRelativeMode: Boolean;
+    ScrollbarSeekMode: Smallint;
+    ScrollbarClickDeltaToGrabCenter: Single;
+    SliderGrabClickOffset: Single;
+    SliderCurrentAccum: Single;
+    SliderCurrentAccumDirty: Boolean;
+    DragCurrentAccumDirty: Boolean;
+    DragCurrentAccum: Single;
+    DragSpeedDefaultRatio: Single;
+    DisabledAlphaBackup: Single;
+    DisabledStackSize: Smallint;
+    TooltipOverrideCount: Smallint;
+    TooltipPreviousWindow: PImGuiWindow;
+    ClipboardHandlerData: ImVector_char;
+    MenusIdSubmittedThisFrame: ImVector_ImGuiID;
+    TypingSelectState: ImGuiTypingSelectState;
+    PlatformImeData: ImGuiPlatformImeData;
+    PlatformImeDataPrev: ImGuiPlatformImeData;
+    PlatformImeViewport: ImGuiID;
+    DockContext: ImGuiDockContext;
+    DockNodeWindowMenuHandler: procedure(ctx: PImGuiContext; node: PImGuiDockNode; tab_bar: PImGuiTabBar); cdecl;
+    SettingsLoaded: Boolean;
+    SettingsDirtyTimer: Single;
+    SettingsIniData: ImGuiTextBuffer;
+    SettingsHandlers: ImVector_ImGuiSettingsHandler;
+    SettingsWindows: ImChunkStream_ImGuiWindowSettings;
+    SettingsTables: ImChunkStream_ImGuiTableSettings;
+    Hooks: ImVector_ImGuiContextHook;
+    HookIdNext: ImGuiID;
+    LocalizationTable: array [0..12] of PUTF8Char;
+    LogEnabled: Boolean;
+    LogFlags: ImGuiLogFlags;
+    LogWindow: PImGuiWindow;
+    LogFile: ImFileHandle;
+    LogBuffer: ImGuiTextBuffer;
+    LogNextPrefix: PUTF8Char;
+    LogNextSuffix: PUTF8Char;
+    LogLinePosY: Single;
+    LogLineFirstItem: Boolean;
+    LogDepthRef: Integer;
+    LogDepthToExpand: Integer;
+    LogDepthToExpandDefault: Integer;
+    ErrorCallback: ImGuiErrorCallback;
+    ErrorCallbackUserData: Pointer;
+    ErrorTooltipLockedPos: ImVec2;
+    ErrorFirst: Boolean;
+    ErrorCountCurrentFrame: Integer;
+    StackSizesInNewFrame: ImGuiErrorRecoveryState;
+    StackSizesInBeginForCurrentWindow: PImGuiErrorRecoveryState;
+    DebugDrawIdConflictsCount: Integer;
+    DebugLogFlags: ImGuiDebugLogFlags;
+    DebugLogBuf: ImGuiTextBuffer;
+    DebugLogIndex: ImGuiTextIndex;
+    DebugLogSkippedErrors: Integer;
+    DebugLogAutoDisableFlags: ImGuiDebugLogFlags;
+    DebugLogAutoDisableFrames: ImU8;
+    DebugLocateFrames: ImU8;
+    DebugBreakInLocateId: Boolean;
+    DebugBreakKeyChord: ImGuiKeyChord;
+    DebugBeginReturnValueCullDepth: ImS8;
+    DebugItemPickerActive: Boolean;
+    DebugItemPickerMouseButton: ImU8;
+    DebugItemPickerBreakId: ImGuiID;
+    DebugFlashStyleColorTime: Single;
+    DebugFlashStyleColorBackup: ImVec4;
+    DebugMetricsConfig: ImGuiMetricsConfig;
+    DebugIDStackTool: ImGuiIDStackTool;
+    DebugAllocInfo: ImGuiDebugAllocInfo;
+    DebugHoveredDockNode: PImGuiDockNode;
+    FramerateSecPerFrame: array [0..59] of Single;
+    FramerateSecPerFrameIdx: Integer;
+    FramerateSecPerFrameCount: Integer;
+    FramerateSecPerFrameAccum: Single;
+    WantCaptureMouseNextFrame: Integer;
+    WantCaptureKeyboardNextFrame: Integer;
+    WantTextInputNextFrame: Integer;
+    TempBuffer: ImVector_char;
+    TempKeychordName: array [0..63] of UTF8Char;
+  end;
+
+  ImGuiWindowTempData = record
+    CursorPos: ImVec2;
+    CursorPosPrevLine: ImVec2;
+    CursorStartPos: ImVec2;
+    CursorMaxPos: ImVec2;
+    IdealMaxPos: ImVec2;
+    CurrLineSize: ImVec2;
+    PrevLineSize: ImVec2;
+    CurrLineTextBaseOffset: Single;
+    PrevLineTextBaseOffset: Single;
+    IsSameLine: Boolean;
+    IsSetPos: Boolean;
+    Indent: ImVec1;
+    ColumnsOffset: ImVec1;
+    GroupOffset: ImVec1;
+    CursorStartPosLossyness: ImVec2;
+    NavLayerCurrent: ImGuiNavLayer;
+    NavLayersActiveMask: Smallint;
+    NavLayersActiveMaskNext: Smallint;
+    NavIsScrollPushableX: Boolean;
+    NavHideHighlightOneFrame: Boolean;
+    NavWindowHasScrollY: Boolean;
+    MenuBarAppending: Boolean;
+    MenuBarOffset: ImVec2;
+    MenuColumns: ImGuiMenuColumns;
+    TreeDepth: Integer;
+    TreeHasStackDataDepthMask: ImU32;
+    ChildWindows: ImVector_ImGuiWindowPtr;
+    StateStorage: PImGuiStorage;
+    CurrentColumns: PImGuiOldColumns;
+    CurrentTableIdx: Integer;
+    LayoutType: ImGuiLayoutType;
+    ParentLayoutType: ImGuiLayoutType;
+    ModalDimBgColor: ImU32;
+    ItemWidth: Single;
+    TextWrapPos: Single;
+    ItemWidthStack: ImVector_float;
+    TextWrapPosStack: ImVector_float;
+  end;
+
+  ImVector_ImGuiOldColumns = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiOldColumns;
+  end;
+
+  ImGuiWindow = record
+    Ctx: PImGuiContext;
+    Name: PUTF8Char;
+    ID: ImGuiID;
+    Flags: ImGuiWindowFlags;
+    FlagsPreviousFrame: ImGuiWindowFlags;
+    ChildFlags: ImGuiChildFlags;
+    WindowClass: ImGuiWindowClass;
+    Viewport: PImGuiViewportP;
+    ViewportId: ImGuiID;
+    ViewportPos: ImVec2;
+    ViewportAllowPlatformMonitorExtend: Integer;
+    Pos: ImVec2;
+    Size: ImVec2;
+    SizeFull: ImVec2;
+    ContentSize: ImVec2;
+    ContentSizeIdeal: ImVec2;
+    ContentSizeExplicit: ImVec2;
+    WindowPadding: ImVec2;
+    WindowRounding: Single;
+    WindowBorderSize: Single;
+    TitleBarHeight: Single;
+    MenuBarHeight: Single;
+    DecoOuterSizeX1: Single;
+    DecoOuterSizeY1: Single;
+    DecoOuterSizeX2: Single;
+    DecoOuterSizeY2: Single;
+    DecoInnerSizeX1: Single;
+    DecoInnerSizeY1: Single;
+    NameBufLen: Integer;
+    MoveId: ImGuiID;
+    TabId: ImGuiID;
+    ChildId: ImGuiID;
+    PopupId: ImGuiID;
+    Scroll: ImVec2;
+    ScrollMax: ImVec2;
+    ScrollTarget: ImVec2;
+    ScrollTargetCenterRatio: ImVec2;
+    ScrollTargetEdgeSnapDist: ImVec2;
+    ScrollbarSizes: ImVec2;
+    ScrollbarX: Boolean;
+    ScrollbarY: Boolean;
+    ViewportOwned: Boolean;
+    Active: Boolean;
+    WasActive: Boolean;
+    WriteAccessed: Boolean;
+    Collapsed: Boolean;
+    WantCollapseToggle: Boolean;
+    SkipItems: Boolean;
+    SkipRefresh: Boolean;
+    Appearing: Boolean;
+    Hidden: Boolean;
+    IsFallbackWindow: Boolean;
+    IsExplicitChild: Boolean;
+    HasCloseButton: Boolean;
+    ResizeBorderHovered: UTF8Char;
+    ResizeBorderHeld: UTF8Char;
+    BeginCount: Smallint;
+    BeginCountPreviousFrame: Smallint;
+    BeginOrderWithinParent: Smallint;
+    BeginOrderWithinContext: Smallint;
+    FocusOrder: Smallint;
+    AutoFitFramesX: ImS8;
+    AutoFitFramesY: ImS8;
+    AutoFitOnlyGrows: Boolean;
+    AutoPosLastDirection: ImGuiDir;
+    HiddenFramesCanSkipItems: ImS8;
+    HiddenFramesCannotSkipItems: ImS8;
+    HiddenFramesForRenderOnly: ImS8;
+    DisableInputsFrames: ImS8;
+  private
+    Data0: Cardinal;
+    function GetData0Value(const AIndex: Integer): Cardinal;
+    procedure SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property SetWindowPosAllowFlags: Cardinal index $0008 read GetData0Value write SetData0Value; // 8 bits at offset 0 in Data0
+    property SetWindowSizeAllowFlags: Cardinal index $0808 read GetData0Value write SetData0Value; // 8 bits at offset 8 in Data0
+    property SetWindowCollapsedAllowFlags: Cardinal index $1008 read GetData0Value write SetData0Value; // 8 bits at offset 16 in Data0
+    property SetWindowDockAllowFlags: Cardinal index $1808 read GetData0Value write SetData0Value; // 8 bits at offset 24 in Data0
+  var
+    SetWindowPosVal: ImVec2;
+    SetWindowPosPivot: ImVec2;
+    IDStack: ImVector_ImGuiID;
+    DC: ImGuiWindowTempData;
+    OuterRectClipped: ImRect;
+    InnerRect: ImRect;
+    InnerClipRect: ImRect;
+    WorkRect: ImRect;
+    ParentWorkRect: ImRect;
+    ClipRect: ImRect;
+    ContentRegionRect: ImRect;
+    HitTestHoleSize: ImVec2ih;
+    HitTestHoleOffset: ImVec2ih;
+    LastFrameActive: Integer;
+    LastFrameJustFocused: Integer;
+    LastTimeActive: Single;
+    ItemWidthDefault: Single;
+    StateStorage: ImGuiStorage;
+    ColumnsStorage: ImVector_ImGuiOldColumns;
+    FontWindowScale: Single;
+    FontDpiScale: Single;
+    SettingsOffset: Integer;
+    DrawList: PImDrawList;
+    DrawListInst: ImDrawList;
+    ParentWindow: PImGuiWindow;
+    ParentWindowInBeginStack: PImGuiWindow;
+    RootWindow: PImGuiWindow;
+    RootWindowPopupTree: PImGuiWindow;
+    RootWindowDockTree: PImGuiWindow;
+    RootWindowForTitleBarHighlight: PImGuiWindow;
+    RootWindowForNav: PImGuiWindow;
+    ParentWindowForFocusRoute: PImGuiWindow;
+    NavLastChildNavWindow: PImGuiWindow;
+    NavLastIds: array [0..1] of ImGuiID;
+    NavRectRel: array [0..1] of ImRect;
+    NavPreferredScoringPosRel: array [0..1] of ImVec2;
+    NavRootFocusScopeId: ImGuiID;
+    MemoryDrawListIdxCapacity: Integer;
+    MemoryDrawListVtxCapacity: Integer;
+    MemoryCompacted: Boolean;
+  private
+    Data1: Cardinal;
+    function GetData1Value(const AIndex: Integer): Cardinal;
+    procedure SetData1Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property DockIsActive: Cardinal index $1 read GetData1Value write SetData1Value; // 1 bits at offset 0 in Data1
+    property DockNodeIsVisible: Cardinal index $101 read GetData1Value write SetData1Value; // 1 bits at offset 1 in Data1
+    property DockTabIsVisible: Cardinal index $201 read GetData1Value write SetData1Value; // 1 bits at offset 2 in Data1
+    property DockTabWantClose: Cardinal index $301 read GetData1Value write SetData1Value; // 1 bits at offset 3 in Data1
+  var
+    DockOrder: Smallint;
+    DockStyle: ImGuiWindowDockStyle;
+    DockNode: PImGuiDockNode;
+    DockNodeAsHost: PImGuiDockNode;
+    DockId: ImGuiID;
+    DockTabItemStatusFlags: ImGuiItemStatusFlags;
+    DockTabItemRect: ImRect;
+  end;
+
+  ImGuiTabItem = record
+    ID: ImGuiID;
+    Flags: ImGuiTabItemFlags;
+    Window: PImGuiWindow;
+    LastFrameVisible: Integer;
+    LastFrameSelected: Integer;
+    Offset: Single;
+    Width: Single;
+    ContentWidth: Single;
+    RequestedWidth: Single;
+    NameOffset: ImS32;
+    BeginOrder: ImS16;
+    IndexDuringLayout: ImS16;
+    WantClose: Boolean;
+  end;
+
+  ImVector_ImGuiTabItem = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiTabItem;
+  end;
+
+  ImGuiTabBar = record
+    Window: PImGuiWindow;
+    Tabs: ImVector_ImGuiTabItem;
+    Flags: ImGuiTabBarFlags;
+    ID: ImGuiID;
+    SelectedTabId: ImGuiID;
+    NextSelectedTabId: ImGuiID;
+    VisibleTabId: ImGuiID;
+    CurrFrameVisible: Integer;
+    PrevFrameVisible: Integer;
+    BarRect: ImRect;
+    CurrTabsContentsHeight: Single;
+    PrevTabsContentsHeight: Single;
+    WidthAllTabs: Single;
+    WidthAllTabsIdeal: Single;
+    ScrollingAnim: Single;
+    ScrollingTarget: Single;
+    ScrollingTargetDistToVisibility: Single;
+    ScrollingSpeed: Single;
+    ScrollingRectMinX: Single;
+    ScrollingRectMaxX: Single;
+    SeparatorMinX: Single;
+    SeparatorMaxX: Single;
+    ReorderRequestTabId: ImGuiID;
+    ReorderRequestOffset: ImS16;
+    BeginCount: ImS8;
+    WantLayout: Boolean;
+    VisibleTabWasSubmitted: Boolean;
+    TabsAddedNew: Boolean;
+    TabsActiveCount: ImS16;
+    LastTabItemIdx: ImS16;
+    ItemSpacingY: Single;
+    FramePadding: ImVec2;
+    BackupCursorPos: ImVec2;
+    TabsNames: ImGuiTextBuffer;
+  end;
+
+  ImGuiTableColumnIdx = ImS16;
+  PImGuiTableColumnIdx = ^ImGuiTableColumnIdx;
+  ImGuiTableDrawChannelIdx = ImU16;
+
+  ImGuiTableColumn = record
+    Flags: ImGuiTableColumnFlags;
+    WidthGiven: Single;
+    MinX: Single;
+    MaxX: Single;
+    WidthRequest: Single;
+    WidthAuto: Single;
+    WidthMax: Single;
+    StretchWeight: Single;
+    InitStretchWeightOrWidth: Single;
+    ClipRect: ImRect;
+    UserID: ImGuiID;
+    WorkMinX: Single;
+    WorkMaxX: Single;
+    ItemWidth: Single;
+    ContentMaxXFrozen: Single;
+    ContentMaxXUnfrozen: Single;
+    ContentMaxXHeadersUsed: Single;
+    ContentMaxXHeadersIdeal: Single;
+    NameOffset: ImS16;
+    DisplayOrder: ImGuiTableColumnIdx;
+    IndexWithinEnabledSet: ImGuiTableColumnIdx;
+    PrevEnabledColumn: ImGuiTableColumnIdx;
+    NextEnabledColumn: ImGuiTableColumnIdx;
+    SortOrder: ImGuiTableColumnIdx;
+    DrawChannelCurrent: ImGuiTableDrawChannelIdx;
+    DrawChannelFrozen: ImGuiTableDrawChannelIdx;
+    DrawChannelUnfrozen: ImGuiTableDrawChannelIdx;
+    IsEnabled: Boolean;
+    IsUserEnabled: Boolean;
+    IsUserEnabledNextFrame: Boolean;
+    IsVisibleX: Boolean;
+    IsVisibleY: Boolean;
+    IsRequestOutput: Boolean;
+    IsSkipItems: Boolean;
+    IsPreserveWidthAuto: Boolean;
+    NavLayerCurrent: ImS8;
+    AutoFitQueue: ImU8;
+    CannotSkipItemsQueue: ImU8;
+  private
+    Data0: Cardinal;
+    function GetData0Value(const AIndex: Integer): Cardinal;
+    procedure SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property SortDirection: Cardinal index $2 read GetData0Value write SetData0Value; // 2 bits at offset 0 in Data0
+    property SortDirectionsAvailCount: Cardinal index $202 read GetData0Value write SetData0Value; // 2 bits at offset 2 in Data0
+    property SortDirectionsAvailMask: Cardinal index $404 read GetData0Value write SetData0Value; // 4 bits at offset 4 in Data0
+  var
+    SortDirectionsAvailList: ImU8;
+  end;
+
+  ImGuiTableCellData = record
+    BgColor: ImU32;
+    Column: ImGuiTableColumnIdx;
+  end;
+
+  ImGuiTableHeaderData = record
+    Index: ImGuiTableColumnIdx;
+    TextColor: ImU32;
+    BgColor0: ImU32;
+    BgColor1: ImU32;
+  end;
+
+  ImGuiTableInstanceData = record
+    TableInstanceID: ImGuiID;
+    LastOuterHeight: Single;
+    LastTopHeadersRowHeight: Single;
+    LastFrozenHeight: Single;
+    HoveredRowLast: Integer;
+    HoveredRowNext: Integer;
+  end;
+
+  ImSpan_ImGuiTableColumn = record
+    Data: PImGuiTableColumn;
+    DataEnd: PImGuiTableColumn;
+  end;
+
+  ImSpan_ImGuiTableColumnIdx = record
+    Data: PImGuiTableColumnIdx;
+    DataEnd: PImGuiTableColumnIdx;
+  end;
+
+  ImSpan_ImGuiTableCellData = record
+    Data: PImGuiTableCellData;
+    DataEnd: PImGuiTableCellData;
+  end;
+
+  ImVector_ImGuiTableInstanceData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiTableInstanceData;
+  end;
+
+  ImVector_ImGuiTableColumnSortSpecs = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiTableColumnSortSpecs;
+  end;
+
+  ImGuiTable = record
+    ID: ImGuiID;
+    Flags: ImGuiTableFlags;
+    RawData: Pointer;
+    TempData: PImGuiTableTempData;
+    Columns: ImSpan_ImGuiTableColumn;
+    DisplayOrderToIndex: ImSpan_ImGuiTableColumnIdx;
+    RowCellData: ImSpan_ImGuiTableCellData;
+    EnabledMaskByDisplayOrder: ImBitArrayPtr;
+    EnabledMaskByIndex: ImBitArrayPtr;
+    VisibleMaskByIndex: ImBitArrayPtr;
+    SettingsLoadedFlags: ImGuiTableFlags;
+    SettingsOffset: Integer;
+    LastFrameActive: Integer;
+    ColumnsCount: Integer;
+    CurrentRow: Integer;
+    CurrentColumn: Integer;
+    InstanceCurrent: ImS16;
+    InstanceInteracted: ImS16;
+    RowPosY1: Single;
+    RowPosY2: Single;
+    RowMinHeight: Single;
+    RowCellPaddingY: Single;
+    RowTextBaseline: Single;
+    RowIndentOffsetX: Single;
+  private
+    Data0: Cardinal;
+    function GetData0Value(const AIndex: Integer): Cardinal;
+    procedure SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property RowFlags: Cardinal index $0010 read GetData0Value write SetData0Value; // 16 bits at offset 0 in Data0
+    property LastRowFlags: Cardinal index $1010 read GetData0Value write SetData0Value; // 16 bits at offset 16 in Data0
+  var
+    RowBgColorCounter: Integer;
+    RowBgColor: array [0..1] of ImU32;
+    BorderColorStrong: ImU32;
+    BorderColorLight: ImU32;
+    BorderX1: Single;
+    BorderX2: Single;
+    HostIndentX: Single;
+    MinColumnWidth: Single;
+    OuterPaddingX: Single;
+    CellPaddingX: Single;
+    CellSpacingX1: Single;
+    CellSpacingX2: Single;
+    InnerWidth: Single;
+    ColumnsGivenWidth: Single;
+    ColumnsAutoFitWidth: Single;
+    ColumnsStretchSumWeights: Single;
+    ResizedColumnNextWidth: Single;
+    ResizeLockMinContentsX2: Single;
+    RefScale: Single;
+    AngledHeadersHeight: Single;
+    AngledHeadersSlope: Single;
+    OuterRect: ImRect;
+    InnerRect: ImRect;
+    WorkRect: ImRect;
+    InnerClipRect: ImRect;
+    BgClipRect: ImRect;
+    Bg0ClipRectForDrawCmd: ImRect;
+    Bg2ClipRectForDrawCmd: ImRect;
+    HostClipRect: ImRect;
+    HostBackupInnerClipRect: ImRect;
+    OuterWindow: PImGuiWindow;
+    InnerWindow: PImGuiWindow;
+    ColumnsNames: ImGuiTextBuffer;
+    DrawSplitter: PImDrawListSplitter;
+    InstanceDataFirst: ImGuiTableInstanceData;
+    InstanceDataExtra: ImVector_ImGuiTableInstanceData;
+    SortSpecsSingle: ImGuiTableColumnSortSpecs;
+    SortSpecsMulti: ImVector_ImGuiTableColumnSortSpecs;
+    SortSpecs: ImGuiTableSortSpecs;
+    SortSpecsCount: ImGuiTableColumnIdx;
+    ColumnsEnabledCount: ImGuiTableColumnIdx;
+    ColumnsEnabledFixedCount: ImGuiTableColumnIdx;
+    DeclColumnsCount: ImGuiTableColumnIdx;
+    AngledHeadersCount: ImGuiTableColumnIdx;
+    HoveredColumnBody: ImGuiTableColumnIdx;
+    HoveredColumnBorder: ImGuiTableColumnIdx;
+    HighlightColumnHeader: ImGuiTableColumnIdx;
+    AutoFitSingleColumn: ImGuiTableColumnIdx;
+    ResizedColumn: ImGuiTableColumnIdx;
+    LastResizedColumn: ImGuiTableColumnIdx;
+    HeldHeaderColumn: ImGuiTableColumnIdx;
+    ReorderColumn: ImGuiTableColumnIdx;
+    ReorderColumnDir: ImGuiTableColumnIdx;
+    LeftMostEnabledColumn: ImGuiTableColumnIdx;
+    RightMostEnabledColumn: ImGuiTableColumnIdx;
+    LeftMostStretchedColumn: ImGuiTableColumnIdx;
+    RightMostStretchedColumn: ImGuiTableColumnIdx;
+    ContextPopupColumn: ImGuiTableColumnIdx;
+    FreezeRowsRequest: ImGuiTableColumnIdx;
+    FreezeRowsCount: ImGuiTableColumnIdx;
+    FreezeColumnsRequest: ImGuiTableColumnIdx;
+    FreezeColumnsCount: ImGuiTableColumnIdx;
+    RowCellDataCurrent: ImGuiTableColumnIdx;
+    DummyDrawChannel: ImGuiTableDrawChannelIdx;
+    Bg2DrawChannelCurrent: ImGuiTableDrawChannelIdx;
+    Bg2DrawChannelUnfrozen: ImGuiTableDrawChannelIdx;
+    IsLayoutLocked: Boolean;
+    IsInsideRow: Boolean;
+    IsInitializing: Boolean;
+    IsSortSpecsDirty: Boolean;
+    IsUsingHeaders: Boolean;
+    IsContextPopupOpen: Boolean;
+    DisableDefaultContextMenu: Boolean;
+    IsSettingsRequestLoad: Boolean;
+    IsSettingsDirty: Boolean;
+    IsDefaultDisplayOrder: Boolean;
+    IsResetAllRequest: Boolean;
+    IsResetDisplayOrderRequest: Boolean;
+    IsUnfrozenRows: Boolean;
+    IsDefaultSizingPolicy: Boolean;
+    IsActiveIdAliveBeforeTable: Boolean;
+    IsActiveIdInTable: Boolean;
+    HasScrollbarYCurr: Boolean;
+    HasScrollbarYPrev: Boolean;
+    MemoryCompacted: Boolean;
+    HostSkipItems: Boolean;
+  end;
+
+  ImVector_ImGuiTableHeaderData = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImGuiTableHeaderData;
+  end;
+
+  ImGuiTableTempData = record
+    TableIndex: Integer;
+    LastTimeActive: Single;
+    AngledHeadersExtraWidth: Single;
+    AngledHeadersRequests: ImVector_ImGuiTableHeaderData;
+    UserOuterSize: ImVec2;
+    DrawSplitter: ImDrawListSplitter;
+    HostBackupWorkRect: ImRect;
+    HostBackupParentWorkRect: ImRect;
+    HostBackupPrevLineSize: ImVec2;
+    HostBackupCurrLineSize: ImVec2;
+    HostBackupCursorMaxPos: ImVec2;
+    HostBackupColumnsOffset: ImVec1;
+    HostBackupItemWidth: Single;
+    HostBackupItemWidthStackSize: Integer;
+  end;
+
+  ImGuiTableColumnSettings = record
+    WidthOrWeight: Single;
+    UserID: ImGuiID;
+    Index: ImGuiTableColumnIdx;
+    DisplayOrder: ImGuiTableColumnIdx;
+    SortOrder: ImGuiTableColumnIdx;
+  private
+    Data0: Cardinal;
+    function GetData0Value(const AIndex: Integer): Cardinal;
+    procedure SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+  public
+    property SortDirection: Cardinal index $2 read GetData0Value write SetData0Value; // 2 bits at offset 0 in Data0
+    property IsEnabled: Cardinal index $201 read GetData0Value write SetData0Value; // 1 bits at offset 2 in Data0
+    property IsStretch: Cardinal index $301 read GetData0Value write SetData0Value; // 1 bits at offset 3 in Data0
+  end;
+
+  ImGuiTableSettings = record
+    ID: ImGuiID;
+    SaveFlags: ImGuiTableFlags;
+    RefScale: Single;
+    ColumnsCount: ImGuiTableColumnIdx;
+    ColumnsCountMax: ImGuiTableColumnIdx;
+    WantApply: Boolean;
+  end;
+
+  ImFontBuilderIO = record
+    FontBuilder_Build: function(atlas: PImFontAtlas): Boolean; cdecl;
+  end;
 
 const
   PLM_DEMUX_PACKET_PRIVATE: Integer = $BD;
@@ -10250,6 +14428,39 @@ type
 type
   sqlite3_wal_hook_ = function(p1: Pointer; p2: Psqlite3; const p3: PUTF8Char; p4: Integer): Integer; cdecl;
 
+type
+  igCombo_FnStrPtr_getter = function(user_data: Pointer; idx: Integer): PUTF8Char; cdecl;
+
+type
+  igListBox_FnStrPtr_getter = function(user_data: Pointer; idx: Integer): PUTF8Char; cdecl;
+
+type
+  igPlotLines_FnFloatPtr_values_getter = function(data: Pointer; idx: Integer): Single; cdecl;
+
+type
+  igPlotHistogram_FnFloatPtr_values_getter = function(data: Pointer; idx: Integer): Single; cdecl;
+
+type
+  igImQsort_compare_func = function(const p1: Pointer; const p2: Pointer): Integer; cdecl;
+
+type
+  igTypingSelectFindMatch_get_item_name_func = function(p1: Pointer; p2: Integer): PUTF8Char; cdecl;
+
+type
+  igTypingSelectFindNextSingleCharMatch_get_item_name_func = function(p1: Pointer; p2: Integer): PUTF8Char; cdecl;
+
+type
+  igTypingSelectFindBestLeadingMatch_get_item_name_func = function(p1: Pointer; p2: Integer): PUTF8Char; cdecl;
+
+type
+  igPlotEx_values_getter = function(data: Pointer; idx: Integer): Single; cdecl;
+
+type
+  ImGuiPlatformIO_Set_Platform_GetWindowPos_user_callback = procedure(vp: PImGuiViewport; out_pos: PImVec2); cdecl;
+
+type
+  ImGuiPlatformIO_Set_Platform_GetWindowSize_user_callback = procedure(vp: PImGuiViewport; out_size: PImVec2); cdecl;
+
 var
   lua_newstate: function(f: lua_Alloc; ud: Pointer): Plua_State; cdecl;
   lua_close: procedure(L: Plua_State); cdecl;
@@ -10398,7 +14609,7 @@ var
   luaJIT_profile_start: procedure(L: Plua_State; const mode: PUTF8Char; cb: luaJIT_profile_callback; data: Pointer); cdecl;
   luaJIT_profile_stop: procedure(L: Plua_State); cdecl;
   luaJIT_profile_dumpstack: function(L: Plua_State; const fmt: PUTF8Char; depth: Integer; len: PNativeUInt): PUTF8Char; cdecl;
-  luaJIT_version_2_1_1734355927: procedure(); cdecl;
+  luaJIT_version_2_1_1736781742: procedure(); cdecl;
   spFloatArray_create: function(initialCapacity: Integer): PspFloatArray; cdecl;
   spFloatArray_dispose: procedure(self: PspFloatArray); cdecl;
   spFloatArray_clear: procedure(self: PspFloatArray); cdecl;
@@ -13007,12 +17218,1482 @@ var
   sqlite3_system_errno: function(p1: Psqlite3): Integer; cdecl;
   sqlite3_serialize: function(db: Psqlite3; const zSchema: PUTF8Char; piSize: Psqlite3_int64; mFlags: Cardinal): PByte; cdecl;
   sqlite3_deserialize: function(db: Psqlite3; const zSchema: PUTF8Char; pData: PByte; szDb: sqlite3_int64; szBuf: sqlite3_int64; mFlags: Cardinal): Integer; cdecl;
+  ImVec2_ImVec2_Nil: function(): PImVec2; cdecl;
+  ImVec2_destroy: procedure(self: PImVec2); cdecl;
+  ImVec2_ImVec2_Float: function(_x: Single; _y: Single): PImVec2; cdecl;
+  ImVec4_ImVec4_Nil: function(): PImVec4; cdecl;
+  ImVec4_destroy: procedure(self: PImVec4); cdecl;
+  ImVec4_ImVec4_Float: function(_x: Single; _y: Single; _z: Single; _w: Single): PImVec4; cdecl;
+  igCreateContext: function(shared_font_atlas: PImFontAtlas): PImGuiContext; cdecl;
+  igDestroyContext: procedure(ctx: PImGuiContext); cdecl;
+  igGetCurrentContext: function(): PImGuiContext; cdecl;
+  igSetCurrentContext: procedure(ctx: PImGuiContext); cdecl;
+  igGetIO: function(): PImGuiIO; cdecl;
+  igGetPlatformIO: function(): PImGuiPlatformIO; cdecl;
+  igGetStyle: function(): PImGuiStyle; cdecl;
+  igNewFrame: procedure(); cdecl;
+  igEndFrame: procedure(); cdecl;
+  igRender: procedure(); cdecl;
+  igGetDrawData: function(): PImDrawData; cdecl;
+  igShowDemoWindow: procedure(p_open: PBoolean); cdecl;
+  igShowMetricsWindow: procedure(p_open: PBoolean); cdecl;
+  igShowDebugLogWindow: procedure(p_open: PBoolean); cdecl;
+  igShowIDStackToolWindow: procedure(p_open: PBoolean); cdecl;
+  igShowAboutWindow: procedure(p_open: PBoolean); cdecl;
+  igShowStyleEditor: procedure(ref: PImGuiStyle); cdecl;
+  igShowStyleSelector: function(const &label: PUTF8Char): Boolean; cdecl;
+  igShowFontSelector: procedure(const &label: PUTF8Char); cdecl;
+  igShowUserGuide: procedure(); cdecl;
+  igGetVersion: function(): PUTF8Char; cdecl;
+  igStyleColorsDark: procedure(dst: PImGuiStyle); cdecl;
+  igStyleColorsLight: procedure(dst: PImGuiStyle); cdecl;
+  igStyleColorsClassic: procedure(dst: PImGuiStyle); cdecl;
+  igBegin: function(const name: PUTF8Char; p_open: PBoolean; flags: ImGuiWindowFlags): Boolean; cdecl;
+  igEnd: procedure(); cdecl;
+  igBeginChild_Str: function(const str_id: PUTF8Char; size: ImVec2; child_flags: ImGuiChildFlags; window_flags: ImGuiWindowFlags): Boolean; cdecl;
+  igBeginChild_ID: function(id: ImGuiID; size: ImVec2; child_flags: ImGuiChildFlags; window_flags: ImGuiWindowFlags): Boolean; cdecl;
+  igEndChild: procedure(); cdecl;
+  igIsWindowAppearing: function(): Boolean; cdecl;
+  igIsWindowCollapsed: function(): Boolean; cdecl;
+  igIsWindowFocused: function(flags: ImGuiFocusedFlags): Boolean; cdecl;
+  igIsWindowHovered: function(flags: ImGuiHoveredFlags): Boolean; cdecl;
+  igGetWindowDrawList: function(): PImDrawList; cdecl;
+  igGetWindowDpiScale: function(): Single; cdecl;
+  igGetWindowPos: procedure(pOut: PImVec2); cdecl;
+  igGetWindowSize: procedure(pOut: PImVec2); cdecl;
+  igGetWindowWidth: function(): Single; cdecl;
+  igGetWindowHeight: function(): Single; cdecl;
+  igGetWindowViewport: function(): PImGuiViewport; cdecl;
+  igSetNextWindowPos: procedure(pos: ImVec2; cond: ImGuiCond; pivot: ImVec2); cdecl;
+  igSetNextWindowSize: procedure(size: ImVec2; cond: ImGuiCond); cdecl;
+  igSetNextWindowSizeConstraints: procedure(size_min: ImVec2; size_max: ImVec2; custom_callback: ImGuiSizeCallback; custom_callback_data: Pointer); cdecl;
+  igSetNextWindowContentSize: procedure(size: ImVec2); cdecl;
+  igSetNextWindowCollapsed: procedure(collapsed: Boolean; cond: ImGuiCond); cdecl;
+  igSetNextWindowFocus: procedure(); cdecl;
+  igSetNextWindowScroll: procedure(scroll: ImVec2); cdecl;
+  igSetNextWindowBgAlpha: procedure(alpha: Single); cdecl;
+  igSetNextWindowViewport: procedure(viewport_id: ImGuiID); cdecl;
+  igSetWindowPos_Vec2: procedure(pos: ImVec2; cond: ImGuiCond); cdecl;
+  igSetWindowSize_Vec2: procedure(size: ImVec2; cond: ImGuiCond); cdecl;
+  igSetWindowCollapsed_Bool: procedure(collapsed: Boolean; cond: ImGuiCond); cdecl;
+  igSetWindowFocus_Nil: procedure(); cdecl;
+  igSetWindowFontScale: procedure(scale: Single); cdecl;
+  igSetWindowPos_Str: procedure(const name: PUTF8Char; pos: ImVec2; cond: ImGuiCond); cdecl;
+  igSetWindowSize_Str: procedure(const name: PUTF8Char; size: ImVec2; cond: ImGuiCond); cdecl;
+  igSetWindowCollapsed_Str: procedure(const name: PUTF8Char; collapsed: Boolean; cond: ImGuiCond); cdecl;
+  igSetWindowFocus_Str: procedure(const name: PUTF8Char); cdecl;
+  igGetScrollX: function(): Single; cdecl;
+  igGetScrollY: function(): Single; cdecl;
+  igSetScrollX_Float: procedure(scroll_x: Single); cdecl;
+  igSetScrollY_Float: procedure(scroll_y: Single); cdecl;
+  igGetScrollMaxX: function(): Single; cdecl;
+  igGetScrollMaxY: function(): Single; cdecl;
+  igSetScrollHereX: procedure(center_x_ratio: Single); cdecl;
+  igSetScrollHereY: procedure(center_y_ratio: Single); cdecl;
+  igSetScrollFromPosX_Float: procedure(local_x: Single; center_x_ratio: Single); cdecl;
+  igSetScrollFromPosY_Float: procedure(local_y: Single; center_y_ratio: Single); cdecl;
+  igPushFont: procedure(font: PImFont); cdecl;
+  igPopFont: procedure(); cdecl;
+  igPushStyleColor_U32: procedure(idx: ImGuiCol; col: ImU32); cdecl;
+  igPushStyleColor_Vec4: procedure(idx: ImGuiCol; col: ImVec4); cdecl;
+  igPopStyleColor: procedure(count: Integer); cdecl;
+  igPushStyleVar_Float: procedure(idx: ImGuiStyleVar; val: Single); cdecl;
+  igPushStyleVar_Vec2: procedure(idx: ImGuiStyleVar; val: ImVec2); cdecl;
+  igPushStyleVarX: procedure(idx: ImGuiStyleVar; val_x: Single); cdecl;
+  igPushStyleVarY: procedure(idx: ImGuiStyleVar; val_y: Single); cdecl;
+  igPopStyleVar: procedure(count: Integer); cdecl;
+  igPushItemFlag: procedure(option: ImGuiItemFlags; enabled: Boolean); cdecl;
+  igPopItemFlag: procedure(); cdecl;
+  igPushItemWidth: procedure(item_width: Single); cdecl;
+  igPopItemWidth: procedure(); cdecl;
+  igSetNextItemWidth: procedure(item_width: Single); cdecl;
+  igCalcItemWidth: function(): Single; cdecl;
+  igPushTextWrapPos: procedure(wrap_local_pos_x: Single); cdecl;
+  igPopTextWrapPos: procedure(); cdecl;
+  igGetFont: function(): PImFont; cdecl;
+  igGetFontSize: function(): Single; cdecl;
+  igGetFontTexUvWhitePixel: procedure(pOut: PImVec2); cdecl;
+  igGetColorU32_Col: function(idx: ImGuiCol; alpha_mul: Single): ImU32; cdecl;
+  igGetColorU32_Vec4: function(col: ImVec4): ImU32; cdecl;
+  igGetColorU32_U32: function(col: ImU32; alpha_mul: Single): ImU32; cdecl;
+  igGetStyleColorVec4: function(idx: ImGuiCol): PImVec4; cdecl;
+  igGetCursorScreenPos: procedure(pOut: PImVec2); cdecl;
+  igSetCursorScreenPos: procedure(pos: ImVec2); cdecl;
+  igGetContentRegionAvail: procedure(pOut: PImVec2); cdecl;
+  igGetCursorPos: procedure(pOut: PImVec2); cdecl;
+  igGetCursorPosX: function(): Single; cdecl;
+  igGetCursorPosY: function(): Single; cdecl;
+  igSetCursorPos: procedure(local_pos: ImVec2); cdecl;
+  igSetCursorPosX: procedure(local_x: Single); cdecl;
+  igSetCursorPosY: procedure(local_y: Single); cdecl;
+  igGetCursorStartPos: procedure(pOut: PImVec2); cdecl;
+  igSeparator: procedure(); cdecl;
+  igSameLine: procedure(offset_from_start_x: Single; spacing: Single); cdecl;
+  igNewLine: procedure(); cdecl;
+  igSpacing: procedure(); cdecl;
+  igDummy: procedure(size: ImVec2); cdecl;
+  igIndent: procedure(indent_w: Single); cdecl;
+  igUnindent: procedure(indent_w: Single); cdecl;
+  igBeginGroup: procedure(); cdecl;
+  igEndGroup: procedure(); cdecl;
+  igAlignTextToFramePadding: procedure(); cdecl;
+  igGetTextLineHeight: function(): Single; cdecl;
+  igGetTextLineHeightWithSpacing: function(): Single; cdecl;
+  igGetFrameHeight: function(): Single; cdecl;
+  igGetFrameHeightWithSpacing: function(): Single; cdecl;
+  igPushID_Str: procedure(const str_id: PUTF8Char); cdecl;
+  igPushID_StrStr: procedure(const str_id_begin: PUTF8Char; const str_id_end: PUTF8Char); cdecl;
+  igPushID_Ptr: procedure(const ptr_id: Pointer); cdecl;
+  igPushID_Int: procedure(int_id: Integer); cdecl;
+  igPopID: procedure(); cdecl;
+  igGetID_Str: function(const str_id: PUTF8Char): ImGuiID; cdecl;
+  igGetID_StrStr: function(const str_id_begin: PUTF8Char; const str_id_end: PUTF8Char): ImGuiID; cdecl;
+  igGetID_Ptr: function(const ptr_id: Pointer): ImGuiID; cdecl;
+  igGetID_Int: function(int_id: Integer): ImGuiID; cdecl;
+  igTextUnformatted: procedure(const text: PUTF8Char; const text_end: PUTF8Char); cdecl;
+  igText: procedure(const fmt: PUTF8Char) varargs; cdecl;
+  igTextV: procedure(const fmt: PUTF8Char; args: Pointer); cdecl;
+  igTextColored: procedure(col: ImVec4; const fmt: PUTF8Char) varargs; cdecl;
+  igTextColoredV: procedure(col: ImVec4; const fmt: PUTF8Char; args: Pointer); cdecl;
+  igTextDisabled: procedure(const fmt: PUTF8Char) varargs; cdecl;
+  igTextDisabledV: procedure(const fmt: PUTF8Char; args: Pointer); cdecl;
+  igTextWrapped: procedure(const fmt: PUTF8Char) varargs; cdecl;
+  igTextWrappedV: procedure(const fmt: PUTF8Char; args: Pointer); cdecl;
+  igLabelText: procedure(const &label: PUTF8Char; const fmt: PUTF8Char) varargs; cdecl;
+  igLabelTextV: procedure(const &label: PUTF8Char; const fmt: PUTF8Char; args: Pointer); cdecl;
+  igBulletText: procedure(const fmt: PUTF8Char) varargs; cdecl;
+  igBulletTextV: procedure(const fmt: PUTF8Char; args: Pointer); cdecl;
+  igSeparatorText: procedure(const &label: PUTF8Char); cdecl;
+  igButton: function(const &label: PUTF8Char; size: ImVec2): Boolean; cdecl;
+  igSmallButton: function(const &label: PUTF8Char): Boolean; cdecl;
+  igInvisibleButton: function(const str_id: PUTF8Char; size: ImVec2; flags: ImGuiButtonFlags): Boolean; cdecl;
+  igArrowButton: function(const str_id: PUTF8Char; dir: ImGuiDir): Boolean; cdecl;
+  igCheckbox: function(const &label: PUTF8Char; v: PBoolean): Boolean; cdecl;
+  igCheckboxFlags_IntPtr: function(const &label: PUTF8Char; flags: PInteger; flags_value: Integer): Boolean; cdecl;
+  igCheckboxFlags_UintPtr: function(const &label: PUTF8Char; flags: PCardinal; flags_value: Cardinal): Boolean; cdecl;
+  igRadioButton_Bool: function(const &label: PUTF8Char; active: Boolean): Boolean; cdecl;
+  igRadioButton_IntPtr: function(const &label: PUTF8Char; v: PInteger; v_button: Integer): Boolean; cdecl;
+  igProgressBar: procedure(fraction: Single; size_arg: ImVec2; const overlay: PUTF8Char); cdecl;
+  igBullet: procedure(); cdecl;
+  igTextLink: function(const &label: PUTF8Char): Boolean; cdecl;
+  igTextLinkOpenURL: procedure(const &label: PUTF8Char; const url: PUTF8Char); cdecl;
+  igImage: procedure(user_texture_id: ImTextureID; image_size: ImVec2; uv0: ImVec2; uv1: ImVec2; tint_col: ImVec4; border_col: ImVec4); cdecl;
+  igImageButton: function(const str_id: PUTF8Char; user_texture_id: ImTextureID; image_size: ImVec2; uv0: ImVec2; uv1: ImVec2; bg_col: ImVec4; tint_col: ImVec4): Boolean; cdecl;
+  igBeginCombo: function(const &label: PUTF8Char; const preview_value: PUTF8Char; flags: ImGuiComboFlags): Boolean; cdecl;
+  igEndCombo: procedure(); cdecl;
+  igCombo_Str_arr: function(const &label: PUTF8Char; current_item: PInteger; items: PPUTF8Char; items_count: Integer; popup_max_height_in_items: Integer): Boolean; cdecl;
+  igCombo_Str: function(const &label: PUTF8Char; current_item: PInteger; const items_separated_by_zeros: PUTF8Char; popup_max_height_in_items: Integer): Boolean; cdecl;
+  igCombo_FnStrPtr: function(const &label: PUTF8Char; current_item: PInteger; getter: igCombo_FnStrPtr_getter; user_data: Pointer; items_count: Integer; popup_max_height_in_items: Integer): Boolean; cdecl;
+  igDragFloat: function(const &label: PUTF8Char; v: PSingle; v_speed: Single; v_min: Single; v_max: Single; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragFloat2: function(const &label: PUTF8Char; v: PSingle; v_speed: Single; v_min: Single; v_max: Single; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragFloat3: function(const &label: PUTF8Char; v: PSingle; v_speed: Single; v_min: Single; v_max: Single; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragFloat4: function(const &label: PUTF8Char; v: PSingle; v_speed: Single; v_min: Single; v_max: Single; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragFloatRange2: function(const &label: PUTF8Char; v_current_min: PSingle; v_current_max: PSingle; v_speed: Single; v_min: Single; v_max: Single; const format: PUTF8Char; const format_max: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragInt: function(const &label: PUTF8Char; v: PInteger; v_speed: Single; v_min: Integer; v_max: Integer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragInt2: function(const &label: PUTF8Char; v: PInteger; v_speed: Single; v_min: Integer; v_max: Integer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragInt3: function(const &label: PUTF8Char; v: PInteger; v_speed: Single; v_min: Integer; v_max: Integer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragInt4: function(const &label: PUTF8Char; v: PInteger; v_speed: Single; v_min: Integer; v_max: Integer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragIntRange2: function(const &label: PUTF8Char; v_current_min: PInteger; v_current_max: PInteger; v_speed: Single; v_min: Integer; v_max: Integer; const format: PUTF8Char; const format_max: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragScalar: function(const &label: PUTF8Char; data_type: ImGuiDataType; p_data: Pointer; v_speed: Single; const p_min: Pointer; const p_max: Pointer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igDragScalarN: function(const &label: PUTF8Char; data_type: ImGuiDataType; p_data: Pointer; components: Integer; v_speed: Single; const p_min: Pointer; const p_max: Pointer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderFloat: function(const &label: PUTF8Char; v: PSingle; v_min: Single; v_max: Single; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderFloat2: function(const &label: PUTF8Char; v: PSingle; v_min: Single; v_max: Single; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderFloat3: function(const &label: PUTF8Char; v: PSingle; v_min: Single; v_max: Single; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderFloat4: function(const &label: PUTF8Char; v: PSingle; v_min: Single; v_max: Single; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderAngle: function(const &label: PUTF8Char; v_rad: PSingle; v_degrees_min: Single; v_degrees_max: Single; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderInt: function(const &label: PUTF8Char; v: PInteger; v_min: Integer; v_max: Integer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderInt2: function(const &label: PUTF8Char; v: PInteger; v_min: Integer; v_max: Integer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderInt3: function(const &label: PUTF8Char; v: PInteger; v_min: Integer; v_max: Integer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderInt4: function(const &label: PUTF8Char; v: PInteger; v_min: Integer; v_max: Integer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderScalar: function(const &label: PUTF8Char; data_type: ImGuiDataType; p_data: Pointer; const p_min: Pointer; const p_max: Pointer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderScalarN: function(const &label: PUTF8Char; data_type: ImGuiDataType; p_data: Pointer; components: Integer; const p_min: Pointer; const p_max: Pointer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igVSliderFloat: function(const &label: PUTF8Char; size: ImVec2; v: PSingle; v_min: Single; v_max: Single; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igVSliderInt: function(const &label: PUTF8Char; size: ImVec2; v: PInteger; v_min: Integer; v_max: Integer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igVSliderScalar: function(const &label: PUTF8Char; size: ImVec2; data_type: ImGuiDataType; p_data: Pointer; const p_min: Pointer; const p_max: Pointer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igInputText: function(const &label: PUTF8Char; buf: PUTF8Char; buf_size: NativeUInt; flags: ImGuiInputTextFlags; callback: ImGuiInputTextCallback; user_data: Pointer): Boolean; cdecl;
+  igInputTextMultiline: function(const &label: PUTF8Char; buf: PUTF8Char; buf_size: NativeUInt; size: ImVec2; flags: ImGuiInputTextFlags; callback: ImGuiInputTextCallback; user_data: Pointer): Boolean; cdecl;
+  igInputTextWithHint: function(const &label: PUTF8Char; const hint: PUTF8Char; buf: PUTF8Char; buf_size: NativeUInt; flags: ImGuiInputTextFlags; callback: ImGuiInputTextCallback; user_data: Pointer): Boolean; cdecl;
+  igInputFloat: function(const &label: PUTF8Char; v: PSingle; step: Single; step_fast: Single; const format: PUTF8Char; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igInputFloat2: function(const &label: PUTF8Char; v: PSingle; const format: PUTF8Char; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igInputFloat3: function(const &label: PUTF8Char; v: PSingle; const format: PUTF8Char; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igInputFloat4: function(const &label: PUTF8Char; v: PSingle; const format: PUTF8Char; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igInputInt: function(const &label: PUTF8Char; v: PInteger; step: Integer; step_fast: Integer; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igInputInt2: function(const &label: PUTF8Char; v: PInteger; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igInputInt3: function(const &label: PUTF8Char; v: PInteger; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igInputInt4: function(const &label: PUTF8Char; v: PInteger; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igInputDouble: function(const &label: PUTF8Char; v: PDouble; step: Double; step_fast: Double; const format: PUTF8Char; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igInputScalar: function(const &label: PUTF8Char; data_type: ImGuiDataType; p_data: Pointer; const p_step: Pointer; const p_step_fast: Pointer; const format: PUTF8Char; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igInputScalarN: function(const &label: PUTF8Char; data_type: ImGuiDataType; p_data: Pointer; components: Integer; const p_step: Pointer; const p_step_fast: Pointer; const format: PUTF8Char; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igColorEdit3: function(const &label: PUTF8Char; col: PSingle; flags: ImGuiColorEditFlags): Boolean; cdecl;
+  igColorEdit4: function(const &label: PUTF8Char; col: PSingle; flags: ImGuiColorEditFlags): Boolean; cdecl;
+  igColorPicker3: function(const &label: PUTF8Char; col: PSingle; flags: ImGuiColorEditFlags): Boolean; cdecl;
+  igColorPicker4: function(const &label: PUTF8Char; col: PSingle; flags: ImGuiColorEditFlags; const ref_col: PSingle): Boolean; cdecl;
+  igColorButton: function(const desc_id: PUTF8Char; col: ImVec4; flags: ImGuiColorEditFlags; size: ImVec2): Boolean; cdecl;
+  igSetColorEditOptions: procedure(flags: ImGuiColorEditFlags); cdecl;
+  igTreeNode_Str: function(const &label: PUTF8Char): Boolean; cdecl;
+  igTreeNode_StrStr: function(const str_id: PUTF8Char; const fmt: PUTF8Char): Boolean varargs; cdecl;
+  igTreeNode_Ptr: function(const ptr_id: Pointer; const fmt: PUTF8Char): Boolean varargs; cdecl;
+  igTreeNodeV_Str: function(const str_id: PUTF8Char; const fmt: PUTF8Char; args: Pointer): Boolean; cdecl;
+  igTreeNodeV_Ptr: function(const ptr_id: Pointer; const fmt: PUTF8Char; args: Pointer): Boolean; cdecl;
+  igTreeNodeEx_Str: function(const &label: PUTF8Char; flags: ImGuiTreeNodeFlags): Boolean; cdecl;
+  igTreeNodeEx_StrStr: function(const str_id: PUTF8Char; flags: ImGuiTreeNodeFlags; const fmt: PUTF8Char): Boolean varargs; cdecl;
+  igTreeNodeEx_Ptr: function(const ptr_id: Pointer; flags: ImGuiTreeNodeFlags; const fmt: PUTF8Char): Boolean varargs; cdecl;
+  igTreeNodeExV_Str: function(const str_id: PUTF8Char; flags: ImGuiTreeNodeFlags; const fmt: PUTF8Char; args: Pointer): Boolean; cdecl;
+  igTreeNodeExV_Ptr: function(const ptr_id: Pointer; flags: ImGuiTreeNodeFlags; const fmt: PUTF8Char; args: Pointer): Boolean; cdecl;
+  igTreePush_Str: procedure(const str_id: PUTF8Char); cdecl;
+  igTreePush_Ptr: procedure(const ptr_id: Pointer); cdecl;
+  igTreePop: procedure(); cdecl;
+  igGetTreeNodeToLabelSpacing: function(): Single; cdecl;
+  igCollapsingHeader_TreeNodeFlags: function(const &label: PUTF8Char; flags: ImGuiTreeNodeFlags): Boolean; cdecl;
+  igCollapsingHeader_BoolPtr: function(const &label: PUTF8Char; p_visible: PBoolean; flags: ImGuiTreeNodeFlags): Boolean; cdecl;
+  igSetNextItemOpen: procedure(is_open: Boolean; cond: ImGuiCond); cdecl;
+  igSetNextItemStorageID: procedure(storage_id: ImGuiID); cdecl;
+  igSelectable_Bool: function(const &label: PUTF8Char; selected: Boolean; flags: ImGuiSelectableFlags; size: ImVec2): Boolean; cdecl;
+  igSelectable_BoolPtr: function(const &label: PUTF8Char; p_selected: PBoolean; flags: ImGuiSelectableFlags; size: ImVec2): Boolean; cdecl;
+  igBeginMultiSelect: function(flags: ImGuiMultiSelectFlags; selection_size: Integer; items_count: Integer): PImGuiMultiSelectIO; cdecl;
+  igEndMultiSelect: function(): PImGuiMultiSelectIO; cdecl;
+  igSetNextItemSelectionUserData: procedure(selection_user_data: ImGuiSelectionUserData); cdecl;
+  igIsItemToggledSelection: function(): Boolean; cdecl;
+  igBeginListBox: function(const &label: PUTF8Char; size: ImVec2): Boolean; cdecl;
+  igEndListBox: procedure(); cdecl;
+  igListBox_Str_arr: function(const &label: PUTF8Char; current_item: PInteger; items: PPUTF8Char; items_count: Integer; height_in_items: Integer): Boolean; cdecl;
+  igListBox_FnStrPtr: function(const &label: PUTF8Char; current_item: PInteger; getter: igListBox_FnStrPtr_getter; user_data: Pointer; items_count: Integer; height_in_items: Integer): Boolean; cdecl;
+  igPlotLines_FloatPtr: procedure(const &label: PUTF8Char; const values: PSingle; values_count: Integer; values_offset: Integer; const overlay_text: PUTF8Char; scale_min: Single; scale_max: Single; graph_size: ImVec2; stride: Integer); cdecl;
+  igPlotLines_FnFloatPtr: procedure(const &label: PUTF8Char; values_getter: igPlotLines_FnFloatPtr_values_getter; data: Pointer; values_count: Integer; values_offset: Integer; const overlay_text: PUTF8Char; scale_min: Single; scale_max: Single; graph_size: ImVec2); cdecl;
+  igPlotHistogram_FloatPtr: procedure(const &label: PUTF8Char; const values: PSingle; values_count: Integer; values_offset: Integer; const overlay_text: PUTF8Char; scale_min: Single; scale_max: Single; graph_size: ImVec2; stride: Integer); cdecl;
+  igPlotHistogram_FnFloatPtr: procedure(const &label: PUTF8Char; values_getter: igPlotHistogram_FnFloatPtr_values_getter; data: Pointer; values_count: Integer; values_offset: Integer; const overlay_text: PUTF8Char; scale_min: Single; scale_max: Single; graph_size: ImVec2); cdecl;
+  igValue_Bool: procedure(const prefix: PUTF8Char; b: Boolean); cdecl;
+  igValue_Int: procedure(const prefix: PUTF8Char; v: Integer); cdecl;
+  igValue_Uint: procedure(const prefix: PUTF8Char; v: Cardinal); cdecl;
+  igValue_Float: procedure(const prefix: PUTF8Char; v: Single; const float_format: PUTF8Char); cdecl;
+  igBeginMenuBar: function(): Boolean; cdecl;
+  igEndMenuBar: procedure(); cdecl;
+  igBeginMainMenuBar: function(): Boolean; cdecl;
+  igEndMainMenuBar: procedure(); cdecl;
+  igBeginMenu: function(const &label: PUTF8Char; enabled: Boolean): Boolean; cdecl;
+  igEndMenu: procedure(); cdecl;
+  igMenuItem_Bool: function(const &label: PUTF8Char; const shortcut: PUTF8Char; selected: Boolean; enabled: Boolean): Boolean; cdecl;
+  igMenuItem_BoolPtr: function(const &label: PUTF8Char; const shortcut: PUTF8Char; p_selected: PBoolean; enabled: Boolean): Boolean; cdecl;
+  igBeginTooltip: function(): Boolean; cdecl;
+  igEndTooltip: procedure(); cdecl;
+  igSetTooltip: procedure(const fmt: PUTF8Char) varargs; cdecl;
+  igSetTooltipV: procedure(const fmt: PUTF8Char; args: Pointer); cdecl;
+  igBeginItemTooltip: function(): Boolean; cdecl;
+  igSetItemTooltip: procedure(const fmt: PUTF8Char) varargs; cdecl;
+  igSetItemTooltipV: procedure(const fmt: PUTF8Char; args: Pointer); cdecl;
+  igBeginPopup: function(const str_id: PUTF8Char; flags: ImGuiWindowFlags): Boolean; cdecl;
+  igBeginPopupModal: function(const name: PUTF8Char; p_open: PBoolean; flags: ImGuiWindowFlags): Boolean; cdecl;
+  igEndPopup: procedure(); cdecl;
+  igOpenPopup_Str: procedure(const str_id: PUTF8Char; popup_flags: ImGuiPopupFlags); cdecl;
+  igOpenPopup_ID: procedure(id: ImGuiID; popup_flags: ImGuiPopupFlags); cdecl;
+  igOpenPopupOnItemClick: procedure(const str_id: PUTF8Char; popup_flags: ImGuiPopupFlags); cdecl;
+  igCloseCurrentPopup: procedure(); cdecl;
+  igBeginPopupContextItem: function(const str_id: PUTF8Char; popup_flags: ImGuiPopupFlags): Boolean; cdecl;
+  igBeginPopupContextWindow: function(const str_id: PUTF8Char; popup_flags: ImGuiPopupFlags): Boolean; cdecl;
+  igBeginPopupContextVoid: function(const str_id: PUTF8Char; popup_flags: ImGuiPopupFlags): Boolean; cdecl;
+  igIsPopupOpen_Str: function(const str_id: PUTF8Char; flags: ImGuiPopupFlags): Boolean; cdecl;
+  igBeginTable: function(const str_id: PUTF8Char; columns: Integer; flags: ImGuiTableFlags; outer_size: ImVec2; inner_width: Single): Boolean; cdecl;
+  igEndTable: procedure(); cdecl;
+  igTableNextRow: procedure(row_flags: ImGuiTableRowFlags; min_row_height: Single); cdecl;
+  igTableNextColumn: function(): Boolean; cdecl;
+  igTableSetColumnIndex: function(column_n: Integer): Boolean; cdecl;
+  igTableSetupColumn: procedure(const &label: PUTF8Char; flags: ImGuiTableColumnFlags; init_width_or_weight: Single; user_id: ImGuiID); cdecl;
+  igTableSetupScrollFreeze: procedure(cols: Integer; rows: Integer); cdecl;
+  igTableHeader: procedure(const &label: PUTF8Char); cdecl;
+  igTableHeadersRow: procedure(); cdecl;
+  igTableAngledHeadersRow: procedure(); cdecl;
+  igTableGetSortSpecs: function(): PImGuiTableSortSpecs; cdecl;
+  igTableGetColumnCount: function(): Integer; cdecl;
+  igTableGetColumnIndex: function(): Integer; cdecl;
+  igTableGetRowIndex: function(): Integer; cdecl;
+  igTableGetColumnName_Int: function(column_n: Integer): PUTF8Char; cdecl;
+  igTableGetColumnFlags: function(column_n: Integer): ImGuiTableColumnFlags; cdecl;
+  igTableSetColumnEnabled: procedure(column_n: Integer; v: Boolean); cdecl;
+  igTableGetHoveredColumn: function(): Integer; cdecl;
+  igTableSetBgColor: procedure(target: ImGuiTableBgTarget; color: ImU32; column_n: Integer); cdecl;
+  igColumns: procedure(count: Integer; const id: PUTF8Char; borders: Boolean); cdecl;
+  igNextColumn: procedure(); cdecl;
+  igGetColumnIndex: function(): Integer; cdecl;
+  igGetColumnWidth: function(column_index: Integer): Single; cdecl;
+  igSetColumnWidth: procedure(column_index: Integer; width: Single); cdecl;
+  igGetColumnOffset: function(column_index: Integer): Single; cdecl;
+  igSetColumnOffset: procedure(column_index: Integer; offset_x: Single); cdecl;
+  igGetColumnsCount: function(): Integer; cdecl;
+  igBeginTabBar: function(const str_id: PUTF8Char; flags: ImGuiTabBarFlags): Boolean; cdecl;
+  igEndTabBar: procedure(); cdecl;
+  igBeginTabItem: function(const &label: PUTF8Char; p_open: PBoolean; flags: ImGuiTabItemFlags): Boolean; cdecl;
+  igEndTabItem: procedure(); cdecl;
+  igTabItemButton: function(const &label: PUTF8Char; flags: ImGuiTabItemFlags): Boolean; cdecl;
+  igSetTabItemClosed: procedure(const tab_or_docked_window_label: PUTF8Char); cdecl;
+  igDockSpace: function(dockspace_id: ImGuiID; size: ImVec2; flags: ImGuiDockNodeFlags; const window_class: PImGuiWindowClass): ImGuiID; cdecl;
+  igDockSpaceOverViewport: function(dockspace_id: ImGuiID; const viewport: PImGuiViewport; flags: ImGuiDockNodeFlags; const window_class: PImGuiWindowClass): ImGuiID; cdecl;
+  igSetNextWindowDockID: procedure(dock_id: ImGuiID; cond: ImGuiCond); cdecl;
+  igSetNextWindowClass: procedure(const window_class: PImGuiWindowClass); cdecl;
+  igGetWindowDockID: function(): ImGuiID; cdecl;
+  igIsWindowDocked: function(): Boolean; cdecl;
+  igLogToTTY: procedure(auto_open_depth: Integer); cdecl;
+  igLogToFile: procedure(auto_open_depth: Integer; const filename: PUTF8Char); cdecl;
+  igLogToClipboard: procedure(auto_open_depth: Integer); cdecl;
+  igLogFinish: procedure(); cdecl;
+  igLogButtons: procedure(); cdecl;
+  igLogTextV: procedure(const fmt: PUTF8Char; args: Pointer); cdecl;
+  igBeginDragDropSource: function(flags: ImGuiDragDropFlags): Boolean; cdecl;
+  igSetDragDropPayload: function(const &type: PUTF8Char; const data: Pointer; sz: NativeUInt; cond: ImGuiCond): Boolean; cdecl;
+  igEndDragDropSource: procedure(); cdecl;
+  igBeginDragDropTarget: function(): Boolean; cdecl;
+  igAcceptDragDropPayload: function(const &type: PUTF8Char; flags: ImGuiDragDropFlags): PImGuiPayload; cdecl;
+  igEndDragDropTarget: procedure(); cdecl;
+  igGetDragDropPayload: function(): PImGuiPayload; cdecl;
+  igBeginDisabled: procedure(disabled: Boolean); cdecl;
+  igEndDisabled: procedure(); cdecl;
+  igPushClipRect: procedure(clip_rect_min: ImVec2; clip_rect_max: ImVec2; intersect_with_current_clip_rect: Boolean); cdecl;
+  igPopClipRect: procedure(); cdecl;
+  igSetItemDefaultFocus: procedure(); cdecl;
+  igSetKeyboardFocusHere: procedure(offset: Integer); cdecl;
+  igSetNavCursorVisible: procedure(visible: Boolean); cdecl;
+  igSetNextItemAllowOverlap: procedure(); cdecl;
+  igIsItemHovered: function(flags: ImGuiHoveredFlags): Boolean; cdecl;
+  igIsItemActive: function(): Boolean; cdecl;
+  igIsItemFocused: function(): Boolean; cdecl;
+  igIsItemClicked: function(mouse_button: ImGuiMouseButton): Boolean; cdecl;
+  igIsItemVisible: function(): Boolean; cdecl;
+  igIsItemEdited: function(): Boolean; cdecl;
+  igIsItemActivated: function(): Boolean; cdecl;
+  igIsItemDeactivated: function(): Boolean; cdecl;
+  igIsItemDeactivatedAfterEdit: function(): Boolean; cdecl;
+  igIsItemToggledOpen: function(): Boolean; cdecl;
+  igIsAnyItemHovered: function(): Boolean; cdecl;
+  igIsAnyItemActive: function(): Boolean; cdecl;
+  igIsAnyItemFocused: function(): Boolean; cdecl;
+  igGetItemID: function(): ImGuiID; cdecl;
+  igGetItemRectMin: procedure(pOut: PImVec2); cdecl;
+  igGetItemRectMax: procedure(pOut: PImVec2); cdecl;
+  igGetItemRectSize: procedure(pOut: PImVec2); cdecl;
+  igGetMainViewport: function(): PImGuiViewport; cdecl;
+  igGetBackgroundDrawList: function(viewport: PImGuiViewport): PImDrawList; cdecl;
+  igGetForegroundDrawList_ViewportPtr: function(viewport: PImGuiViewport): PImDrawList; cdecl;
+  igIsRectVisible_Nil: function(size: ImVec2): Boolean; cdecl;
+  igIsRectVisible_Vec2: function(rect_min: ImVec2; rect_max: ImVec2): Boolean; cdecl;
+  igGetTime: function(): Double; cdecl;
+  igGetFrameCount: function(): Integer; cdecl;
+  igGetDrawListSharedData: function(): PImDrawListSharedData; cdecl;
+  igGetStyleColorName: function(idx: ImGuiCol): PUTF8Char; cdecl;
+  igSetStateStorage: procedure(storage: PImGuiStorage); cdecl;
+  igGetStateStorage: function(): PImGuiStorage; cdecl;
+  igCalcTextSize: procedure(pOut: PImVec2; const text: PUTF8Char; const text_end: PUTF8Char; hide_text_after_double_hash: Boolean; wrap_width: Single); cdecl;
+  igColorConvertU32ToFloat4: procedure(pOut: PImVec4; &in: ImU32); cdecl;
+  igColorConvertFloat4ToU32: function(&in: ImVec4): ImU32; cdecl;
+  igColorConvertRGBtoHSV: procedure(r: Single; g: Single; b: Single; out_h: PSingle; out_s: PSingle; out_v: PSingle); cdecl;
+  igColorConvertHSVtoRGB: procedure(h: Single; s: Single; v: Single; out_r: PSingle; out_g: PSingle; out_b: PSingle); cdecl;
+  igIsKeyDown_Nil: function(key: ImGuiKey): Boolean; cdecl;
+  igIsKeyPressed_Bool: function(key: ImGuiKey; &repeat: Boolean): Boolean; cdecl;
+  igIsKeyReleased_Nil: function(key: ImGuiKey): Boolean; cdecl;
+  igIsKeyChordPressed_Nil: function(key_chord: ImGuiKeyChord): Boolean; cdecl;
+  igGetKeyPressedAmount: function(key: ImGuiKey; repeat_delay: Single; rate: Single): Integer; cdecl;
+  igGetKeyName: function(key: ImGuiKey): PUTF8Char; cdecl;
+  igSetNextFrameWantCaptureKeyboard: procedure(want_capture_keyboard: Boolean); cdecl;
+  igShortcut_Nil: function(key_chord: ImGuiKeyChord; flags: ImGuiInputFlags): Boolean; cdecl;
+  igSetNextItemShortcut: procedure(key_chord: ImGuiKeyChord; flags: ImGuiInputFlags); cdecl;
+  igSetItemKeyOwner_Nil: procedure(key: ImGuiKey); cdecl;
+  igIsMouseDown_Nil: function(button: ImGuiMouseButton): Boolean; cdecl;
+  igIsMouseClicked_Bool: function(button: ImGuiMouseButton; &repeat: Boolean): Boolean; cdecl;
+  igIsMouseReleased_Nil: function(button: ImGuiMouseButton): Boolean; cdecl;
+  igIsMouseDoubleClicked_Nil: function(button: ImGuiMouseButton): Boolean; cdecl;
+  igGetMouseClickedCount: function(button: ImGuiMouseButton): Integer; cdecl;
+  igIsMouseHoveringRect: function(r_min: ImVec2; r_max: ImVec2; clip: Boolean): Boolean; cdecl;
+  igIsMousePosValid: function(const mouse_pos: PImVec2): Boolean; cdecl;
+  igIsAnyMouseDown: function(): Boolean; cdecl;
+  igGetMousePos: procedure(pOut: PImVec2); cdecl;
+  igGetMousePosOnOpeningCurrentPopup: procedure(pOut: PImVec2); cdecl;
+  igIsMouseDragging: function(button: ImGuiMouseButton; lock_threshold: Single): Boolean; cdecl;
+  igGetMouseDragDelta: procedure(pOut: PImVec2; button: ImGuiMouseButton; lock_threshold: Single); cdecl;
+  igResetMouseDragDelta: procedure(button: ImGuiMouseButton); cdecl;
+  igGetMouseCursor: function(): ImGuiMouseCursor; cdecl;
+  igSetMouseCursor: procedure(cursor_type: ImGuiMouseCursor); cdecl;
+  igSetNextFrameWantCaptureMouse: procedure(want_capture_mouse: Boolean); cdecl;
+  igGetClipboardText: function(): PUTF8Char; cdecl;
+  igSetClipboardText: procedure(const text: PUTF8Char); cdecl;
+  igLoadIniSettingsFromDisk: procedure(const ini_filename: PUTF8Char); cdecl;
+  igLoadIniSettingsFromMemory: procedure(const ini_data: PUTF8Char; ini_size: NativeUInt); cdecl;
+  igSaveIniSettingsToDisk: procedure(const ini_filename: PUTF8Char); cdecl;
+  igSaveIniSettingsToMemory: function(out_ini_size: PNativeUInt): PUTF8Char; cdecl;
+  igDebugTextEncoding: procedure(const text: PUTF8Char); cdecl;
+  igDebugFlashStyleColor: procedure(idx: ImGuiCol); cdecl;
+  igDebugStartItemPicker: procedure(); cdecl;
+  igDebugCheckVersionAndDataLayout: function(const version_str: PUTF8Char; sz_io: NativeUInt; sz_style: NativeUInt; sz_vec2: NativeUInt; sz_vec4: NativeUInt; sz_drawvert: NativeUInt; sz_drawidx: NativeUInt): Boolean; cdecl;
+  igDebugLog: procedure(const fmt: PUTF8Char) varargs; cdecl;
+  igDebugLogV: procedure(const fmt: PUTF8Char; args: Pointer); cdecl;
+  igSetAllocatorFunctions: procedure(alloc_func: ImGuiMemAllocFunc; free_func: ImGuiMemFreeFunc; user_data: Pointer); cdecl;
+  igGetAllocatorFunctions: procedure(p_alloc_func: PImGuiMemAllocFunc; p_free_func: PImGuiMemFreeFunc; p_user_data: PPointer); cdecl;
+  igMemAlloc: function(size: NativeUInt): Pointer; cdecl;
+  igMemFree: procedure(ptr: Pointer); cdecl;
+  igUpdatePlatformWindows: procedure(); cdecl;
+  igRenderPlatformWindowsDefault: procedure(platform_render_arg: Pointer; renderer_render_arg: Pointer); cdecl;
+  igDestroyPlatformWindows: procedure(); cdecl;
+  igFindViewportByID: function(id: ImGuiID): PImGuiViewport; cdecl;
+  igFindViewportByPlatformHandle: function(platform_handle: Pointer): PImGuiViewport; cdecl;
+  ImGuiTableSortSpecs_ImGuiTableSortSpecs: function(): PImGuiTableSortSpecs; cdecl;
+  ImGuiTableSortSpecs_destroy: procedure(self: PImGuiTableSortSpecs); cdecl;
+  ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs: function(): PImGuiTableColumnSortSpecs; cdecl;
+  ImGuiTableColumnSortSpecs_destroy: procedure(self: PImGuiTableColumnSortSpecs); cdecl;
+  ImGuiStyle_ImGuiStyle: function(): PImGuiStyle; cdecl;
+  ImGuiStyle_destroy: procedure(self: PImGuiStyle); cdecl;
+  ImGuiStyle_ScaleAllSizes: procedure(self: PImGuiStyle; scale_factor: Single); cdecl;
+  ImGuiIO_AddKeyEvent: procedure(self: PImGuiIO; key: ImGuiKey; down: Boolean); cdecl;
+  ImGuiIO_AddKeyAnalogEvent: procedure(self: PImGuiIO; key: ImGuiKey; down: Boolean; v: Single); cdecl;
+  ImGuiIO_AddMousePosEvent: procedure(self: PImGuiIO; x: Single; y: Single); cdecl;
+  ImGuiIO_AddMouseButtonEvent: procedure(self: PImGuiIO; button: Integer; down: Boolean); cdecl;
+  ImGuiIO_AddMouseWheelEvent: procedure(self: PImGuiIO; wheel_x: Single; wheel_y: Single); cdecl;
+  ImGuiIO_AddMouseSourceEvent: procedure(self: PImGuiIO; source: ImGuiMouseSource); cdecl;
+  ImGuiIO_AddMouseViewportEvent: procedure(self: PImGuiIO; id: ImGuiID); cdecl;
+  ImGuiIO_AddFocusEvent: procedure(self: PImGuiIO; focused: Boolean); cdecl;
+  ImGuiIO_AddInputCharacter: procedure(self: PImGuiIO; c: Cardinal); cdecl;
+  ImGuiIO_AddInputCharacterUTF16: procedure(self: PImGuiIO; c: ImWchar16); cdecl;
+  ImGuiIO_AddInputCharactersUTF8: procedure(self: PImGuiIO; const str: PUTF8Char); cdecl;
+  ImGuiIO_SetKeyEventNativeData: procedure(self: PImGuiIO; key: ImGuiKey; native_keycode: Integer; native_scancode: Integer; native_legacy_index: Integer); cdecl;
+  ImGuiIO_SetAppAcceptingEvents: procedure(self: PImGuiIO; accepting_events: Boolean); cdecl;
+  ImGuiIO_ClearEventsQueue: procedure(self: PImGuiIO); cdecl;
+  ImGuiIO_ClearInputKeys: procedure(self: PImGuiIO); cdecl;
+  ImGuiIO_ClearInputMouse: procedure(self: PImGuiIO); cdecl;
+  ImGuiIO_ImGuiIO: function(): PImGuiIO; cdecl;
+  ImGuiIO_destroy: procedure(self: PImGuiIO); cdecl;
+  ImGuiInputTextCallbackData_ImGuiInputTextCallbackData: function(): PImGuiInputTextCallbackData; cdecl;
+  ImGuiInputTextCallbackData_destroy: procedure(self: PImGuiInputTextCallbackData); cdecl;
+  ImGuiInputTextCallbackData_DeleteChars: procedure(self: PImGuiInputTextCallbackData; pos: Integer; bytes_count: Integer); cdecl;
+  ImGuiInputTextCallbackData_InsertChars: procedure(self: PImGuiInputTextCallbackData; pos: Integer; const text: PUTF8Char; const text_end: PUTF8Char); cdecl;
+  ImGuiInputTextCallbackData_SelectAll: procedure(self: PImGuiInputTextCallbackData); cdecl;
+  ImGuiInputTextCallbackData_ClearSelection: procedure(self: PImGuiInputTextCallbackData); cdecl;
+  ImGuiInputTextCallbackData_HasSelection: function(self: PImGuiInputTextCallbackData): Boolean; cdecl;
+  ImGuiWindowClass_ImGuiWindowClass: function(): PImGuiWindowClass; cdecl;
+  ImGuiWindowClass_destroy: procedure(self: PImGuiWindowClass); cdecl;
+  ImGuiPayload_ImGuiPayload: function(): PImGuiPayload; cdecl;
+  ImGuiPayload_destroy: procedure(self: PImGuiPayload); cdecl;
+  ImGuiPayload_Clear: procedure(self: PImGuiPayload); cdecl;
+  ImGuiPayload_IsDataType: function(self: PImGuiPayload; const &type: PUTF8Char): Boolean; cdecl;
+  ImGuiPayload_IsPreview: function(self: PImGuiPayload): Boolean; cdecl;
+  ImGuiPayload_IsDelivery: function(self: PImGuiPayload): Boolean; cdecl;
+  ImGuiOnceUponAFrame_ImGuiOnceUponAFrame: function(): PImGuiOnceUponAFrame; cdecl;
+  ImGuiOnceUponAFrame_destroy: procedure(self: PImGuiOnceUponAFrame); cdecl;
+  ImGuiTextFilter_ImGuiTextFilter: function(const default_filter: PUTF8Char): PImGuiTextFilter; cdecl;
+  ImGuiTextFilter_destroy: procedure(self: PImGuiTextFilter); cdecl;
+  ImGuiTextFilter_Draw: function(self: PImGuiTextFilter; const &label: PUTF8Char; width: Single): Boolean; cdecl;
+  ImGuiTextFilter_PassFilter: function(self: PImGuiTextFilter; const text: PUTF8Char; const text_end: PUTF8Char): Boolean; cdecl;
+  ImGuiTextFilter_Build: procedure(self: PImGuiTextFilter); cdecl;
+  ImGuiTextFilter_Clear: procedure(self: PImGuiTextFilter); cdecl;
+  ImGuiTextFilter_IsActive: function(self: PImGuiTextFilter): Boolean; cdecl;
+  ImGuiTextRange_ImGuiTextRange_Nil: function(): PImGuiTextRange; cdecl;
+  ImGuiTextRange_destroy: procedure(self: PImGuiTextRange); cdecl;
+  ImGuiTextRange_ImGuiTextRange_Str: function(const _b: PUTF8Char; const _e: PUTF8Char): PImGuiTextRange; cdecl;
+  ImGuiTextRange_empty: function(self: PImGuiTextRange): Boolean; cdecl;
+  ImGuiTextRange_split: procedure(self: PImGuiTextRange; separator: UTF8Char; &out: PImVector_ImGuiTextRange); cdecl;
+  ImGuiTextBuffer_ImGuiTextBuffer: function(): PImGuiTextBuffer; cdecl;
+  ImGuiTextBuffer_destroy: procedure(self: PImGuiTextBuffer); cdecl;
+  ImGuiTextBuffer_begin: function(self: PImGuiTextBuffer): PUTF8Char; cdecl;
+  ImGuiTextBuffer_end: function(self: PImGuiTextBuffer): PUTF8Char; cdecl;
+  ImGuiTextBuffer_size: function(self: PImGuiTextBuffer): Integer; cdecl;
+  ImGuiTextBuffer_empty: function(self: PImGuiTextBuffer): Boolean; cdecl;
+  ImGuiTextBuffer_clear: procedure(self: PImGuiTextBuffer); cdecl;
+  ImGuiTextBuffer_reserve: procedure(self: PImGuiTextBuffer; capacity: Integer); cdecl;
+  ImGuiTextBuffer_c_str: function(self: PImGuiTextBuffer): PUTF8Char; cdecl;
+  ImGuiTextBuffer_append: procedure(self: PImGuiTextBuffer; const str: PUTF8Char; const str_end: PUTF8Char); cdecl;
+  ImGuiTextBuffer_appendfv: procedure(self: PImGuiTextBuffer; const fmt: PUTF8Char; args: Pointer); cdecl;
+  ImGuiStoragePair_ImGuiStoragePair_Int: function(_key: ImGuiID; _val: Integer): PImGuiStoragePair; cdecl;
+  ImGuiStoragePair_destroy: procedure(self: PImGuiStoragePair); cdecl;
+  ImGuiStoragePair_ImGuiStoragePair_Float: function(_key: ImGuiID; _val: Single): PImGuiStoragePair; cdecl;
+  ImGuiStoragePair_ImGuiStoragePair_Ptr: function(_key: ImGuiID; _val: Pointer): PImGuiStoragePair; cdecl;
+  ImGuiStorage_Clear: procedure(self: PImGuiStorage); cdecl;
+  ImGuiStorage_GetInt: function(self: PImGuiStorage; key: ImGuiID; default_val: Integer): Integer; cdecl;
+  ImGuiStorage_SetInt: procedure(self: PImGuiStorage; key: ImGuiID; val: Integer); cdecl;
+  ImGuiStorage_GetBool: function(self: PImGuiStorage; key: ImGuiID; default_val: Boolean): Boolean; cdecl;
+  ImGuiStorage_SetBool: procedure(self: PImGuiStorage; key: ImGuiID; val: Boolean); cdecl;
+  ImGuiStorage_GetFloat: function(self: PImGuiStorage; key: ImGuiID; default_val: Single): Single; cdecl;
+  ImGuiStorage_SetFloat: procedure(self: PImGuiStorage; key: ImGuiID; val: Single); cdecl;
+  ImGuiStorage_GetVoidPtr: function(self: PImGuiStorage; key: ImGuiID): Pointer; cdecl;
+  ImGuiStorage_SetVoidPtr: procedure(self: PImGuiStorage; key: ImGuiID; val: Pointer); cdecl;
+  ImGuiStorage_GetIntRef: function(self: PImGuiStorage; key: ImGuiID; default_val: Integer): PInteger; cdecl;
+  ImGuiStorage_GetBoolRef: function(self: PImGuiStorage; key: ImGuiID; default_val: Boolean): PBoolean; cdecl;
+  ImGuiStorage_GetFloatRef: function(self: PImGuiStorage; key: ImGuiID; default_val: Single): PSingle; cdecl;
+  ImGuiStorage_GetVoidPtrRef: function(self: PImGuiStorage; key: ImGuiID; default_val: Pointer): PPointer; cdecl;
+  ImGuiStorage_BuildSortByKey: procedure(self: PImGuiStorage); cdecl;
+  ImGuiStorage_SetAllInt: procedure(self: PImGuiStorage; val: Integer); cdecl;
+  ImGuiListClipper_ImGuiListClipper: function(): PImGuiListClipper; cdecl;
+  ImGuiListClipper_destroy: procedure(self: PImGuiListClipper); cdecl;
+  ImGuiListClipper_Begin: procedure(self: PImGuiListClipper; items_count: Integer; items_height: Single); cdecl;
+  ImGuiListClipper_End: procedure(self: PImGuiListClipper); cdecl;
+  ImGuiListClipper_Step: function(self: PImGuiListClipper): Boolean; cdecl;
+  ImGuiListClipper_IncludeItemByIndex: procedure(self: PImGuiListClipper; item_index: Integer); cdecl;
+  ImGuiListClipper_IncludeItemsByIndex: procedure(self: PImGuiListClipper; item_begin: Integer; item_end: Integer); cdecl;
+  ImGuiListClipper_SeekCursorForItem: procedure(self: PImGuiListClipper; item_index: Integer); cdecl;
+  ImColor_ImColor_Nil: function(): PImColor; cdecl;
+  ImColor_destroy: procedure(self: PImColor); cdecl;
+  ImColor_ImColor_Float: function(r: Single; g: Single; b: Single; a: Single): PImColor; cdecl;
+  ImColor_ImColor_Vec4: function(col: ImVec4): PImColor; cdecl;
+  ImColor_ImColor_Int: function(r: Integer; g: Integer; b: Integer; a: Integer): PImColor; cdecl;
+  ImColor_ImColor_U32: function(rgba: ImU32): PImColor; cdecl;
+  ImColor_SetHSV: procedure(self: PImColor; h: Single; s: Single; v: Single; a: Single); cdecl;
+  ImColor_HSV: procedure(pOut: PImColor; h: Single; s: Single; v: Single; a: Single); cdecl;
+  ImGuiSelectionBasicStorage_ImGuiSelectionBasicStorage: function(): PImGuiSelectionBasicStorage; cdecl;
+  ImGuiSelectionBasicStorage_destroy: procedure(self: PImGuiSelectionBasicStorage); cdecl;
+  ImGuiSelectionBasicStorage_ApplyRequests: procedure(self: PImGuiSelectionBasicStorage; ms_io: PImGuiMultiSelectIO); cdecl;
+  ImGuiSelectionBasicStorage_Contains: function(self: PImGuiSelectionBasicStorage; id: ImGuiID): Boolean; cdecl;
+  ImGuiSelectionBasicStorage_Clear: procedure(self: PImGuiSelectionBasicStorage); cdecl;
+  ImGuiSelectionBasicStorage_Swap: procedure(self: PImGuiSelectionBasicStorage; r: PImGuiSelectionBasicStorage); cdecl;
+  ImGuiSelectionBasicStorage_SetItemSelected: procedure(self: PImGuiSelectionBasicStorage; id: ImGuiID; selected: Boolean); cdecl;
+  ImGuiSelectionBasicStorage_GetNextSelectedItem: function(self: PImGuiSelectionBasicStorage; opaque_it: PPointer; out_id: PImGuiID): Boolean; cdecl;
+  ImGuiSelectionBasicStorage_GetStorageIdFromIndex: function(self: PImGuiSelectionBasicStorage; idx: Integer): ImGuiID; cdecl;
+  ImGuiSelectionExternalStorage_ImGuiSelectionExternalStorage: function(): PImGuiSelectionExternalStorage; cdecl;
+  ImGuiSelectionExternalStorage_destroy: procedure(self: PImGuiSelectionExternalStorage); cdecl;
+  ImGuiSelectionExternalStorage_ApplyRequests: procedure(self: PImGuiSelectionExternalStorage; ms_io: PImGuiMultiSelectIO); cdecl;
+  ImDrawCmd_ImDrawCmd: function(): PImDrawCmd; cdecl;
+  ImDrawCmd_destroy: procedure(self: PImDrawCmd); cdecl;
+  ImDrawCmd_GetTexID: function(self: PImDrawCmd): ImTextureID; cdecl;
+  ImDrawListSplitter_ImDrawListSplitter: function(): PImDrawListSplitter; cdecl;
+  ImDrawListSplitter_destroy: procedure(self: PImDrawListSplitter); cdecl;
+  ImDrawListSplitter_Clear: procedure(self: PImDrawListSplitter); cdecl;
+  ImDrawListSplitter_ClearFreeMemory: procedure(self: PImDrawListSplitter); cdecl;
+  ImDrawListSplitter_Split: procedure(self: PImDrawListSplitter; draw_list: PImDrawList; count: Integer); cdecl;
+  ImDrawListSplitter_Merge: procedure(self: PImDrawListSplitter; draw_list: PImDrawList); cdecl;
+  ImDrawListSplitter_SetCurrentChannel: procedure(self: PImDrawListSplitter; draw_list: PImDrawList; channel_idx: Integer); cdecl;
+  ImDrawList_ImDrawList: function(shared_data: PImDrawListSharedData): PImDrawList; cdecl;
+  ImDrawList_destroy: procedure(self: PImDrawList); cdecl;
+  ImDrawList_PushClipRect: procedure(self: PImDrawList; clip_rect_min: ImVec2; clip_rect_max: ImVec2; intersect_with_current_clip_rect: Boolean); cdecl;
+  ImDrawList_PushClipRectFullScreen: procedure(self: PImDrawList); cdecl;
+  ImDrawList_PopClipRect: procedure(self: PImDrawList); cdecl;
+  ImDrawList_PushTextureID: procedure(self: PImDrawList; texture_id: ImTextureID); cdecl;
+  ImDrawList_PopTextureID: procedure(self: PImDrawList); cdecl;
+  ImDrawList_GetClipRectMin: procedure(pOut: PImVec2; self: PImDrawList); cdecl;
+  ImDrawList_GetClipRectMax: procedure(pOut: PImVec2; self: PImDrawList); cdecl;
+  ImDrawList_AddLine: procedure(self: PImDrawList; p1: ImVec2; p2: ImVec2; col: ImU32; thickness: Single); cdecl;
+  ImDrawList_AddRect: procedure(self: PImDrawList; p_min: ImVec2; p_max: ImVec2; col: ImU32; rounding: Single; flags: ImDrawFlags; thickness: Single); cdecl;
+  ImDrawList_AddRectFilled: procedure(self: PImDrawList; p_min: ImVec2; p_max: ImVec2; col: ImU32; rounding: Single; flags: ImDrawFlags); cdecl;
+  ImDrawList_AddRectFilledMultiColor: procedure(self: PImDrawList; p_min: ImVec2; p_max: ImVec2; col_upr_left: ImU32; col_upr_right: ImU32; col_bot_right: ImU32; col_bot_left: ImU32); cdecl;
+  ImDrawList_AddQuad: procedure(self: PImDrawList; p1: ImVec2; p2: ImVec2; p3: ImVec2; p4: ImVec2; col: ImU32; thickness: Single); cdecl;
+  ImDrawList_AddQuadFilled: procedure(self: PImDrawList; p1: ImVec2; p2: ImVec2; p3: ImVec2; p4: ImVec2; col: ImU32); cdecl;
+  ImDrawList_AddTriangle: procedure(self: PImDrawList; p1: ImVec2; p2: ImVec2; p3: ImVec2; col: ImU32; thickness: Single); cdecl;
+  ImDrawList_AddTriangleFilled: procedure(self: PImDrawList; p1: ImVec2; p2: ImVec2; p3: ImVec2; col: ImU32); cdecl;
+  ImDrawList_AddCircle: procedure(self: PImDrawList; center: ImVec2; radius: Single; col: ImU32; num_segments: Integer; thickness: Single); cdecl;
+  ImDrawList_AddCircleFilled: procedure(self: PImDrawList; center: ImVec2; radius: Single; col: ImU32; num_segments: Integer); cdecl;
+  ImDrawList_AddNgon: procedure(self: PImDrawList; center: ImVec2; radius: Single; col: ImU32; num_segments: Integer; thickness: Single); cdecl;
+  ImDrawList_AddNgonFilled: procedure(self: PImDrawList; center: ImVec2; radius: Single; col: ImU32; num_segments: Integer); cdecl;
+  ImDrawList_AddEllipse: procedure(self: PImDrawList; center: ImVec2; radius: ImVec2; col: ImU32; rot: Single; num_segments: Integer; thickness: Single); cdecl;
+  ImDrawList_AddEllipseFilled: procedure(self: PImDrawList; center: ImVec2; radius: ImVec2; col: ImU32; rot: Single; num_segments: Integer); cdecl;
+  ImDrawList_AddText_Vec2: procedure(self: PImDrawList; pos: ImVec2; col: ImU32; const text_begin: PUTF8Char; const text_end: PUTF8Char); cdecl;
+  ImDrawList_AddText_FontPtr: procedure(self: PImDrawList; font: PImFont; font_size: Single; pos: ImVec2; col: ImU32; const text_begin: PUTF8Char; const text_end: PUTF8Char; wrap_width: Single; const cpu_fine_clip_rect: PImVec4); cdecl;
+  ImDrawList_AddBezierCubic: procedure(self: PImDrawList; p1: ImVec2; p2: ImVec2; p3: ImVec2; p4: ImVec2; col: ImU32; thickness: Single; num_segments: Integer); cdecl;
+  ImDrawList_AddBezierQuadratic: procedure(self: PImDrawList; p1: ImVec2; p2: ImVec2; p3: ImVec2; col: ImU32; thickness: Single; num_segments: Integer); cdecl;
+  ImDrawList_AddPolyline: procedure(self: PImDrawList; const points: PImVec2; num_points: Integer; col: ImU32; flags: ImDrawFlags; thickness: Single); cdecl;
+  ImDrawList_AddConvexPolyFilled: procedure(self: PImDrawList; const points: PImVec2; num_points: Integer; col: ImU32); cdecl;
+  ImDrawList_AddConcavePolyFilled: procedure(self: PImDrawList; const points: PImVec2; num_points: Integer; col: ImU32); cdecl;
+  ImDrawList_AddImage: procedure(self: PImDrawList; user_texture_id: ImTextureID; p_min: ImVec2; p_max: ImVec2; uv_min: ImVec2; uv_max: ImVec2; col: ImU32); cdecl;
+  ImDrawList_AddImageQuad: procedure(self: PImDrawList; user_texture_id: ImTextureID; p1: ImVec2; p2: ImVec2; p3: ImVec2; p4: ImVec2; uv1: ImVec2; uv2: ImVec2; uv3: ImVec2; uv4: ImVec2; col: ImU32); cdecl;
+  ImDrawList_AddImageRounded: procedure(self: PImDrawList; user_texture_id: ImTextureID; p_min: ImVec2; p_max: ImVec2; uv_min: ImVec2; uv_max: ImVec2; col: ImU32; rounding: Single; flags: ImDrawFlags); cdecl;
+  ImDrawList_PathClear: procedure(self: PImDrawList); cdecl;
+  ImDrawList_PathLineTo: procedure(self: PImDrawList; pos: ImVec2); cdecl;
+  ImDrawList_PathLineToMergeDuplicate: procedure(self: PImDrawList; pos: ImVec2); cdecl;
+  ImDrawList_PathFillConvex: procedure(self: PImDrawList; col: ImU32); cdecl;
+  ImDrawList_PathFillConcave: procedure(self: PImDrawList; col: ImU32); cdecl;
+  ImDrawList_PathStroke: procedure(self: PImDrawList; col: ImU32; flags: ImDrawFlags; thickness: Single); cdecl;
+  ImDrawList_PathArcTo: procedure(self: PImDrawList; center: ImVec2; radius: Single; a_min: Single; a_max: Single; num_segments: Integer); cdecl;
+  ImDrawList_PathArcToFast: procedure(self: PImDrawList; center: ImVec2; radius: Single; a_min_of_12: Integer; a_max_of_12: Integer); cdecl;
+  ImDrawList_PathEllipticalArcTo: procedure(self: PImDrawList; center: ImVec2; radius: ImVec2; rot: Single; a_min: Single; a_max: Single; num_segments: Integer); cdecl;
+  ImDrawList_PathBezierCubicCurveTo: procedure(self: PImDrawList; p2: ImVec2; p3: ImVec2; p4: ImVec2; num_segments: Integer); cdecl;
+  ImDrawList_PathBezierQuadraticCurveTo: procedure(self: PImDrawList; p2: ImVec2; p3: ImVec2; num_segments: Integer); cdecl;
+  ImDrawList_PathRect: procedure(self: PImDrawList; rect_min: ImVec2; rect_max: ImVec2; rounding: Single; flags: ImDrawFlags); cdecl;
+  ImDrawList_AddCallback: procedure(self: PImDrawList; callback: ImDrawCallback; userdata: Pointer; userdata_size: NativeUInt); cdecl;
+  ImDrawList_AddDrawCmd: procedure(self: PImDrawList); cdecl;
+  ImDrawList_CloneOutput: function(self: PImDrawList): PImDrawList; cdecl;
+  ImDrawList_ChannelsSplit: procedure(self: PImDrawList; count: Integer); cdecl;
+  ImDrawList_ChannelsMerge: procedure(self: PImDrawList); cdecl;
+  ImDrawList_ChannelsSetCurrent: procedure(self: PImDrawList; n: Integer); cdecl;
+  ImDrawList_PrimReserve: procedure(self: PImDrawList; idx_count: Integer; vtx_count: Integer); cdecl;
+  ImDrawList_PrimUnreserve: procedure(self: PImDrawList; idx_count: Integer; vtx_count: Integer); cdecl;
+  ImDrawList_PrimRect: procedure(self: PImDrawList; a: ImVec2; b: ImVec2; col: ImU32); cdecl;
+  ImDrawList_PrimRectUV: procedure(self: PImDrawList; a: ImVec2; b: ImVec2; uv_a: ImVec2; uv_b: ImVec2; col: ImU32); cdecl;
+  ImDrawList_PrimQuadUV: procedure(self: PImDrawList; a: ImVec2; b: ImVec2; c: ImVec2; d: ImVec2; uv_a: ImVec2; uv_b: ImVec2; uv_c: ImVec2; uv_d: ImVec2; col: ImU32); cdecl;
+  ImDrawList_PrimWriteVtx: procedure(self: PImDrawList; pos: ImVec2; uv: ImVec2; col: ImU32); cdecl;
+  ImDrawList_PrimWriteIdx: procedure(self: PImDrawList; idx: ImDrawIdx); cdecl;
+  ImDrawList_PrimVtx: procedure(self: PImDrawList; pos: ImVec2; uv: ImVec2; col: ImU32); cdecl;
+  ImDrawList__ResetForNewFrame: procedure(self: PImDrawList); cdecl;
+  ImDrawList__ClearFreeMemory: procedure(self: PImDrawList); cdecl;
+  ImDrawList__PopUnusedDrawCmd: procedure(self: PImDrawList); cdecl;
+  ImDrawList__TryMergeDrawCmds: procedure(self: PImDrawList); cdecl;
+  ImDrawList__OnChangedClipRect: procedure(self: PImDrawList); cdecl;
+  ImDrawList__OnChangedTextureID: procedure(self: PImDrawList); cdecl;
+  ImDrawList__OnChangedVtxOffset: procedure(self: PImDrawList); cdecl;
+  ImDrawList__SetTextureID: procedure(self: PImDrawList; texture_id: ImTextureID); cdecl;
+  ImDrawList__CalcCircleAutoSegmentCount: function(self: PImDrawList; radius: Single): Integer; cdecl;
+  ImDrawList__PathArcToFastEx: procedure(self: PImDrawList; center: ImVec2; radius: Single; a_min_sample: Integer; a_max_sample: Integer; a_step: Integer); cdecl;
+  ImDrawList__PathArcToN: procedure(self: PImDrawList; center: ImVec2; radius: Single; a_min: Single; a_max: Single; num_segments: Integer); cdecl;
+  ImDrawData_ImDrawData: function(): PImDrawData; cdecl;
+  ImDrawData_destroy: procedure(self: PImDrawData); cdecl;
+  ImDrawData_Clear: procedure(self: PImDrawData); cdecl;
+  ImDrawData_AddDrawList: procedure(self: PImDrawData; draw_list: PImDrawList); cdecl;
+  ImDrawData_DeIndexAllBuffers: procedure(self: PImDrawData); cdecl;
+  ImDrawData_ScaleClipRects: procedure(self: PImDrawData; fb_scale: ImVec2); cdecl;
+  ImFontConfig_ImFontConfig: function(): PImFontConfig; cdecl;
+  ImFontConfig_destroy: procedure(self: PImFontConfig); cdecl;
+  ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder: function(): PImFontGlyphRangesBuilder; cdecl;
+  ImFontGlyphRangesBuilder_destroy: procedure(self: PImFontGlyphRangesBuilder); cdecl;
+  ImFontGlyphRangesBuilder_Clear: procedure(self: PImFontGlyphRangesBuilder); cdecl;
+  ImFontGlyphRangesBuilder_GetBit: function(self: PImFontGlyphRangesBuilder; n: NativeUInt): Boolean; cdecl;
+  ImFontGlyphRangesBuilder_SetBit: procedure(self: PImFontGlyphRangesBuilder; n: NativeUInt); cdecl;
+  ImFontGlyphRangesBuilder_AddChar: procedure(self: PImFontGlyphRangesBuilder; c: ImWchar); cdecl;
+  ImFontGlyphRangesBuilder_AddText: procedure(self: PImFontGlyphRangesBuilder; const text: PUTF8Char; const text_end: PUTF8Char); cdecl;
+  ImFontGlyphRangesBuilder_AddRanges: procedure(self: PImFontGlyphRangesBuilder; const ranges: PImWchar); cdecl;
+  ImFontGlyphRangesBuilder_BuildRanges: procedure(self: PImFontGlyphRangesBuilder; out_ranges: PImVector_ImWchar); cdecl;
+  ImFontAtlasCustomRect_ImFontAtlasCustomRect: function(): PImFontAtlasCustomRect; cdecl;
+  ImFontAtlasCustomRect_destroy: procedure(self: PImFontAtlasCustomRect); cdecl;
+  ImFontAtlasCustomRect_IsPacked: function(self: PImFontAtlasCustomRect): Boolean; cdecl;
+  ImFontAtlas_ImFontAtlas: function(): PImFontAtlas; cdecl;
+  ImFontAtlas_destroy: procedure(self: PImFontAtlas); cdecl;
+  ImFontAtlas_AddFont: function(self: PImFontAtlas; const font_cfg: PImFontConfig): PImFont; cdecl;
+  ImFontAtlas_AddFontDefault: function(self: PImFontAtlas; const font_cfg: PImFontConfig): PImFont; cdecl;
+  ImFontAtlas_AddFontFromFileTTF: function(self: PImFontAtlas; const filename: PUTF8Char; size_pixels: Single; const font_cfg: PImFontConfig; const glyph_ranges: PImWchar): PImFont; cdecl;
+  ImFontAtlas_AddFontFromMemoryTTF: function(self: PImFontAtlas; font_data: Pointer; font_data_size: Integer; size_pixels: Single; const font_cfg: PImFontConfig; const glyph_ranges: PImWchar): PImFont; cdecl;
+  ImFontAtlas_AddFontFromMemoryCompressedTTF: function(self: PImFontAtlas; const compressed_font_data: Pointer; compressed_font_data_size: Integer; size_pixels: Single; const font_cfg: PImFontConfig; const glyph_ranges: PImWchar): PImFont; cdecl;
+  ImFontAtlas_AddFontFromMemoryCompressedBase85TTF: function(self: PImFontAtlas; const compressed_font_data_base85: PUTF8Char; size_pixels: Single; const font_cfg: PImFontConfig; const glyph_ranges: PImWchar): PImFont; cdecl;
+  ImFontAtlas_ClearInputData: procedure(self: PImFontAtlas); cdecl;
+  ImFontAtlas_ClearTexData: procedure(self: PImFontAtlas); cdecl;
+  ImFontAtlas_ClearFonts: procedure(self: PImFontAtlas); cdecl;
+  ImFontAtlas_Clear: procedure(self: PImFontAtlas); cdecl;
+  ImFontAtlas_Build: function(self: PImFontAtlas): Boolean; cdecl;
+  ImFontAtlas_GetTexDataAsAlpha8: procedure(self: PImFontAtlas; out_pixels: PPByte; out_width: PInteger; out_height: PInteger; out_bytes_per_pixel: PInteger); cdecl;
+  ImFontAtlas_GetTexDataAsRGBA32: procedure(self: PImFontAtlas; out_pixels: PPByte; out_width: PInteger; out_height: PInteger; out_bytes_per_pixel: PInteger); cdecl;
+  ImFontAtlas_IsBuilt: function(self: PImFontAtlas): Boolean; cdecl;
+  ImFontAtlas_SetTexID: procedure(self: PImFontAtlas; id: ImTextureID); cdecl;
+  ImFontAtlas_GetGlyphRangesDefault: function(self: PImFontAtlas): PImWchar; cdecl;
+  ImFontAtlas_GetGlyphRangesGreek: function(self: PImFontAtlas): PImWchar; cdecl;
+  ImFontAtlas_GetGlyphRangesKorean: function(self: PImFontAtlas): PImWchar; cdecl;
+  ImFontAtlas_GetGlyphRangesJapanese: function(self: PImFontAtlas): PImWchar; cdecl;
+  ImFontAtlas_GetGlyphRangesChineseFull: function(self: PImFontAtlas): PImWchar; cdecl;
+  ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon: function(self: PImFontAtlas): PImWchar; cdecl;
+  ImFontAtlas_GetGlyphRangesCyrillic: function(self: PImFontAtlas): PImWchar; cdecl;
+  ImFontAtlas_GetGlyphRangesThai: function(self: PImFontAtlas): PImWchar; cdecl;
+  ImFontAtlas_GetGlyphRangesVietnamese: function(self: PImFontAtlas): PImWchar; cdecl;
+  ImFontAtlas_AddCustomRectRegular: function(self: PImFontAtlas; width: Integer; height: Integer): Integer; cdecl;
+  ImFontAtlas_AddCustomRectFontGlyph: function(self: PImFontAtlas; font: PImFont; id: ImWchar; width: Integer; height: Integer; advance_x: Single; offset: ImVec2): Integer; cdecl;
+  ImFontAtlas_GetCustomRectByIndex: function(self: PImFontAtlas; index: Integer): PImFontAtlasCustomRect; cdecl;
+  ImFontAtlas_CalcCustomRectUV: procedure(self: PImFontAtlas; const rect: PImFontAtlasCustomRect; out_uv_min: PImVec2; out_uv_max: PImVec2); cdecl;
+  ImFontAtlas_GetMouseCursorTexData: function(self: PImFontAtlas; cursor: ImGuiMouseCursor; out_offset: PImVec2; out_size: PImVec2; out_uv_border: PImVec2; out_uv_fill: PImVec2): Boolean; cdecl;
+  ImFont_ImFont: function(): PImFont; cdecl;
+  ImFont_destroy: procedure(self: PImFont); cdecl;
+  ImFont_FindGlyph: function(self: PImFont; c: ImWchar): PImFontGlyph; cdecl;
+  ImFont_FindGlyphNoFallback: function(self: PImFont; c: ImWchar): PImFontGlyph; cdecl;
+  ImFont_GetCharAdvance: function(self: PImFont; c: ImWchar): Single; cdecl;
+  ImFont_IsLoaded: function(self: PImFont): Boolean; cdecl;
+  ImFont_GetDebugName: function(self: PImFont): PUTF8Char; cdecl;
+  ImFont_CalcTextSizeA: procedure(pOut: PImVec2; self: PImFont; size: Single; max_width: Single; wrap_width: Single; const text_begin: PUTF8Char; const text_end: PUTF8Char; remaining: PPUTF8Char); cdecl;
+  ImFont_CalcWordWrapPositionA: function(self: PImFont; scale: Single; const text: PUTF8Char; const text_end: PUTF8Char; wrap_width: Single): PUTF8Char; cdecl;
+  ImFont_RenderChar: procedure(self: PImFont; draw_list: PImDrawList; size: Single; pos: ImVec2; col: ImU32; c: ImWchar); cdecl;
+  ImFont_RenderText: procedure(self: PImFont; draw_list: PImDrawList; size: Single; pos: ImVec2; col: ImU32; clip_rect: ImVec4; const text_begin: PUTF8Char; const text_end: PUTF8Char; wrap_width: Single; cpu_fine_clip: Boolean); cdecl;
+  ImFont_BuildLookupTable: procedure(self: PImFont); cdecl;
+  ImFont_ClearOutputData: procedure(self: PImFont); cdecl;
+  ImFont_GrowIndex: procedure(self: PImFont; new_size: Integer); cdecl;
+  ImFont_AddGlyph: procedure(self: PImFont; const src_cfg: PImFontConfig; c: ImWchar; x0: Single; y0: Single; x1: Single; y1: Single; u0: Single; v0: Single; u1: Single; v1: Single; advance_x: Single); cdecl;
+  ImFont_AddRemapChar: procedure(self: PImFont; dst: ImWchar; src: ImWchar; overwrite_dst: Boolean); cdecl;
+  ImFont_SetGlyphVisible: procedure(self: PImFont; c: ImWchar; visible: Boolean); cdecl;
+  ImFont_IsGlyphRangeUnused: function(self: PImFont; c_begin: Cardinal; c_last: Cardinal): Boolean; cdecl;
+  ImGuiViewport_ImGuiViewport: function(): PImGuiViewport; cdecl;
+  ImGuiViewport_destroy: procedure(self: PImGuiViewport); cdecl;
+  ImGuiViewport_GetCenter: procedure(pOut: PImVec2; self: PImGuiViewport); cdecl;
+  ImGuiViewport_GetWorkCenter: procedure(pOut: PImVec2; self: PImGuiViewport); cdecl;
+  ImGuiPlatformIO_ImGuiPlatformIO: function(): PImGuiPlatformIO; cdecl;
+  ImGuiPlatformIO_destroy: procedure(self: PImGuiPlatformIO); cdecl;
+  ImGuiPlatformMonitor_ImGuiPlatformMonitor: function(): PImGuiPlatformMonitor; cdecl;
+  ImGuiPlatformMonitor_destroy: procedure(self: PImGuiPlatformMonitor); cdecl;
+  ImGuiPlatformImeData_ImGuiPlatformImeData: function(): PImGuiPlatformImeData; cdecl;
+  ImGuiPlatformImeData_destroy: procedure(self: PImGuiPlatformImeData); cdecl;
+  igImHashData: function(const data: Pointer; data_size: NativeUInt; seed: ImGuiID): ImGuiID; cdecl;
+  igImHashStr: function(const data: PUTF8Char; data_size: NativeUInt; seed: ImGuiID): ImGuiID; cdecl;
+  igImQsort: procedure(base: Pointer; count: NativeUInt; size_of_element: NativeUInt; compare_func: igImQsort_compare_func); cdecl;
+  igImAlphaBlendColors: function(col_a: ImU32; col_b: ImU32): ImU32; cdecl;
+  igImIsPowerOfTwo_Int: function(v: Integer): Boolean; cdecl;
+  igImIsPowerOfTwo_U64: function(v: ImU64): Boolean; cdecl;
+  igImUpperPowerOfTwo: function(v: Integer): Integer; cdecl;
+  igImStricmp: function(const str1: PUTF8Char; const str2: PUTF8Char): Integer; cdecl;
+  igImStrnicmp: function(const str1: PUTF8Char; const str2: PUTF8Char; count: NativeUInt): Integer; cdecl;
+  igImStrncpy: procedure(dst: PUTF8Char; const src: PUTF8Char; count: NativeUInt); cdecl;
+  igImStrdup: function(const str: PUTF8Char): PUTF8Char; cdecl;
+  igImStrdupcpy: function(dst: PUTF8Char; p_dst_size: PNativeUInt; const str: PUTF8Char): PUTF8Char; cdecl;
+  igImStrchrRange: function(const str_begin: PUTF8Char; const str_end: PUTF8Char; c: UTF8Char): PUTF8Char; cdecl;
+  igImStreolRange: function(const str: PUTF8Char; const str_end: PUTF8Char): PUTF8Char; cdecl;
+  igImStristr: function(const haystack: PUTF8Char; const haystack_end: PUTF8Char; const needle: PUTF8Char; const needle_end: PUTF8Char): PUTF8Char; cdecl;
+  igImStrTrimBlanks: procedure(str: PUTF8Char); cdecl;
+  igImStrSkipBlank: function(const str: PUTF8Char): PUTF8Char; cdecl;
+  igImStrlenW: function(const str: PImWchar): Integer; cdecl;
+  igImStrbol: function(const buf_mid_line: PUTF8Char; const buf_begin: PUTF8Char): PUTF8Char; cdecl;
+  igImToUpper: function(c: UTF8Char): UTF8Char; cdecl;
+  igImCharIsBlankA: function(c: UTF8Char): Boolean; cdecl;
+  igImCharIsBlankW: function(c: Cardinal): Boolean; cdecl;
+  igImCharIsXdigitA: function(c: UTF8Char): Boolean; cdecl;
+  igImFormatString: function(buf: PUTF8Char; buf_size: NativeUInt; const fmt: PUTF8Char): Integer varargs; cdecl;
+  igImFormatStringV: function(buf: PUTF8Char; buf_size: NativeUInt; const fmt: PUTF8Char; args: Pointer): Integer; cdecl;
+  igImFormatStringToTempBuffer: procedure(out_buf: PPUTF8Char; out_buf_end: PPUTF8Char; const fmt: PUTF8Char) varargs; cdecl;
+  igImFormatStringToTempBufferV: procedure(out_buf: PPUTF8Char; out_buf_end: PPUTF8Char; const fmt: PUTF8Char; args: Pointer); cdecl;
+  igImParseFormatFindStart: function(const format: PUTF8Char): PUTF8Char; cdecl;
+  igImParseFormatFindEnd: function(const format: PUTF8Char): PUTF8Char; cdecl;
+  igImParseFormatTrimDecorations: function(const format: PUTF8Char; buf: PUTF8Char; buf_size: NativeUInt): PUTF8Char; cdecl;
+  igImParseFormatSanitizeForPrinting: procedure(const fmt_in: PUTF8Char; fmt_out: PUTF8Char; fmt_out_size: NativeUInt); cdecl;
+  igImParseFormatSanitizeForScanning: function(const fmt_in: PUTF8Char; fmt_out: PUTF8Char; fmt_out_size: NativeUInt): PUTF8Char; cdecl;
+  igImParseFormatPrecision: function(const format: PUTF8Char; default_value: Integer): Integer; cdecl;
+  igImTextCharToUtf8: function(out_buf: PUTF8Char; c: Cardinal): PUTF8Char; cdecl;
+  igImTextStrToUtf8: function(out_buf: PUTF8Char; out_buf_size: Integer; const in_text: PImWchar; const in_text_end: PImWchar): Integer; cdecl;
+  igImTextCharFromUtf8: function(out_char: PCardinal; const in_text: PUTF8Char; const in_text_end: PUTF8Char): Integer; cdecl;
+  igImTextStrFromUtf8: function(out_buf: PImWchar; out_buf_size: Integer; const in_text: PUTF8Char; const in_text_end: PUTF8Char; in_remaining: PPUTF8Char): Integer; cdecl;
+  igImTextCountCharsFromUtf8: function(const in_text: PUTF8Char; const in_text_end: PUTF8Char): Integer; cdecl;
+  igImTextCountUtf8BytesFromChar: function(const in_text: PUTF8Char; const in_text_end: PUTF8Char): Integer; cdecl;
+  igImTextCountUtf8BytesFromStr: function(const in_text: PImWchar; const in_text_end: PImWchar): Integer; cdecl;
+  igImTextFindPreviousUtf8Codepoint: function(const in_text_start: PUTF8Char; const in_text_curr: PUTF8Char): PUTF8Char; cdecl;
+  igImTextCountLines: function(const in_text: PUTF8Char; const in_text_end: PUTF8Char): Integer; cdecl;
+  igImFileOpen: function(const filename: PUTF8Char; const mode: PUTF8Char): ImFileHandle; cdecl;
+  igImFileClose: function(&file: ImFileHandle): Boolean; cdecl;
+  igImFileGetSize: function(&file: ImFileHandle): ImU64; cdecl;
+  igImFileRead: function(data: Pointer; size: ImU64; count: ImU64; &file: ImFileHandle): ImU64; cdecl;
+  igImFileWrite: function(const data: Pointer; size: ImU64; count: ImU64; &file: ImFileHandle): ImU64; cdecl;
+  igImFileLoadToMemory: function(const filename: PUTF8Char; const mode: PUTF8Char; out_file_size: PNativeUInt; padding_bytes: Integer): Pointer; cdecl;
+  igImPow_Float: function(x: Single; y: Single): Single; cdecl;
+  igImPow_double: function(x: Double; y: Double): Double; cdecl;
+  igImLog_Float: function(x: Single): Single; cdecl;
+  igImLog_double: function(x: Double): Double; cdecl;
+  igImAbs_Int: function(x: Integer): Integer; cdecl;
+  igImAbs_Float: function(x: Single): Single; cdecl;
+  igImAbs_double: function(x: Double): Double; cdecl;
+  igImSign_Float: function(x: Single): Single; cdecl;
+  igImSign_double: function(x: Double): Double; cdecl;
+  igImRsqrt_Float: function(x: Single): Single; cdecl;
+  igImRsqrt_double: function(x: Double): Double; cdecl;
+  igImMin: procedure(pOut: PImVec2; lhs: ImVec2; rhs: ImVec2); cdecl;
+  igImMax: procedure(pOut: PImVec2; lhs: ImVec2; rhs: ImVec2); cdecl;
+  igImClamp: procedure(pOut: PImVec2; v: ImVec2; mn: ImVec2; mx: ImVec2); cdecl;
+  igImLerp_Vec2Float: procedure(pOut: PImVec2; a: ImVec2; b: ImVec2; t: Single); cdecl;
+  igImLerp_Vec2Vec2: procedure(pOut: PImVec2; a: ImVec2; b: ImVec2; t: ImVec2); cdecl;
+  igImLerp_Vec4: procedure(pOut: PImVec4; a: ImVec4; b: ImVec4; t: Single); cdecl;
+  igImSaturate: function(f: Single): Single; cdecl;
+  igImLengthSqr_Vec2: function(lhs: ImVec2): Single; cdecl;
+  igImLengthSqr_Vec4: function(lhs: ImVec4): Single; cdecl;
+  igImInvLength: function(lhs: ImVec2; fail_value: Single): Single; cdecl;
+  igImTrunc_Float: function(f: Single): Single; cdecl;
+  igImTrunc_Vec2: procedure(pOut: PImVec2; v: ImVec2); cdecl;
+  igImFloor_Float: function(f: Single): Single; cdecl;
+  igImFloor_Vec2: procedure(pOut: PImVec2; v: ImVec2); cdecl;
+  igImModPositive: function(a: Integer; b: Integer): Integer; cdecl;
+  igImDot: function(a: ImVec2; b: ImVec2): Single; cdecl;
+  igImRotate: procedure(pOut: PImVec2; v: ImVec2; cos_a: Single; sin_a: Single); cdecl;
+  igImLinearSweep: function(current: Single; target: Single; speed: Single): Single; cdecl;
+  igImLinearRemapClamp: function(s0: Single; s1: Single; d0: Single; d1: Single; x: Single): Single; cdecl;
+  igImMul: procedure(pOut: PImVec2; lhs: ImVec2; rhs: ImVec2); cdecl;
+  igImIsFloatAboveGuaranteedIntegerPrecision: function(f: Single): Boolean; cdecl;
+  igImExponentialMovingAverage: function(avg: Single; sample: Single; n: Integer): Single; cdecl;
+  igImBezierCubicCalc: procedure(pOut: PImVec2; p1: ImVec2; p2: ImVec2; p3: ImVec2; p4: ImVec2; t: Single); cdecl;
+  igImBezierCubicClosestPoint: procedure(pOut: PImVec2; p1: ImVec2; p2: ImVec2; p3: ImVec2; p4: ImVec2; p: ImVec2; num_segments: Integer); cdecl;
+  igImBezierCubicClosestPointCasteljau: procedure(pOut: PImVec2; p1: ImVec2; p2: ImVec2; p3: ImVec2; p4: ImVec2; p: ImVec2; tess_tol: Single); cdecl;
+  igImBezierQuadraticCalc: procedure(pOut: PImVec2; p1: ImVec2; p2: ImVec2; p3: ImVec2; t: Single); cdecl;
+  igImLineClosestPoint: procedure(pOut: PImVec2; a: ImVec2; b: ImVec2; p: ImVec2); cdecl;
+  igImTriangleContainsPoint: function(a: ImVec2; b: ImVec2; c: ImVec2; p: ImVec2): Boolean; cdecl;
+  igImTriangleClosestPoint: procedure(pOut: PImVec2; a: ImVec2; b: ImVec2; c: ImVec2; p: ImVec2); cdecl;
+  igImTriangleBarycentricCoords: procedure(a: ImVec2; b: ImVec2; c: ImVec2; p: ImVec2; out_u: PSingle; out_v: PSingle; out_w: PSingle); cdecl;
+  igImTriangleArea: function(a: ImVec2; b: ImVec2; c: ImVec2): Single; cdecl;
+  igImTriangleIsClockwise: function(a: ImVec2; b: ImVec2; c: ImVec2): Boolean; cdecl;
+  ImVec1_ImVec1_Nil: function(): PImVec1; cdecl;
+  ImVec1_destroy: procedure(self: PImVec1); cdecl;
+  ImVec1_ImVec1_Float: function(_x: Single): PImVec1; cdecl;
+  ImVec2ih_ImVec2ih_Nil: function(): PImVec2ih; cdecl;
+  ImVec2ih_destroy: procedure(self: PImVec2ih); cdecl;
+  ImVec2ih_ImVec2ih_short: function(_x: Smallint; _y: Smallint): PImVec2ih; cdecl;
+  ImVec2ih_ImVec2ih_Vec2: function(rhs: ImVec2): PImVec2ih; cdecl;
+  ImRect_ImRect_Nil: function(): PImRect; cdecl;
+  ImRect_destroy: procedure(self: PImRect); cdecl;
+  ImRect_ImRect_Vec2: function(min: ImVec2; max: ImVec2): PImRect; cdecl;
+  ImRect_ImRect_Vec4: function(v: ImVec4): PImRect; cdecl;
+  ImRect_ImRect_Float: function(x1: Single; y1: Single; x2: Single; y2: Single): PImRect; cdecl;
+  ImRect_GetCenter: procedure(pOut: PImVec2; self: PImRect); cdecl;
+  ImRect_GetSize: procedure(pOut: PImVec2; self: PImRect); cdecl;
+  ImRect_GetWidth: function(self: PImRect): Single; cdecl;
+  ImRect_GetHeight: function(self: PImRect): Single; cdecl;
+  ImRect_GetArea: function(self: PImRect): Single; cdecl;
+  ImRect_GetTL: procedure(pOut: PImVec2; self: PImRect); cdecl;
+  ImRect_GetTR: procedure(pOut: PImVec2; self: PImRect); cdecl;
+  ImRect_GetBL: procedure(pOut: PImVec2; self: PImRect); cdecl;
+  ImRect_GetBR: procedure(pOut: PImVec2; self: PImRect); cdecl;
+  ImRect_Contains_Vec2: function(self: PImRect; p: ImVec2): Boolean; cdecl;
+  ImRect_Contains_Rect: function(self: PImRect; r: ImRect): Boolean; cdecl;
+  ImRect_ContainsWithPad: function(self: PImRect; p: ImVec2; pad: ImVec2): Boolean; cdecl;
+  ImRect_Overlaps: function(self: PImRect; r: ImRect): Boolean; cdecl;
+  ImRect_Add_Vec2: procedure(self: PImRect; p: ImVec2); cdecl;
+  ImRect_Add_Rect: procedure(self: PImRect; r: ImRect); cdecl;
+  ImRect_Expand_Float: procedure(self: PImRect; const amount: Single); cdecl;
+  ImRect_Expand_Vec2: procedure(self: PImRect; amount: ImVec2); cdecl;
+  ImRect_Translate: procedure(self: PImRect; d: ImVec2); cdecl;
+  ImRect_TranslateX: procedure(self: PImRect; dx: Single); cdecl;
+  ImRect_TranslateY: procedure(self: PImRect; dy: Single); cdecl;
+  ImRect_ClipWith: procedure(self: PImRect; r: ImRect); cdecl;
+  ImRect_ClipWithFull: procedure(self: PImRect; r: ImRect); cdecl;
+  ImRect_Floor: procedure(self: PImRect); cdecl;
+  ImRect_IsInverted: function(self: PImRect): Boolean; cdecl;
+  ImRect_ToVec4: procedure(pOut: PImVec4; self: PImRect); cdecl;
+  igImBitArrayGetStorageSizeInBytes: function(bitcount: Integer): NativeUInt; cdecl;
+  igImBitArrayClearAllBits: procedure(arr: PImU32; bitcount: Integer); cdecl;
+  igImBitArrayTestBit: function(const arr: PImU32; n: Integer): Boolean; cdecl;
+  igImBitArrayClearBit: procedure(arr: PImU32; n: Integer); cdecl;
+  igImBitArraySetBit: procedure(arr: PImU32; n: Integer); cdecl;
+  igImBitArraySetBitRange: procedure(arr: PImU32; n: Integer; n2: Integer); cdecl;
+  ImBitVector_Create: procedure(self: PImBitVector; sz: Integer); cdecl;
+  ImBitVector_Clear: procedure(self: PImBitVector); cdecl;
+  ImBitVector_TestBit: function(self: PImBitVector; n: Integer): Boolean; cdecl;
+  ImBitVector_SetBit: procedure(self: PImBitVector; n: Integer); cdecl;
+  ImBitVector_ClearBit: procedure(self: PImBitVector; n: Integer); cdecl;
+  ImGuiTextIndex_clear: procedure(self: PImGuiTextIndex); cdecl;
+  ImGuiTextIndex_size: function(self: PImGuiTextIndex): Integer; cdecl;
+  ImGuiTextIndex_get_line_begin: function(self: PImGuiTextIndex; const base: PUTF8Char; n: Integer): PUTF8Char; cdecl;
+  ImGuiTextIndex_get_line_end: function(self: PImGuiTextIndex; const base: PUTF8Char; n: Integer): PUTF8Char; cdecl;
+  ImGuiTextIndex_append: procedure(self: PImGuiTextIndex; const base: PUTF8Char; old_size: Integer; new_size: Integer); cdecl;
+  igImLowerBound: function(in_begin: PImGuiStoragePair; in_end: PImGuiStoragePair; key: ImGuiID): PImGuiStoragePair; cdecl;
+  ImDrawListSharedData_ImDrawListSharedData: function(): PImDrawListSharedData; cdecl;
+  ImDrawListSharedData_destroy: procedure(self: PImDrawListSharedData); cdecl;
+  ImDrawListSharedData_SetCircleTessellationMaxError: procedure(self: PImDrawListSharedData; max_error: Single); cdecl;
+  ImDrawDataBuilder_ImDrawDataBuilder: function(): PImDrawDataBuilder; cdecl;
+  ImDrawDataBuilder_destroy: procedure(self: PImDrawDataBuilder); cdecl;
+  ImGuiDataVarInfo_GetVarPtr: function(self: PImGuiDataVarInfo; parent: Pointer): Pointer; cdecl;
+  ImGuiStyleMod_ImGuiStyleMod_Int: function(idx: ImGuiStyleVar; v: Integer): PImGuiStyleMod; cdecl;
+  ImGuiStyleMod_destroy: procedure(self: PImGuiStyleMod); cdecl;
+  ImGuiStyleMod_ImGuiStyleMod_Float: function(idx: ImGuiStyleVar; v: Single): PImGuiStyleMod; cdecl;
+  ImGuiStyleMod_ImGuiStyleMod_Vec2: function(idx: ImGuiStyleVar; v: ImVec2): PImGuiStyleMod; cdecl;
+  ImGuiComboPreviewData_ImGuiComboPreviewData: function(): PImGuiComboPreviewData; cdecl;
+  ImGuiComboPreviewData_destroy: procedure(self: PImGuiComboPreviewData); cdecl;
+  ImGuiMenuColumns_ImGuiMenuColumns: function(): PImGuiMenuColumns; cdecl;
+  ImGuiMenuColumns_destroy: procedure(self: PImGuiMenuColumns); cdecl;
+  ImGuiMenuColumns_Update: procedure(self: PImGuiMenuColumns; spacing: Single; window_reappearing: Boolean); cdecl;
+  ImGuiMenuColumns_DeclColumns: function(self: PImGuiMenuColumns; w_icon: Single; w_label: Single; w_shortcut: Single; w_mark: Single): Single; cdecl;
+  ImGuiMenuColumns_CalcNextTotalWidth: procedure(self: PImGuiMenuColumns; update_offsets: Boolean); cdecl;
+  ImGuiInputTextDeactivatedState_ImGuiInputTextDeactivatedState: function(): PImGuiInputTextDeactivatedState; cdecl;
+  ImGuiInputTextDeactivatedState_destroy: procedure(self: PImGuiInputTextDeactivatedState); cdecl;
+  ImGuiInputTextDeactivatedState_ClearFreeMemory: procedure(self: PImGuiInputTextDeactivatedState); cdecl;
+  ImGuiInputTextState_ImGuiInputTextState: function(): PImGuiInputTextState; cdecl;
+  ImGuiInputTextState_destroy: procedure(self: PImGuiInputTextState); cdecl;
+  ImGuiInputTextState_ClearText: procedure(self: PImGuiInputTextState); cdecl;
+  ImGuiInputTextState_ClearFreeMemory: procedure(self: PImGuiInputTextState); cdecl;
+  ImGuiInputTextState_OnKeyPressed: procedure(self: PImGuiInputTextState; key: Integer); cdecl;
+  ImGuiInputTextState_OnCharPressed: procedure(self: PImGuiInputTextState; c: Cardinal); cdecl;
+  ImGuiInputTextState_CursorAnimReset: procedure(self: PImGuiInputTextState); cdecl;
+  ImGuiInputTextState_CursorClamp: procedure(self: PImGuiInputTextState); cdecl;
+  ImGuiInputTextState_HasSelection: function(self: PImGuiInputTextState): Boolean; cdecl;
+  ImGuiInputTextState_ClearSelection: procedure(self: PImGuiInputTextState); cdecl;
+  ImGuiInputTextState_GetCursorPos: function(self: PImGuiInputTextState): Integer; cdecl;
+  ImGuiInputTextState_GetSelectionStart: function(self: PImGuiInputTextState): Integer; cdecl;
+  ImGuiInputTextState_GetSelectionEnd: function(self: PImGuiInputTextState): Integer; cdecl;
+  ImGuiInputTextState_SelectAll: procedure(self: PImGuiInputTextState); cdecl;
+  ImGuiInputTextState_ReloadUserBufAndSelectAll: procedure(self: PImGuiInputTextState); cdecl;
+  ImGuiInputTextState_ReloadUserBufAndKeepSelection: procedure(self: PImGuiInputTextState); cdecl;
+  ImGuiInputTextState_ReloadUserBufAndMoveToEnd: procedure(self: PImGuiInputTextState); cdecl;
+  ImGuiNextWindowData_ImGuiNextWindowData: function(): PImGuiNextWindowData; cdecl;
+  ImGuiNextWindowData_destroy: procedure(self: PImGuiNextWindowData); cdecl;
+  ImGuiNextWindowData_ClearFlags: procedure(self: PImGuiNextWindowData); cdecl;
+  ImGuiNextItemData_ImGuiNextItemData: function(): PImGuiNextItemData; cdecl;
+  ImGuiNextItemData_destroy: procedure(self: PImGuiNextItemData); cdecl;
+  ImGuiNextItemData_ClearFlags: procedure(self: PImGuiNextItemData); cdecl;
+  ImGuiLastItemData_ImGuiLastItemData: function(): PImGuiLastItemData; cdecl;
+  ImGuiLastItemData_destroy: procedure(self: PImGuiLastItemData); cdecl;
+  ImGuiErrorRecoveryState_ImGuiErrorRecoveryState: function(): PImGuiErrorRecoveryState; cdecl;
+  ImGuiErrorRecoveryState_destroy: procedure(self: PImGuiErrorRecoveryState); cdecl;
+  ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr: function(ptr: Pointer): PImGuiPtrOrIndex; cdecl;
+  ImGuiPtrOrIndex_destroy: procedure(self: PImGuiPtrOrIndex); cdecl;
+  ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int: function(index: Integer): PImGuiPtrOrIndex; cdecl;
+  ImGuiPopupData_ImGuiPopupData: function(): PImGuiPopupData; cdecl;
+  ImGuiPopupData_destroy: procedure(self: PImGuiPopupData); cdecl;
+  ImGuiInputEvent_ImGuiInputEvent: function(): PImGuiInputEvent; cdecl;
+  ImGuiInputEvent_destroy: procedure(self: PImGuiInputEvent); cdecl;
+  ImGuiKeyRoutingData_ImGuiKeyRoutingData: function(): PImGuiKeyRoutingData; cdecl;
+  ImGuiKeyRoutingData_destroy: procedure(self: PImGuiKeyRoutingData); cdecl;
+  ImGuiKeyRoutingTable_ImGuiKeyRoutingTable: function(): PImGuiKeyRoutingTable; cdecl;
+  ImGuiKeyRoutingTable_destroy: procedure(self: PImGuiKeyRoutingTable); cdecl;
+  ImGuiKeyRoutingTable_Clear: procedure(self: PImGuiKeyRoutingTable); cdecl;
+  ImGuiKeyOwnerData_ImGuiKeyOwnerData: function(): PImGuiKeyOwnerData; cdecl;
+  ImGuiKeyOwnerData_destroy: procedure(self: PImGuiKeyOwnerData); cdecl;
+  ImGuiListClipperRange_FromIndices: function(min: Integer; max: Integer): ImGuiListClipperRange; cdecl;
+  ImGuiListClipperRange_FromPositions: function(y1: Single; y2: Single; off_min: Integer; off_max: Integer): ImGuiListClipperRange; cdecl;
+  ImGuiListClipperData_ImGuiListClipperData: function(): PImGuiListClipperData; cdecl;
+  ImGuiListClipperData_destroy: procedure(self: PImGuiListClipperData); cdecl;
+  ImGuiListClipperData_Reset: procedure(self: PImGuiListClipperData; clipper: PImGuiListClipper); cdecl;
+  ImGuiNavItemData_ImGuiNavItemData: function(): PImGuiNavItemData; cdecl;
+  ImGuiNavItemData_destroy: procedure(self: PImGuiNavItemData); cdecl;
+  ImGuiNavItemData_Clear: procedure(self: PImGuiNavItemData); cdecl;
+  ImGuiTypingSelectState_ImGuiTypingSelectState: function(): PImGuiTypingSelectState; cdecl;
+  ImGuiTypingSelectState_destroy: procedure(self: PImGuiTypingSelectState); cdecl;
+  ImGuiTypingSelectState_Clear: procedure(self: PImGuiTypingSelectState); cdecl;
+  ImGuiOldColumnData_ImGuiOldColumnData: function(): PImGuiOldColumnData; cdecl;
+  ImGuiOldColumnData_destroy: procedure(self: PImGuiOldColumnData); cdecl;
+  ImGuiOldColumns_ImGuiOldColumns: function(): PImGuiOldColumns; cdecl;
+  ImGuiOldColumns_destroy: procedure(self: PImGuiOldColumns); cdecl;
+  ImGuiBoxSelectState_ImGuiBoxSelectState: function(): PImGuiBoxSelectState; cdecl;
+  ImGuiBoxSelectState_destroy: procedure(self: PImGuiBoxSelectState); cdecl;
+  ImGuiMultiSelectTempData_ImGuiMultiSelectTempData: function(): PImGuiMultiSelectTempData; cdecl;
+  ImGuiMultiSelectTempData_destroy: procedure(self: PImGuiMultiSelectTempData); cdecl;
+  ImGuiMultiSelectTempData_Clear: procedure(self: PImGuiMultiSelectTempData); cdecl;
+  ImGuiMultiSelectTempData_ClearIO: procedure(self: PImGuiMultiSelectTempData); cdecl;
+  ImGuiMultiSelectState_ImGuiMultiSelectState: function(): PImGuiMultiSelectState; cdecl;
+  ImGuiMultiSelectState_destroy: procedure(self: PImGuiMultiSelectState); cdecl;
+  ImGuiDockNode_ImGuiDockNode: function(id: ImGuiID): PImGuiDockNode; cdecl;
+  ImGuiDockNode_destroy: procedure(self: PImGuiDockNode); cdecl;
+  ImGuiDockNode_IsRootNode: function(self: PImGuiDockNode): Boolean; cdecl;
+  ImGuiDockNode_IsDockSpace: function(self: PImGuiDockNode): Boolean; cdecl;
+  ImGuiDockNode_IsFloatingNode: function(self: PImGuiDockNode): Boolean; cdecl;
+  ImGuiDockNode_IsCentralNode: function(self: PImGuiDockNode): Boolean; cdecl;
+  ImGuiDockNode_IsHiddenTabBar: function(self: PImGuiDockNode): Boolean; cdecl;
+  ImGuiDockNode_IsNoTabBar: function(self: PImGuiDockNode): Boolean; cdecl;
+  ImGuiDockNode_IsSplitNode: function(self: PImGuiDockNode): Boolean; cdecl;
+  ImGuiDockNode_IsLeafNode: function(self: PImGuiDockNode): Boolean; cdecl;
+  ImGuiDockNode_IsEmpty: function(self: PImGuiDockNode): Boolean; cdecl;
+  ImGuiDockNode_Rect: procedure(pOut: PImRect; self: PImGuiDockNode); cdecl;
+  ImGuiDockNode_SetLocalFlags: procedure(self: PImGuiDockNode; flags: ImGuiDockNodeFlags); cdecl;
+  ImGuiDockNode_UpdateMergedFlags: procedure(self: PImGuiDockNode); cdecl;
+  ImGuiDockContext_ImGuiDockContext: function(): PImGuiDockContext; cdecl;
+  ImGuiDockContext_destroy: procedure(self: PImGuiDockContext); cdecl;
+  ImGuiViewportP_ImGuiViewportP: function(): PImGuiViewportP; cdecl;
+  ImGuiViewportP_destroy: procedure(self: PImGuiViewportP); cdecl;
+  ImGuiViewportP_ClearRequestFlags: procedure(self: PImGuiViewportP); cdecl;
+  ImGuiViewportP_CalcWorkRectPos: procedure(pOut: PImVec2; self: PImGuiViewportP; inset_min: ImVec2); cdecl;
+  ImGuiViewportP_CalcWorkRectSize: procedure(pOut: PImVec2; self: PImGuiViewportP; inset_min: ImVec2; inset_max: ImVec2); cdecl;
+  ImGuiViewportP_UpdateWorkRect: procedure(self: PImGuiViewportP); cdecl;
+  ImGuiViewportP_GetMainRect: procedure(pOut: PImRect; self: PImGuiViewportP); cdecl;
+  ImGuiViewportP_GetWorkRect: procedure(pOut: PImRect; self: PImGuiViewportP); cdecl;
+  ImGuiViewportP_GetBuildWorkRect: procedure(pOut: PImRect; self: PImGuiViewportP); cdecl;
+  ImGuiWindowSettings_ImGuiWindowSettings: function(): PImGuiWindowSettings; cdecl;
+  ImGuiWindowSettings_destroy: procedure(self: PImGuiWindowSettings); cdecl;
+  ImGuiWindowSettings_GetName: function(self: PImGuiWindowSettings): PUTF8Char; cdecl;
+  ImGuiSettingsHandler_ImGuiSettingsHandler: function(): PImGuiSettingsHandler; cdecl;
+  ImGuiSettingsHandler_destroy: procedure(self: PImGuiSettingsHandler); cdecl;
+  ImGuiDebugAllocInfo_ImGuiDebugAllocInfo: function(): PImGuiDebugAllocInfo; cdecl;
+  ImGuiDebugAllocInfo_destroy: procedure(self: PImGuiDebugAllocInfo); cdecl;
+  ImGuiStackLevelInfo_ImGuiStackLevelInfo: function(): PImGuiStackLevelInfo; cdecl;
+  ImGuiStackLevelInfo_destroy: procedure(self: PImGuiStackLevelInfo); cdecl;
+  ImGuiIDStackTool_ImGuiIDStackTool: function(): PImGuiIDStackTool; cdecl;
+  ImGuiIDStackTool_destroy: procedure(self: PImGuiIDStackTool); cdecl;
+  ImGuiContextHook_ImGuiContextHook: function(): PImGuiContextHook; cdecl;
+  ImGuiContextHook_destroy: procedure(self: PImGuiContextHook); cdecl;
+  ImGuiContext_ImGuiContext: function(shared_font_atlas: PImFontAtlas): PImGuiContext; cdecl;
+  ImGuiContext_destroy: procedure(self: PImGuiContext); cdecl;
+  ImGuiWindow_ImGuiWindow: function(context: PImGuiContext; const name: PUTF8Char): PImGuiWindow; cdecl;
+  ImGuiWindow_destroy: procedure(self: PImGuiWindow); cdecl;
+  ImGuiWindow_GetID_Str: function(self: PImGuiWindow; const str: PUTF8Char; const str_end: PUTF8Char): ImGuiID; cdecl;
+  ImGuiWindow_GetID_Ptr: function(self: PImGuiWindow; const ptr: Pointer): ImGuiID; cdecl;
+  ImGuiWindow_GetID_Int: function(self: PImGuiWindow; n: Integer): ImGuiID; cdecl;
+  ImGuiWindow_GetIDFromPos: function(self: PImGuiWindow; p_abs: ImVec2): ImGuiID; cdecl;
+  ImGuiWindow_GetIDFromRectangle: function(self: PImGuiWindow; r_abs: ImRect): ImGuiID; cdecl;
+  ImGuiWindow_Rect: procedure(pOut: PImRect; self: PImGuiWindow); cdecl;
+  ImGuiWindow_CalcFontSize: function(self: PImGuiWindow): Single; cdecl;
+  ImGuiWindow_TitleBarRect: procedure(pOut: PImRect; self: PImGuiWindow); cdecl;
+  ImGuiWindow_MenuBarRect: procedure(pOut: PImRect; self: PImGuiWindow); cdecl;
+  ImGuiTabItem_ImGuiTabItem: function(): PImGuiTabItem; cdecl;
+  ImGuiTabItem_destroy: procedure(self: PImGuiTabItem); cdecl;
+  ImGuiTabBar_ImGuiTabBar: function(): PImGuiTabBar; cdecl;
+  ImGuiTabBar_destroy: procedure(self: PImGuiTabBar); cdecl;
+  ImGuiTableColumn_ImGuiTableColumn: function(): PImGuiTableColumn; cdecl;
+  ImGuiTableColumn_destroy: procedure(self: PImGuiTableColumn); cdecl;
+  ImGuiTableInstanceData_ImGuiTableInstanceData: function(): PImGuiTableInstanceData; cdecl;
+  ImGuiTableInstanceData_destroy: procedure(self: PImGuiTableInstanceData); cdecl;
+  ImGuiTable_ImGuiTable: function(): PImGuiTable; cdecl;
+  ImGuiTable_destroy: procedure(self: PImGuiTable); cdecl;
+  ImGuiTableTempData_ImGuiTableTempData: function(): PImGuiTableTempData; cdecl;
+  ImGuiTableTempData_destroy: procedure(self: PImGuiTableTempData); cdecl;
+  ImGuiTableColumnSettings_ImGuiTableColumnSettings: function(): PImGuiTableColumnSettings; cdecl;
+  ImGuiTableColumnSettings_destroy: procedure(self: PImGuiTableColumnSettings); cdecl;
+  ImGuiTableSettings_ImGuiTableSettings: function(): PImGuiTableSettings; cdecl;
+  ImGuiTableSettings_destroy: procedure(self: PImGuiTableSettings); cdecl;
+  ImGuiTableSettings_GetColumnSettings: function(self: PImGuiTableSettings): PImGuiTableColumnSettings; cdecl;
+  igGetIOEx: function(ctx: PImGuiContext): PImGuiIO; cdecl;
+  igGetPlatformIOEx: function(ctx: PImGuiContext): PImGuiPlatformIO; cdecl;
+  igGetCurrentWindowRead: function(): PImGuiWindow; cdecl;
+  igGetCurrentWindow: function(): PImGuiWindow; cdecl;
+  igFindWindowByID: function(id: ImGuiID): PImGuiWindow; cdecl;
+  igFindWindowByName: function(const name: PUTF8Char): PImGuiWindow; cdecl;
+  igUpdateWindowParentAndRootLinks: procedure(window: PImGuiWindow; flags: ImGuiWindowFlags; parent_window: PImGuiWindow); cdecl;
+  igUpdateWindowSkipRefresh: procedure(window: PImGuiWindow); cdecl;
+  igCalcWindowNextAutoFitSize: procedure(pOut: PImVec2; window: PImGuiWindow); cdecl;
+  igIsWindowChildOf: function(window: PImGuiWindow; potential_parent: PImGuiWindow; popup_hierarchy: Boolean; dock_hierarchy: Boolean): Boolean; cdecl;
+  igIsWindowWithinBeginStackOf: function(window: PImGuiWindow; potential_parent: PImGuiWindow): Boolean; cdecl;
+  igIsWindowAbove: function(potential_above: PImGuiWindow; potential_below: PImGuiWindow): Boolean; cdecl;
+  igIsWindowNavFocusable: function(window: PImGuiWindow): Boolean; cdecl;
+  igSetWindowPos_WindowPtr: procedure(window: PImGuiWindow; pos: ImVec2; cond: ImGuiCond); cdecl;
+  igSetWindowSize_WindowPtr: procedure(window: PImGuiWindow; size: ImVec2; cond: ImGuiCond); cdecl;
+  igSetWindowCollapsed_WindowPtr: procedure(window: PImGuiWindow; collapsed: Boolean; cond: ImGuiCond); cdecl;
+  igSetWindowHitTestHole: procedure(window: PImGuiWindow; pos: ImVec2; size: ImVec2); cdecl;
+  igSetWindowHiddenAndSkipItemsForCurrentFrame: procedure(window: PImGuiWindow); cdecl;
+  igSetWindowParentWindowForFocusRoute: procedure(window: PImGuiWindow; parent_window: PImGuiWindow); cdecl;
+  igWindowRectAbsToRel: procedure(pOut: PImRect; window: PImGuiWindow; r: ImRect); cdecl;
+  igWindowRectRelToAbs: procedure(pOut: PImRect; window: PImGuiWindow; r: ImRect); cdecl;
+  igWindowPosAbsToRel: procedure(pOut: PImVec2; window: PImGuiWindow; p: ImVec2); cdecl;
+  igWindowPosRelToAbs: procedure(pOut: PImVec2; window: PImGuiWindow; p: ImVec2); cdecl;
+  igFocusWindow: procedure(window: PImGuiWindow; flags: ImGuiFocusRequestFlags); cdecl;
+  igFocusTopMostWindowUnderOne: procedure(under_this_window: PImGuiWindow; ignore_window: PImGuiWindow; filter_viewport: PImGuiViewport; flags: ImGuiFocusRequestFlags); cdecl;
+  igBringWindowToFocusFront: procedure(window: PImGuiWindow); cdecl;
+  igBringWindowToDisplayFront: procedure(window: PImGuiWindow); cdecl;
+  igBringWindowToDisplayBack: procedure(window: PImGuiWindow); cdecl;
+  igBringWindowToDisplayBehind: procedure(window: PImGuiWindow; above_window: PImGuiWindow); cdecl;
+  igFindWindowDisplayIndex: function(window: PImGuiWindow): Integer; cdecl;
+  igFindBottomMostVisibleWindowWithinBeginStack: function(window: PImGuiWindow): PImGuiWindow; cdecl;
+  igSetNextWindowRefreshPolicy: procedure(flags: ImGuiWindowRefreshFlags); cdecl;
+  igSetCurrentFont: procedure(font: PImFont); cdecl;
+  igGetDefaultFont: function(): PImFont; cdecl;
+  igGetForegroundDrawList_WindowPtr: function(window: PImGuiWindow): PImDrawList; cdecl;
+  igAddDrawListToDrawDataEx: procedure(draw_data: PImDrawData; out_list: PImVector_ImDrawListPtr; draw_list: PImDrawList); cdecl;
+  igInitialize: procedure(); cdecl;
+  igShutdown: procedure(); cdecl;
+  igUpdateInputEvents: procedure(trickle_fast_inputs: Boolean); cdecl;
+  igUpdateHoveredWindowAndCaptureFlags: procedure(); cdecl;
+  igFindHoveredWindowEx: procedure(pos: ImVec2; find_first_and_in_any_viewport: Boolean; out_hovered_window: PPImGuiWindow; out_hovered_window_under_moving_window: PPImGuiWindow); cdecl;
+  igStartMouseMovingWindow: procedure(window: PImGuiWindow); cdecl;
+  igStartMouseMovingWindowOrNode: procedure(window: PImGuiWindow; node: PImGuiDockNode; undock: Boolean); cdecl;
+  igUpdateMouseMovingWindowNewFrame: procedure(); cdecl;
+  igUpdateMouseMovingWindowEndFrame: procedure(); cdecl;
+  igAddContextHook: function(context: PImGuiContext; const hook: PImGuiContextHook): ImGuiID; cdecl;
+  igRemoveContextHook: procedure(context: PImGuiContext; hook_to_remove: ImGuiID); cdecl;
+  igCallContextHooks: procedure(context: PImGuiContext; &type: ImGuiContextHookType); cdecl;
+  igTranslateWindowsInViewport: procedure(viewport: PImGuiViewportP; old_pos: ImVec2; new_pos: ImVec2; old_size: ImVec2; new_size: ImVec2); cdecl;
+  igScaleWindowsInViewport: procedure(viewport: PImGuiViewportP; scale: Single); cdecl;
+  igDestroyPlatformWindow: procedure(viewport: PImGuiViewportP); cdecl;
+  igSetWindowViewport: procedure(window: PImGuiWindow; viewport: PImGuiViewportP); cdecl;
+  igSetCurrentViewport: procedure(window: PImGuiWindow; viewport: PImGuiViewportP); cdecl;
+  igGetViewportPlatformMonitor: function(viewport: PImGuiViewport): PImGuiPlatformMonitor; cdecl;
+  igFindHoveredViewportFromPlatformWindowStack: function(mouse_platform_pos: ImVec2): PImGuiViewportP; cdecl;
+  igMarkIniSettingsDirty_Nil: procedure(); cdecl;
+  igMarkIniSettingsDirty_WindowPtr: procedure(window: PImGuiWindow); cdecl;
+  igClearIniSettings: procedure(); cdecl;
+  igAddSettingsHandler: procedure(const handler: PImGuiSettingsHandler); cdecl;
+  igRemoveSettingsHandler: procedure(const type_name: PUTF8Char); cdecl;
+  igFindSettingsHandler: function(const type_name: PUTF8Char): PImGuiSettingsHandler; cdecl;
+  igCreateNewWindowSettings: function(const name: PUTF8Char): PImGuiWindowSettings; cdecl;
+  igFindWindowSettingsByID: function(id: ImGuiID): PImGuiWindowSettings; cdecl;
+  igFindWindowSettingsByWindow: function(window: PImGuiWindow): PImGuiWindowSettings; cdecl;
+  igClearWindowSettings: procedure(const name: PUTF8Char); cdecl;
+  igLocalizeRegisterEntries: procedure(const entries: PImGuiLocEntry; count: Integer); cdecl;
+  igLocalizeGetMsg: function(key: ImGuiLocKey): PUTF8Char; cdecl;
+  igSetScrollX_WindowPtr: procedure(window: PImGuiWindow; scroll_x: Single); cdecl;
+  igSetScrollY_WindowPtr: procedure(window: PImGuiWindow; scroll_y: Single); cdecl;
+  igSetScrollFromPosX_WindowPtr: procedure(window: PImGuiWindow; local_x: Single; center_x_ratio: Single); cdecl;
+  igSetScrollFromPosY_WindowPtr: procedure(window: PImGuiWindow; local_y: Single; center_y_ratio: Single); cdecl;
+  igScrollToItem: procedure(flags: ImGuiScrollFlags); cdecl;
+  igScrollToRect: procedure(window: PImGuiWindow; rect: ImRect; flags: ImGuiScrollFlags); cdecl;
+  igScrollToRectEx: procedure(pOut: PImVec2; window: PImGuiWindow; rect: ImRect; flags: ImGuiScrollFlags); cdecl;
+  igScrollToBringRectIntoView: procedure(window: PImGuiWindow; rect: ImRect); cdecl;
+  igGetItemStatusFlags: function(): ImGuiItemStatusFlags; cdecl;
+  igGetItemFlags: function(): ImGuiItemFlags; cdecl;
+  igGetActiveID: function(): ImGuiID; cdecl;
+  igGetFocusID: function(): ImGuiID; cdecl;
+  igSetActiveID: procedure(id: ImGuiID; window: PImGuiWindow); cdecl;
+  igSetFocusID: procedure(id: ImGuiID; window: PImGuiWindow); cdecl;
+  igClearActiveID: procedure(); cdecl;
+  igGetHoveredID: function(): ImGuiID; cdecl;
+  igSetHoveredID: procedure(id: ImGuiID); cdecl;
+  igKeepAliveID: procedure(id: ImGuiID); cdecl;
+  igMarkItemEdited: procedure(id: ImGuiID); cdecl;
+  igPushOverrideID: procedure(id: ImGuiID); cdecl;
+  igGetIDWithSeed_Str: function(const str_id_begin: PUTF8Char; const str_id_end: PUTF8Char; seed: ImGuiID): ImGuiID; cdecl;
+  igGetIDWithSeed_Int: function(n: Integer; seed: ImGuiID): ImGuiID; cdecl;
+  igItemSize_Vec2: procedure(size: ImVec2; text_baseline_y: Single); cdecl;
+  igItemSize_Rect: procedure(bb: ImRect; text_baseline_y: Single); cdecl;
+  igItemAdd: function(bb: ImRect; id: ImGuiID; const nav_bb: PImRect; extra_flags: ImGuiItemFlags): Boolean; cdecl;
+  igItemHoverable: function(bb: ImRect; id: ImGuiID; item_flags: ImGuiItemFlags): Boolean; cdecl;
+  igIsWindowContentHoverable: function(window: PImGuiWindow; flags: ImGuiHoveredFlags): Boolean; cdecl;
+  igIsClippedEx: function(bb: ImRect; id: ImGuiID): Boolean; cdecl;
+  igSetLastItemData: procedure(item_id: ImGuiID; in_flags: ImGuiItemFlags; status_flags: ImGuiItemStatusFlags; item_rect: ImRect); cdecl;
+  igCalcItemSize: procedure(pOut: PImVec2; size: ImVec2; default_w: Single; default_h: Single); cdecl;
+  igCalcWrapWidthForPos: function(pos: ImVec2; wrap_pos_x: Single): Single; cdecl;
+  igPushMultiItemsWidths: procedure(components: Integer; width_full: Single); cdecl;
+  igShrinkWidths: procedure(items: PImGuiShrinkWidthItem; count: Integer; width_excess: Single); cdecl;
+  igGetStyleVarInfo: function(idx: ImGuiStyleVar): PImGuiDataVarInfo; cdecl;
+  igBeginDisabledOverrideReenable: procedure(); cdecl;
+  igEndDisabledOverrideReenable: procedure(); cdecl;
+  igLogBegin: procedure(flags: ImGuiLogFlags; auto_open_depth: Integer); cdecl;
+  igLogToBuffer: procedure(auto_open_depth: Integer); cdecl;
+  igLogRenderedText: procedure(const ref_pos: PImVec2; const text: PUTF8Char; const text_end: PUTF8Char); cdecl;
+  igLogSetNextTextDecoration: procedure(const prefix: PUTF8Char; const suffix: PUTF8Char); cdecl;
+  igBeginChildEx: function(const name: PUTF8Char; id: ImGuiID; size_arg: ImVec2; child_flags: ImGuiChildFlags; window_flags: ImGuiWindowFlags): Boolean; cdecl;
+  igBeginPopupEx: function(id: ImGuiID; extra_window_flags: ImGuiWindowFlags): Boolean; cdecl;
+  igOpenPopupEx: procedure(id: ImGuiID; popup_flags: ImGuiPopupFlags); cdecl;
+  igClosePopupToLevel: procedure(remaining: Integer; restore_focus_to_window_under_popup: Boolean); cdecl;
+  igClosePopupsOverWindow: procedure(ref_window: PImGuiWindow; restore_focus_to_window_under_popup: Boolean); cdecl;
+  igClosePopupsExceptModals: procedure(); cdecl;
+  igIsPopupOpen_ID: function(id: ImGuiID; popup_flags: ImGuiPopupFlags): Boolean; cdecl;
+  igGetPopupAllowedExtentRect: procedure(pOut: PImRect; window: PImGuiWindow); cdecl;
+  igGetTopMostPopupModal: function(): PImGuiWindow; cdecl;
+  igGetTopMostAndVisiblePopupModal: function(): PImGuiWindow; cdecl;
+  igFindBlockingModal: function(window: PImGuiWindow): PImGuiWindow; cdecl;
+  igFindBestWindowPosForPopup: procedure(pOut: PImVec2; window: PImGuiWindow); cdecl;
+  igFindBestWindowPosForPopupEx: procedure(pOut: PImVec2; ref_pos: ImVec2; size: ImVec2; last_dir: PImGuiDir; r_outer: ImRect; r_avoid: ImRect; policy: ImGuiPopupPositionPolicy); cdecl;
+  igBeginTooltipEx: function(tooltip_flags: ImGuiTooltipFlags; extra_window_flags: ImGuiWindowFlags): Boolean; cdecl;
+  igBeginTooltipHidden: function(): Boolean; cdecl;
+  igBeginViewportSideBar: function(const name: PUTF8Char; viewport: PImGuiViewport; dir: ImGuiDir; size: Single; window_flags: ImGuiWindowFlags): Boolean; cdecl;
+  igBeginMenuEx: function(const &label: PUTF8Char; const icon: PUTF8Char; enabled: Boolean): Boolean; cdecl;
+  igMenuItemEx: function(const &label: PUTF8Char; const icon: PUTF8Char; const shortcut: PUTF8Char; selected: Boolean; enabled: Boolean): Boolean; cdecl;
+  igBeginComboPopup: function(popup_id: ImGuiID; bb: ImRect; flags: ImGuiComboFlags): Boolean; cdecl;
+  igBeginComboPreview: function(): Boolean; cdecl;
+  igEndComboPreview: procedure(); cdecl;
+  igNavInitWindow: procedure(window: PImGuiWindow; force_reinit: Boolean); cdecl;
+  igNavInitRequestApplyResult: procedure(); cdecl;
+  igNavMoveRequestButNoResultYet: function(): Boolean; cdecl;
+  igNavMoveRequestSubmit: procedure(move_dir: ImGuiDir; clip_dir: ImGuiDir; move_flags: ImGuiNavMoveFlags; scroll_flags: ImGuiScrollFlags); cdecl;
+  igNavMoveRequestForward: procedure(move_dir: ImGuiDir; clip_dir: ImGuiDir; move_flags: ImGuiNavMoveFlags; scroll_flags: ImGuiScrollFlags); cdecl;
+  igNavMoveRequestResolveWithLastItem: procedure(result: PImGuiNavItemData); cdecl;
+  igNavMoveRequestResolveWithPastTreeNode: procedure(result: PImGuiNavItemData; tree_node_data: PImGuiTreeNodeStackData); cdecl;
+  igNavMoveRequestCancel: procedure(); cdecl;
+  igNavMoveRequestApplyResult: procedure(); cdecl;
+  igNavMoveRequestTryWrapping: procedure(window: PImGuiWindow; move_flags: ImGuiNavMoveFlags); cdecl;
+  igNavHighlightActivated: procedure(id: ImGuiID); cdecl;
+  igNavClearPreferredPosForAxis: procedure(axis: ImGuiAxis); cdecl;
+  igSetNavCursorVisibleAfterMove: procedure(); cdecl;
+  igNavUpdateCurrentWindowIsScrollPushableX: procedure(); cdecl;
+  igSetNavWindow: procedure(window: PImGuiWindow); cdecl;
+  igSetNavID: procedure(id: ImGuiID; nav_layer: ImGuiNavLayer; focus_scope_id: ImGuiID; rect_rel: ImRect); cdecl;
+  igSetNavFocusScope: procedure(focus_scope_id: ImGuiID); cdecl;
+  igFocusItem: procedure(); cdecl;
+  igActivateItemByID: procedure(id: ImGuiID); cdecl;
+  igIsNamedKey: function(key: ImGuiKey): Boolean; cdecl;
+  igIsNamedKeyOrMod: function(key: ImGuiKey): Boolean; cdecl;
+  igIsLegacyKey: function(key: ImGuiKey): Boolean; cdecl;
+  igIsKeyboardKey: function(key: ImGuiKey): Boolean; cdecl;
+  igIsGamepadKey: function(key: ImGuiKey): Boolean; cdecl;
+  igIsMouseKey: function(key: ImGuiKey): Boolean; cdecl;
+  igIsAliasKey: function(key: ImGuiKey): Boolean; cdecl;
+  igIsLRModKey: function(key: ImGuiKey): Boolean; cdecl;
+  igFixupKeyChord: function(key_chord: ImGuiKeyChord): ImGuiKeyChord; cdecl;
+  igConvertSingleModFlagToKey: function(key: ImGuiKey): ImGuiKey; cdecl;
+  igGetKeyData_ContextPtr: function(ctx: PImGuiContext; key: ImGuiKey): PImGuiKeyData; cdecl;
+  igGetKeyData_Key: function(key: ImGuiKey): PImGuiKeyData; cdecl;
+  igGetKeyChordName: function(key_chord: ImGuiKeyChord): PUTF8Char; cdecl;
+  igMouseButtonToKey: function(button: ImGuiMouseButton): ImGuiKey; cdecl;
+  igIsMouseDragPastThreshold: function(button: ImGuiMouseButton; lock_threshold: Single): Boolean; cdecl;
+  igGetKeyMagnitude2d: procedure(pOut: PImVec2; key_left: ImGuiKey; key_right: ImGuiKey; key_up: ImGuiKey; key_down: ImGuiKey); cdecl;
+  igGetNavTweakPressedAmount: function(axis: ImGuiAxis): Single; cdecl;
+  igCalcTypematicRepeatAmount: function(t0: Single; t1: Single; repeat_delay: Single; repeat_rate: Single): Integer; cdecl;
+  igGetTypematicRepeatRate: procedure(flags: ImGuiInputFlags; repeat_delay: PSingle; repeat_rate: PSingle); cdecl;
+  igTeleportMousePos: procedure(pos: ImVec2); cdecl;
+  igSetActiveIdUsingAllKeyboardKeys: procedure(); cdecl;
+  igIsActiveIdUsingNavDir: function(dir: ImGuiDir): Boolean; cdecl;
+  igGetKeyOwner: function(key: ImGuiKey): ImGuiID; cdecl;
+  igSetKeyOwner: procedure(key: ImGuiKey; owner_id: ImGuiID; flags: ImGuiInputFlags); cdecl;
+  igSetKeyOwnersForKeyChord: procedure(key: ImGuiKeyChord; owner_id: ImGuiID; flags: ImGuiInputFlags); cdecl;
+  igSetItemKeyOwner_InputFlags: procedure(key: ImGuiKey; flags: ImGuiInputFlags); cdecl;
+  igTestKeyOwner: function(key: ImGuiKey; owner_id: ImGuiID): Boolean; cdecl;
+  igGetKeyOwnerData: function(ctx: PImGuiContext; key: ImGuiKey): PImGuiKeyOwnerData; cdecl;
+  igIsKeyDown_ID: function(key: ImGuiKey; owner_id: ImGuiID): Boolean; cdecl;
+  igIsKeyPressed_InputFlags: function(key: ImGuiKey; flags: ImGuiInputFlags; owner_id: ImGuiID): Boolean; cdecl;
+  igIsKeyReleased_ID: function(key: ImGuiKey; owner_id: ImGuiID): Boolean; cdecl;
+  igIsKeyChordPressed_InputFlags: function(key_chord: ImGuiKeyChord; flags: ImGuiInputFlags; owner_id: ImGuiID): Boolean; cdecl;
+  igIsMouseDown_ID: function(button: ImGuiMouseButton; owner_id: ImGuiID): Boolean; cdecl;
+  igIsMouseClicked_InputFlags: function(button: ImGuiMouseButton; flags: ImGuiInputFlags; owner_id: ImGuiID): Boolean; cdecl;
+  igIsMouseReleased_ID: function(button: ImGuiMouseButton; owner_id: ImGuiID): Boolean; cdecl;
+  igIsMouseDoubleClicked_ID: function(button: ImGuiMouseButton; owner_id: ImGuiID): Boolean; cdecl;
+  igShortcut_ID: function(key_chord: ImGuiKeyChord; flags: ImGuiInputFlags; owner_id: ImGuiID): Boolean; cdecl;
+  igSetShortcutRouting: function(key_chord: ImGuiKeyChord; flags: ImGuiInputFlags; owner_id: ImGuiID): Boolean; cdecl;
+  igTestShortcutRouting: function(key_chord: ImGuiKeyChord; owner_id: ImGuiID): Boolean; cdecl;
+  igGetShortcutRoutingData: function(key_chord: ImGuiKeyChord): PImGuiKeyRoutingData; cdecl;
+  igDockContextInitialize: procedure(ctx: PImGuiContext); cdecl;
+  igDockContextShutdown: procedure(ctx: PImGuiContext); cdecl;
+  igDockContextClearNodes: procedure(ctx: PImGuiContext; root_id: ImGuiID; clear_settings_refs: Boolean); cdecl;
+  igDockContextRebuildNodes: procedure(ctx: PImGuiContext); cdecl;
+  igDockContextNewFrameUpdateUndocking: procedure(ctx: PImGuiContext); cdecl;
+  igDockContextNewFrameUpdateDocking: procedure(ctx: PImGuiContext); cdecl;
+  igDockContextEndFrame: procedure(ctx: PImGuiContext); cdecl;
+  igDockContextGenNodeID: function(ctx: PImGuiContext): ImGuiID; cdecl;
+  igDockContextQueueDock: procedure(ctx: PImGuiContext; target: PImGuiWindow; target_node: PImGuiDockNode; payload: PImGuiWindow; split_dir: ImGuiDir; split_ratio: Single; split_outer: Boolean); cdecl;
+  igDockContextQueueUndockWindow: procedure(ctx: PImGuiContext; window: PImGuiWindow); cdecl;
+  igDockContextQueueUndockNode: procedure(ctx: PImGuiContext; node: PImGuiDockNode); cdecl;
+  igDockContextProcessUndockWindow: procedure(ctx: PImGuiContext; window: PImGuiWindow; clear_persistent_docking_ref: Boolean); cdecl;
+  igDockContextProcessUndockNode: procedure(ctx: PImGuiContext; node: PImGuiDockNode); cdecl;
+  igDockContextCalcDropPosForDocking: function(target: PImGuiWindow; target_node: PImGuiDockNode; payload_window: PImGuiWindow; payload_node: PImGuiDockNode; split_dir: ImGuiDir; split_outer: Boolean; out_pos: PImVec2): Boolean; cdecl;
+  igDockContextFindNodeByID: function(ctx: PImGuiContext; id: ImGuiID): PImGuiDockNode; cdecl;
+  igDockNodeWindowMenuHandler_Default: procedure(ctx: PImGuiContext; node: PImGuiDockNode; tab_bar: PImGuiTabBar); cdecl;
+  igDockNodeBeginAmendTabBar: function(node: PImGuiDockNode): Boolean; cdecl;
+  igDockNodeEndAmendTabBar: procedure(); cdecl;
+  igDockNodeGetRootNode: function(node: PImGuiDockNode): PImGuiDockNode; cdecl;
+  igDockNodeIsInHierarchyOf: function(node: PImGuiDockNode; parent: PImGuiDockNode): Boolean; cdecl;
+  igDockNodeGetDepth: function(const node: PImGuiDockNode): Integer; cdecl;
+  igDockNodeGetWindowMenuButtonId: function(const node: PImGuiDockNode): ImGuiID; cdecl;
+  igGetWindowDockNode: function(): PImGuiDockNode; cdecl;
+  igGetWindowAlwaysWantOwnTabBar: function(window: PImGuiWindow): Boolean; cdecl;
+  igBeginDocked: procedure(window: PImGuiWindow; p_open: PBoolean); cdecl;
+  igBeginDockableDragDropSource: procedure(window: PImGuiWindow); cdecl;
+  igBeginDockableDragDropTarget: procedure(window: PImGuiWindow); cdecl;
+  igSetWindowDock: procedure(window: PImGuiWindow; dock_id: ImGuiID; cond: ImGuiCond); cdecl;
+  igDockBuilderDockWindow: procedure(const window_name: PUTF8Char; node_id: ImGuiID); cdecl;
+  igDockBuilderGetNode: function(node_id: ImGuiID): PImGuiDockNode; cdecl;
+  igDockBuilderGetCentralNode: function(node_id: ImGuiID): PImGuiDockNode; cdecl;
+  igDockBuilderAddNode: function(node_id: ImGuiID; flags: ImGuiDockNodeFlags): ImGuiID; cdecl;
+  igDockBuilderRemoveNode: procedure(node_id: ImGuiID); cdecl;
+  igDockBuilderRemoveNodeDockedWindows: procedure(node_id: ImGuiID; clear_settings_refs: Boolean); cdecl;
+  igDockBuilderRemoveNodeChildNodes: procedure(node_id: ImGuiID); cdecl;
+  igDockBuilderSetNodePos: procedure(node_id: ImGuiID; pos: ImVec2); cdecl;
+  igDockBuilderSetNodeSize: procedure(node_id: ImGuiID; size: ImVec2); cdecl;
+  igDockBuilderSplitNode: function(node_id: ImGuiID; split_dir: ImGuiDir; size_ratio_for_node_at_dir: Single; out_id_at_dir: PImGuiID; out_id_at_opposite_dir: PImGuiID): ImGuiID; cdecl;
+  igDockBuilderCopyDockSpace: procedure(src_dockspace_id: ImGuiID; dst_dockspace_id: ImGuiID; in_window_remap_pairs: PImVector_const_charPtr); cdecl;
+  igDockBuilderCopyNode: procedure(src_node_id: ImGuiID; dst_node_id: ImGuiID; out_node_remap_pairs: PImVector_ImGuiID); cdecl;
+  igDockBuilderCopyWindowSettings: procedure(const src_name: PUTF8Char; const dst_name: PUTF8Char); cdecl;
+  igDockBuilderFinish: procedure(node_id: ImGuiID); cdecl;
+  igPushFocusScope: procedure(id: ImGuiID); cdecl;
+  igPopFocusScope: procedure(); cdecl;
+  igGetCurrentFocusScope: function(): ImGuiID; cdecl;
+  igIsDragDropActive: function(): Boolean; cdecl;
+  igBeginDragDropTargetCustom: function(bb: ImRect; id: ImGuiID): Boolean; cdecl;
+  igClearDragDrop: procedure(); cdecl;
+  igIsDragDropPayloadBeingAccepted: function(): Boolean; cdecl;
+  igRenderDragDropTargetRect: procedure(bb: ImRect; item_clip_rect: ImRect); cdecl;
+  igGetTypingSelectRequest: function(flags: ImGuiTypingSelectFlags): PImGuiTypingSelectRequest; cdecl;
+  igTypingSelectFindMatch: function(req: PImGuiTypingSelectRequest; items_count: Integer; get_item_name_func: igTypingSelectFindMatch_get_item_name_func; user_data: Pointer; nav_item_idx: Integer): Integer; cdecl;
+  igTypingSelectFindNextSingleCharMatch: function(req: PImGuiTypingSelectRequest; items_count: Integer; get_item_name_func: igTypingSelectFindNextSingleCharMatch_get_item_name_func; user_data: Pointer; nav_item_idx: Integer): Integer; cdecl;
+  igTypingSelectFindBestLeadingMatch: function(req: PImGuiTypingSelectRequest; items_count: Integer; get_item_name_func: igTypingSelectFindBestLeadingMatch_get_item_name_func; user_data: Pointer): Integer; cdecl;
+  igBeginBoxSelect: function(scope_rect: ImRect; window: PImGuiWindow; box_select_id: ImGuiID; ms_flags: ImGuiMultiSelectFlags): Boolean; cdecl;
+  igEndBoxSelect: procedure(scope_rect: ImRect; ms_flags: ImGuiMultiSelectFlags); cdecl;
+  igMultiSelectItemHeader: procedure(id: ImGuiID; p_selected: PBoolean; p_button_flags: PImGuiButtonFlags); cdecl;
+  igMultiSelectItemFooter: procedure(id: ImGuiID; p_selected: PBoolean; p_pressed: PBoolean); cdecl;
+  igMultiSelectAddSetAll: procedure(ms: PImGuiMultiSelectTempData; selected: Boolean); cdecl;
+  igMultiSelectAddSetRange: procedure(ms: PImGuiMultiSelectTempData; selected: Boolean; range_dir: Integer; first_item: ImGuiSelectionUserData; last_item: ImGuiSelectionUserData); cdecl;
+  igGetBoxSelectState: function(id: ImGuiID): PImGuiBoxSelectState; cdecl;
+  igGetMultiSelectState: function(id: ImGuiID): PImGuiMultiSelectState; cdecl;
+  igSetWindowClipRectBeforeSetChannel: procedure(window: PImGuiWindow; clip_rect: ImRect); cdecl;
+  igBeginColumns: procedure(const str_id: PUTF8Char; count: Integer; flags: ImGuiOldColumnFlags); cdecl;
+  igEndColumns: procedure(); cdecl;
+  igPushColumnClipRect: procedure(column_index: Integer); cdecl;
+  igPushColumnsBackground: procedure(); cdecl;
+  igPopColumnsBackground: procedure(); cdecl;
+  igGetColumnsID: function(const str_id: PUTF8Char; count: Integer): ImGuiID; cdecl;
+  igFindOrCreateColumns: function(window: PImGuiWindow; id: ImGuiID): PImGuiOldColumns; cdecl;
+  igGetColumnOffsetFromNorm: function(const columns: PImGuiOldColumns; offset_norm: Single): Single; cdecl;
+  igGetColumnNormFromOffset: function(const columns: PImGuiOldColumns; offset: Single): Single; cdecl;
+  igTableOpenContextMenu: procedure(column_n: Integer); cdecl;
+  igTableSetColumnWidth: procedure(column_n: Integer; width: Single); cdecl;
+  igTableSetColumnSortDirection: procedure(column_n: Integer; sort_direction: ImGuiSortDirection; append_to_sort_specs: Boolean); cdecl;
+  igTableGetHoveredRow: function(): Integer; cdecl;
+  igTableGetHeaderRowHeight: function(): Single; cdecl;
+  igTableGetHeaderAngledMaxLabelWidth: function(): Single; cdecl;
+  igTablePushBackgroundChannel: procedure(); cdecl;
+  igTablePopBackgroundChannel: procedure(); cdecl;
+  igTableAngledHeadersRowEx: procedure(row_id: ImGuiID; angle: Single; max_label_width: Single; const data: PImGuiTableHeaderData; data_count: Integer); cdecl;
+  igGetCurrentTable: function(): PImGuiTable; cdecl;
+  igTableFindByID: function(id: ImGuiID): PImGuiTable; cdecl;
+  igBeginTableEx: function(const name: PUTF8Char; id: ImGuiID; columns_count: Integer; flags: ImGuiTableFlags; outer_size: ImVec2; inner_width: Single): Boolean; cdecl;
+  igTableBeginInitMemory: procedure(table: PImGuiTable; columns_count: Integer); cdecl;
+  igTableBeginApplyRequests: procedure(table: PImGuiTable); cdecl;
+  igTableSetupDrawChannels: procedure(table: PImGuiTable); cdecl;
+  igTableUpdateLayout: procedure(table: PImGuiTable); cdecl;
+  igTableUpdateBorders: procedure(table: PImGuiTable); cdecl;
+  igTableUpdateColumnsWeightFromWidth: procedure(table: PImGuiTable); cdecl;
+  igTableDrawBorders: procedure(table: PImGuiTable); cdecl;
+  igTableDrawDefaultContextMenu: procedure(table: PImGuiTable; flags_for_section_to_display: ImGuiTableFlags); cdecl;
+  igTableBeginContextMenuPopup: function(table: PImGuiTable): Boolean; cdecl;
+  igTableMergeDrawChannels: procedure(table: PImGuiTable); cdecl;
+  igTableGetInstanceData: function(table: PImGuiTable; instance_no: Integer): PImGuiTableInstanceData; cdecl;
+  igTableGetInstanceID: function(table: PImGuiTable; instance_no: Integer): ImGuiID; cdecl;
+  igTableSortSpecsSanitize: procedure(table: PImGuiTable); cdecl;
+  igTableSortSpecsBuild: procedure(table: PImGuiTable); cdecl;
+  igTableGetColumnNextSortDirection: function(column: PImGuiTableColumn): ImGuiSortDirection; cdecl;
+  igTableFixColumnSortDirection: procedure(table: PImGuiTable; column: PImGuiTableColumn); cdecl;
+  igTableGetColumnWidthAuto: function(table: PImGuiTable; column: PImGuiTableColumn): Single; cdecl;
+  igTableBeginRow: procedure(table: PImGuiTable); cdecl;
+  igTableEndRow: procedure(table: PImGuiTable); cdecl;
+  igTableBeginCell: procedure(table: PImGuiTable; column_n: Integer); cdecl;
+  igTableEndCell: procedure(table: PImGuiTable); cdecl;
+  igTableGetCellBgRect: procedure(pOut: PImRect; const table: PImGuiTable; column_n: Integer); cdecl;
+  igTableGetColumnName_TablePtr: function(const table: PImGuiTable; column_n: Integer): PUTF8Char; cdecl;
+  igTableGetColumnResizeID: function(table: PImGuiTable; column_n: Integer; instance_no: Integer): ImGuiID; cdecl;
+  igTableCalcMaxColumnWidth: function(const table: PImGuiTable; column_n: Integer): Single; cdecl;
+  igTableSetColumnWidthAutoSingle: procedure(table: PImGuiTable; column_n: Integer); cdecl;
+  igTableSetColumnWidthAutoAll: procedure(table: PImGuiTable); cdecl;
+  igTableRemove: procedure(table: PImGuiTable); cdecl;
+  igTableGcCompactTransientBuffers_TablePtr: procedure(table: PImGuiTable); cdecl;
+  igTableGcCompactTransientBuffers_TableTempDataPtr: procedure(table: PImGuiTableTempData); cdecl;
+  igTableGcCompactSettings: procedure(); cdecl;
+  igTableLoadSettings: procedure(table: PImGuiTable); cdecl;
+  igTableSaveSettings: procedure(table: PImGuiTable); cdecl;
+  igTableResetSettings: procedure(table: PImGuiTable); cdecl;
+  igTableGetBoundSettings: function(table: PImGuiTable): PImGuiTableSettings; cdecl;
+  igTableSettingsAddSettingsHandler: procedure(); cdecl;
+  igTableSettingsCreate: function(id: ImGuiID; columns_count: Integer): PImGuiTableSettings; cdecl;
+  igTableSettingsFindByID: function(id: ImGuiID): PImGuiTableSettings; cdecl;
+  igGetCurrentTabBar: function(): PImGuiTabBar; cdecl;
+  igBeginTabBarEx: function(tab_bar: PImGuiTabBar; bb: ImRect; flags: ImGuiTabBarFlags): Boolean; cdecl;
+  igTabBarFindTabByID: function(tab_bar: PImGuiTabBar; tab_id: ImGuiID): PImGuiTabItem; cdecl;
+  igTabBarFindTabByOrder: function(tab_bar: PImGuiTabBar; order: Integer): PImGuiTabItem; cdecl;
+  igTabBarFindMostRecentlySelectedTabForActiveWindow: function(tab_bar: PImGuiTabBar): PImGuiTabItem; cdecl;
+  igTabBarGetCurrentTab: function(tab_bar: PImGuiTabBar): PImGuiTabItem; cdecl;
+  igTabBarGetTabOrder: function(tab_bar: PImGuiTabBar; tab: PImGuiTabItem): Integer; cdecl;
+  igTabBarGetTabName: function(tab_bar: PImGuiTabBar; tab: PImGuiTabItem): PUTF8Char; cdecl;
+  igTabBarAddTab: procedure(tab_bar: PImGuiTabBar; tab_flags: ImGuiTabItemFlags; window: PImGuiWindow); cdecl;
+  igTabBarRemoveTab: procedure(tab_bar: PImGuiTabBar; tab_id: ImGuiID); cdecl;
+  igTabBarCloseTab: procedure(tab_bar: PImGuiTabBar; tab: PImGuiTabItem); cdecl;
+  igTabBarQueueFocus_TabItemPtr: procedure(tab_bar: PImGuiTabBar; tab: PImGuiTabItem); cdecl;
+  igTabBarQueueFocus_Str: procedure(tab_bar: PImGuiTabBar; const tab_name: PUTF8Char); cdecl;
+  igTabBarQueueReorder: procedure(tab_bar: PImGuiTabBar; tab: PImGuiTabItem; offset: Integer); cdecl;
+  igTabBarQueueReorderFromMousePos: procedure(tab_bar: PImGuiTabBar; tab: PImGuiTabItem; mouse_pos: ImVec2); cdecl;
+  igTabBarProcessReorder: function(tab_bar: PImGuiTabBar): Boolean; cdecl;
+  igTabItemEx: function(tab_bar: PImGuiTabBar; const &label: PUTF8Char; p_open: PBoolean; flags: ImGuiTabItemFlags; docked_window: PImGuiWindow): Boolean; cdecl;
+  igTabItemCalcSize_Str: procedure(pOut: PImVec2; const &label: PUTF8Char; has_close_button_or_unsaved_marker: Boolean); cdecl;
+  igTabItemCalcSize_WindowPtr: procedure(pOut: PImVec2; window: PImGuiWindow); cdecl;
+  igTabItemBackground: procedure(draw_list: PImDrawList; bb: ImRect; flags: ImGuiTabItemFlags; col: ImU32); cdecl;
+  igTabItemLabelAndCloseButton: procedure(draw_list: PImDrawList; bb: ImRect; flags: ImGuiTabItemFlags; frame_padding: ImVec2; const &label: PUTF8Char; tab_id: ImGuiID; close_button_id: ImGuiID; is_contents_visible: Boolean; out_just_closed: PBoolean; out_text_clipped: PBoolean); cdecl;
+  igRenderText: procedure(pos: ImVec2; const text: PUTF8Char; const text_end: PUTF8Char; hide_text_after_hash: Boolean); cdecl;
+  igRenderTextWrapped: procedure(pos: ImVec2; const text: PUTF8Char; const text_end: PUTF8Char; wrap_width: Single); cdecl;
+  igRenderTextClipped: procedure(pos_min: ImVec2; pos_max: ImVec2; const text: PUTF8Char; const text_end: PUTF8Char; const text_size_if_known: PImVec2; align: ImVec2; const clip_rect: PImRect); cdecl;
+  igRenderTextClippedEx: procedure(draw_list: PImDrawList; pos_min: ImVec2; pos_max: ImVec2; const text: PUTF8Char; const text_end: PUTF8Char; const text_size_if_known: PImVec2; align: ImVec2; const clip_rect: PImRect); cdecl;
+  igRenderTextEllipsis: procedure(draw_list: PImDrawList; pos_min: ImVec2; pos_max: ImVec2; clip_max_x: Single; ellipsis_max_x: Single; const text: PUTF8Char; const text_end: PUTF8Char; const text_size_if_known: PImVec2); cdecl;
+  igRenderFrame: procedure(p_min: ImVec2; p_max: ImVec2; fill_col: ImU32; borders: Boolean; rounding: Single); cdecl;
+  igRenderFrameBorder: procedure(p_min: ImVec2; p_max: ImVec2; rounding: Single); cdecl;
+  igRenderColorRectWithAlphaCheckerboard: procedure(draw_list: PImDrawList; p_min: ImVec2; p_max: ImVec2; fill_col: ImU32; grid_step: Single; grid_off: ImVec2; rounding: Single; flags: ImDrawFlags); cdecl;
+  igRenderNavCursor: procedure(bb: ImRect; id: ImGuiID; flags: ImGuiNavRenderCursorFlags); cdecl;
+  igFindRenderedTextEnd: function(const text: PUTF8Char; const text_end: PUTF8Char): PUTF8Char; cdecl;
+  igRenderMouseCursor: procedure(pos: ImVec2; scale: Single; mouse_cursor: ImGuiMouseCursor; col_fill: ImU32; col_border: ImU32; col_shadow: ImU32); cdecl;
+  igRenderArrow: procedure(draw_list: PImDrawList; pos: ImVec2; col: ImU32; dir: ImGuiDir; scale: Single); cdecl;
+  igRenderBullet: procedure(draw_list: PImDrawList; pos: ImVec2; col: ImU32); cdecl;
+  igRenderCheckMark: procedure(draw_list: PImDrawList; pos: ImVec2; col: ImU32; sz: Single); cdecl;
+  igRenderArrowPointingAt: procedure(draw_list: PImDrawList; pos: ImVec2; half_sz: ImVec2; direction: ImGuiDir; col: ImU32); cdecl;
+  igRenderArrowDockMenu: procedure(draw_list: PImDrawList; p_min: ImVec2; sz: Single; col: ImU32); cdecl;
+  igRenderRectFilledRangeH: procedure(draw_list: PImDrawList; rect: ImRect; col: ImU32; x_start_norm: Single; x_end_norm: Single; rounding: Single); cdecl;
+  igRenderRectFilledWithHole: procedure(draw_list: PImDrawList; outer: ImRect; inner: ImRect; col: ImU32; rounding: Single); cdecl;
+  igCalcRoundingFlagsForRectInRect: function(r_in: ImRect; r_outer: ImRect; threshold: Single): ImDrawFlags; cdecl;
+  igTextEx: procedure(const text: PUTF8Char; const text_end: PUTF8Char; flags: ImGuiTextFlags); cdecl;
+  igButtonEx: function(const &label: PUTF8Char; size_arg: ImVec2; flags: ImGuiButtonFlags): Boolean; cdecl;
+  igArrowButtonEx: function(const str_id: PUTF8Char; dir: ImGuiDir; size_arg: ImVec2; flags: ImGuiButtonFlags): Boolean; cdecl;
+  igImageButtonEx: function(id: ImGuiID; user_texture_id: ImTextureID; image_size: ImVec2; uv0: ImVec2; uv1: ImVec2; bg_col: ImVec4; tint_col: ImVec4; flags: ImGuiButtonFlags): Boolean; cdecl;
+  igSeparatorEx: procedure(flags: ImGuiSeparatorFlags; thickness: Single); cdecl;
+  igSeparatorTextEx: procedure(id: ImGuiID; const &label: PUTF8Char; const label_end: PUTF8Char; extra_width: Single); cdecl;
+  igCheckboxFlags_S64Ptr: function(const &label: PUTF8Char; flags: PImS64; flags_value: ImS64): Boolean; cdecl;
+  igCheckboxFlags_U64Ptr: function(const &label: PUTF8Char; flags: PImU64; flags_value: ImU64): Boolean; cdecl;
+  igCloseButton: function(id: ImGuiID; pos: ImVec2): Boolean; cdecl;
+  igCollapseButton: function(id: ImGuiID; pos: ImVec2; dock_node: PImGuiDockNode): Boolean; cdecl;
+  igScrollbar: procedure(axis: ImGuiAxis); cdecl;
+  igScrollbarEx: function(bb: ImRect; id: ImGuiID; axis: ImGuiAxis; p_scroll_v: PImS64; avail_v: ImS64; contents_v: ImS64; draw_rounding_flags: ImDrawFlags): Boolean; cdecl;
+  igGetWindowScrollbarRect: procedure(pOut: PImRect; window: PImGuiWindow; axis: ImGuiAxis); cdecl;
+  igGetWindowScrollbarID: function(window: PImGuiWindow; axis: ImGuiAxis): ImGuiID; cdecl;
+  igGetWindowResizeCornerID: function(window: PImGuiWindow; n: Integer): ImGuiID; cdecl;
+  igGetWindowResizeBorderID: function(window: PImGuiWindow; dir: ImGuiDir): ImGuiID; cdecl;
+  igButtonBehavior: function(bb: ImRect; id: ImGuiID; out_hovered: PBoolean; out_held: PBoolean; flags: ImGuiButtonFlags): Boolean; cdecl;
+  igDragBehavior: function(id: ImGuiID; data_type: ImGuiDataType; p_v: Pointer; v_speed: Single; const p_min: Pointer; const p_max: Pointer; const format: PUTF8Char; flags: ImGuiSliderFlags): Boolean; cdecl;
+  igSliderBehavior: function(bb: ImRect; id: ImGuiID; data_type: ImGuiDataType; p_v: Pointer; const p_min: Pointer; const p_max: Pointer; const format: PUTF8Char; flags: ImGuiSliderFlags; out_grab_bb: PImRect): Boolean; cdecl;
+  igSplitterBehavior: function(bb: ImRect; id: ImGuiID; axis: ImGuiAxis; size1: PSingle; size2: PSingle; min_size1: Single; min_size2: Single; hover_extend: Single; hover_visibility_delay: Single; bg_col: ImU32): Boolean; cdecl;
+  igTreeNodeBehavior: function(id: ImGuiID; flags: ImGuiTreeNodeFlags; const &label: PUTF8Char; const label_end: PUTF8Char): Boolean; cdecl;
+  igTreePushOverrideID: procedure(id: ImGuiID); cdecl;
+  igTreeNodeGetOpen: function(storage_id: ImGuiID): Boolean; cdecl;
+  igTreeNodeSetOpen: procedure(storage_id: ImGuiID; open: Boolean); cdecl;
+  igTreeNodeUpdateNextOpen: function(storage_id: ImGuiID; flags: ImGuiTreeNodeFlags): Boolean; cdecl;
+  igDataTypeGetInfo: function(data_type: ImGuiDataType): PImGuiDataTypeInfo; cdecl;
+  igDataTypeFormatString: function(buf: PUTF8Char; buf_size: Integer; data_type: ImGuiDataType; const p_data: Pointer; const format: PUTF8Char): Integer; cdecl;
+  igDataTypeApplyOp: procedure(data_type: ImGuiDataType; op: Integer; output: Pointer; const arg_1: Pointer; const arg_2: Pointer); cdecl;
+  igDataTypeApplyFromText: function(const buf: PUTF8Char; data_type: ImGuiDataType; p_data: Pointer; const format: PUTF8Char; p_data_when_empty: Pointer): Boolean; cdecl;
+  igDataTypeCompare: function(data_type: ImGuiDataType; const arg_1: Pointer; const arg_2: Pointer): Integer; cdecl;
+  igDataTypeClamp: function(data_type: ImGuiDataType; p_data: Pointer; const p_min: Pointer; const p_max: Pointer): Boolean; cdecl;
+  igDataTypeIsZero: function(data_type: ImGuiDataType; const p_data: Pointer): Boolean; cdecl;
+  igInputTextEx: function(const &label: PUTF8Char; const hint: PUTF8Char; buf: PUTF8Char; buf_size: Integer; size_arg: ImVec2; flags: ImGuiInputTextFlags; callback: ImGuiInputTextCallback; user_data: Pointer): Boolean; cdecl;
+  igInputTextDeactivateHook: procedure(id: ImGuiID); cdecl;
+  igTempInputText: function(bb: ImRect; id: ImGuiID; const &label: PUTF8Char; buf: PUTF8Char; buf_size: Integer; flags: ImGuiInputTextFlags): Boolean; cdecl;
+  igTempInputScalar: function(bb: ImRect; id: ImGuiID; const &label: PUTF8Char; data_type: ImGuiDataType; p_data: Pointer; const format: PUTF8Char; const p_clamp_min: Pointer; const p_clamp_max: Pointer): Boolean; cdecl;
+  igTempInputIsActive: function(id: ImGuiID): Boolean; cdecl;
+  igGetInputTextState: function(id: ImGuiID): PImGuiInputTextState; cdecl;
+  igSetNextItemRefVal: procedure(data_type: ImGuiDataType; p_data: Pointer); cdecl;
+  igColorTooltip: procedure(const text: PUTF8Char; const col: PSingle; flags: ImGuiColorEditFlags); cdecl;
+  igColorEditOptionsPopup: procedure(const col: PSingle; flags: ImGuiColorEditFlags); cdecl;
+  igColorPickerOptionsPopup: procedure(const ref_col: PSingle; flags: ImGuiColorEditFlags); cdecl;
+  igPlotEx: function(plot_type: ImGuiPlotType; const &label: PUTF8Char; values_getter: igPlotEx_values_getter; data: Pointer; values_count: Integer; values_offset: Integer; const overlay_text: PUTF8Char; scale_min: Single; scale_max: Single; size_arg: ImVec2): Integer; cdecl;
+  igShadeVertsLinearColorGradientKeepAlpha: procedure(draw_list: PImDrawList; vert_start_idx: Integer; vert_end_idx: Integer; gradient_p0: ImVec2; gradient_p1: ImVec2; col0: ImU32; col1: ImU32); cdecl;
+  igShadeVertsLinearUV: procedure(draw_list: PImDrawList; vert_start_idx: Integer; vert_end_idx: Integer; a: ImVec2; b: ImVec2; uv_a: ImVec2; uv_b: ImVec2; clamp: Boolean); cdecl;
+  igShadeVertsTransformPos: procedure(draw_list: PImDrawList; vert_start_idx: Integer; vert_end_idx: Integer; pivot_in: ImVec2; cos_a: Single; sin_a: Single; pivot_out: ImVec2); cdecl;
+  igGcCompactTransientMiscBuffers: procedure(); cdecl;
+  igGcCompactTransientWindowBuffers: procedure(window: PImGuiWindow); cdecl;
+  igGcAwakeTransientWindowBuffers: procedure(window: PImGuiWindow); cdecl;
+  igErrorLog: function(const msg: PUTF8Char): Boolean; cdecl;
+  igErrorRecoveryStoreState: procedure(state_out: PImGuiErrorRecoveryState); cdecl;
+  igErrorRecoveryTryToRecoverState: procedure(const state_in: PImGuiErrorRecoveryState); cdecl;
+  igErrorRecoveryTryToRecoverWindowState: procedure(const state_in: PImGuiErrorRecoveryState); cdecl;
+  igErrorCheckUsingSetCursorPosToExtendParentBoundaries: procedure(); cdecl;
+  igErrorCheckEndFrameFinalizeErrorTooltip: procedure(); cdecl;
+  igBeginErrorTooltip: function(): Boolean; cdecl;
+  igEndErrorTooltip: procedure(); cdecl;
+  igDebugAllocHook: procedure(info: PImGuiDebugAllocInfo; frame_count: Integer; ptr: Pointer; size: NativeUInt); cdecl;
+  igDebugDrawCursorPos: procedure(col: ImU32); cdecl;
+  igDebugDrawLineExtents: procedure(col: ImU32); cdecl;
+  igDebugDrawItemRect: procedure(col: ImU32); cdecl;
+  igDebugTextUnformattedWithLocateItem: procedure(const line_begin: PUTF8Char; const line_end: PUTF8Char); cdecl;
+  igDebugLocateItem: procedure(target_id: ImGuiID); cdecl;
+  igDebugLocateItemOnHover: procedure(target_id: ImGuiID); cdecl;
+  igDebugLocateItemResolveWithLastItem: procedure(); cdecl;
+  igDebugBreakClearData: procedure(); cdecl;
+  igDebugBreakButton: function(const &label: PUTF8Char; const description_of_location: PUTF8Char): Boolean; cdecl;
+  igDebugBreakButtonTooltip: procedure(keyboard_only: Boolean; const description_of_location: PUTF8Char); cdecl;
+  igShowFontAtlas: procedure(atlas: PImFontAtlas); cdecl;
+  igDebugHookIdInfo: procedure(id: ImGuiID; data_type: ImGuiDataType; const data_id: Pointer; const data_id_end: Pointer); cdecl;
+  igDebugNodeColumns: procedure(columns: PImGuiOldColumns); cdecl;
+  igDebugNodeDockNode: procedure(node: PImGuiDockNode; const &label: PUTF8Char); cdecl;
+  igDebugNodeDrawList: procedure(window: PImGuiWindow; viewport: PImGuiViewportP; const draw_list: PImDrawList; const &label: PUTF8Char); cdecl;
+  igDebugNodeDrawCmdShowMeshAndBoundingBox: procedure(out_draw_list: PImDrawList; const draw_list: PImDrawList; const draw_cmd: PImDrawCmd; show_mesh: Boolean; show_aabb: Boolean); cdecl;
+  igDebugNodeFont: procedure(font: PImFont); cdecl;
+  igDebugNodeFontGlyph: procedure(font: PImFont; const glyph: PImFontGlyph); cdecl;
+  igDebugNodeStorage: procedure(storage: PImGuiStorage; const &label: PUTF8Char); cdecl;
+  igDebugNodeTabBar: procedure(tab_bar: PImGuiTabBar; const &label: PUTF8Char); cdecl;
+  igDebugNodeTable: procedure(table: PImGuiTable); cdecl;
+  igDebugNodeTableSettings: procedure(settings: PImGuiTableSettings); cdecl;
+  igDebugNodeInputTextState: procedure(state: PImGuiInputTextState); cdecl;
+  igDebugNodeTypingSelectState: procedure(state: PImGuiTypingSelectState); cdecl;
+  igDebugNodeMultiSelectState: procedure(state: PImGuiMultiSelectState); cdecl;
+  igDebugNodeWindow: procedure(window: PImGuiWindow; const &label: PUTF8Char); cdecl;
+  igDebugNodeWindowSettings: procedure(settings: PImGuiWindowSettings); cdecl;
+  igDebugNodeWindowsList: procedure(windows: PImVector_ImGuiWindowPtr; const &label: PUTF8Char); cdecl;
+  igDebugNodeWindowsListByBeginStackParent: procedure(windows: PPImGuiWindow; windows_size: Integer; parent_in_begin_stack: PImGuiWindow); cdecl;
+  igDebugNodeViewport: procedure(viewport: PImGuiViewportP); cdecl;
+  igDebugNodePlatformMonitor: procedure(monitor: PImGuiPlatformMonitor; const &label: PUTF8Char; idx: Integer); cdecl;
+  igDebugRenderKeyboardPreview: procedure(draw_list: PImDrawList); cdecl;
+  igDebugRenderViewportThumbnail: procedure(draw_list: PImDrawList; viewport: PImGuiViewportP; bb: ImRect); cdecl;
+  igImFontAtlasGetBuilderForStbTruetype: function(): PImFontBuilderIO; cdecl;
+  igImFontAtlasUpdateConfigDataPointers: procedure(atlas: PImFontAtlas); cdecl;
+  igImFontAtlasBuildInit: procedure(atlas: PImFontAtlas); cdecl;
+  igImFontAtlasBuildSetupFont: procedure(atlas: PImFontAtlas; font: PImFont; font_config: PImFontConfig; ascent: Single; descent: Single); cdecl;
+  igImFontAtlasBuildPackCustomRects: procedure(atlas: PImFontAtlas; stbrp_context_opaque: Pointer); cdecl;
+  igImFontAtlasBuildFinish: procedure(atlas: PImFontAtlas); cdecl;
+  igImFontAtlasBuildRender8bppRectFromString: procedure(atlas: PImFontAtlas; x: Integer; y: Integer; w: Integer; h: Integer; const in_str: PUTF8Char; in_marker_char: UTF8Char; in_marker_pixel_value: Byte); cdecl;
+  igImFontAtlasBuildRender32bppRectFromString: procedure(atlas: PImFontAtlas; x: Integer; y: Integer; w: Integer; h: Integer; const in_str: PUTF8Char; in_marker_char: UTF8Char; in_marker_pixel_value: Cardinal); cdecl;
+  igImFontAtlasBuildMultiplyCalcLookupTable: procedure(out_table: PByte; in_multiply_factor: Single); cdecl;
+  igImFontAtlasBuildMultiplyRectAlpha8: procedure(table: PByte; pixels: PByte; x: Integer; y: Integer; w: Integer; h: Integer; stride: Integer); cdecl;
+  igLogText: procedure(const fmt: PUTF8Char) varargs; cdecl;
+  ImGuiTextBuffer_appendf: procedure(self: PImGuiTextBuffer; const fmt: PUTF8Char) varargs; cdecl;
+  igGET_FLT_MAX: function(): Single; cdecl;
+  igGET_FLT_MIN: function(): Single; cdecl;
+  ImVector_ImWchar_create: function(): PImVector_ImWchar; cdecl;
+  ImVector_ImWchar_destroy: procedure(self: PImVector_ImWchar); cdecl;
+  ImVector_ImWchar_Init: procedure(p: PImVector_ImWchar); cdecl;
+  ImVector_ImWchar_UnInit: procedure(p: PImVector_ImWchar); cdecl;
+  ImGuiPlatformIO_Set_Platform_GetWindowPos: procedure(platform_io: PImGuiPlatformIO; user_callback: ImGuiPlatformIO_Set_Platform_GetWindowPos_user_callback); cdecl;
+  ImGuiPlatformIO_Set_Platform_GetWindowSize: procedure(platform_io: PImGuiPlatformIO; user_callback: ImGuiPlatformIO_Set_Platform_GetWindowSize_user_callback); cdecl;
+  ImGui_ImplGlfw_InitForOpenGL: function(window: PGLFWwindow; install_callbacks: Boolean): Boolean; cdecl;
+  ImGui_ImplGlfw_InitForVulkan: function(window: PGLFWwindow; install_callbacks: Boolean): Boolean; cdecl;
+  ImGui_ImplGlfw_InitForOther: function(window: PGLFWwindow; install_callbacks: Boolean): Boolean; cdecl;
+  ImGui_ImplGlfw_Shutdown: procedure(); cdecl;
+  ImGui_ImplGlfw_NewFrame: procedure(); cdecl;
+  ImGui_ImplGlfw_InstallCallbacks: procedure(window: PGLFWwindow); cdecl;
+  ImGui_ImplGlfw_RestoreCallbacks: procedure(window: PGLFWwindow); cdecl;
+  ImGui_ImplGlfw_SetCallbacksChainForAllWindows: procedure(chain_for_all_windows: Boolean); cdecl;
+  ImGui_ImplGlfw_WindowFocusCallback: procedure(window: PGLFWwindow; focused: Integer); cdecl;
+  ImGui_ImplGlfw_CursorEnterCallback: procedure(window: PGLFWwindow; entered: Integer); cdecl;
+  ImGui_ImplGlfw_CursorPosCallback: procedure(window: PGLFWwindow; x: Double; y: Double); cdecl;
+  ImGui_ImplGlfw_MouseButtonCallback: procedure(window: PGLFWwindow; button: Integer; action: Integer; mods: Integer); cdecl;
+  ImGui_ImplGlfw_ScrollCallback: procedure(window: PGLFWwindow; xoffset: Double; yoffset: Double); cdecl;
+  ImGui_ImplGlfw_KeyCallback: procedure(window: PGLFWwindow; key: Integer; scancode: Integer; action: Integer; mods: Integer); cdecl;
+  ImGui_ImplGlfw_CharCallback: procedure(window: PGLFWwindow; c: Cardinal); cdecl;
+  ImGui_ImplGlfw_MonitorCallback: procedure(monitor: PGLFWmonitor; event: Integer); cdecl;
+  ImGui_ImplGlfw_Sleep: procedure(milliseconds: Integer); cdecl;
+  ImGui_ImplOpenGL2_Init: function(): Boolean; cdecl;
+  ImGui_ImplOpenGL2_Shutdown: procedure(); cdecl;
+  ImGui_ImplOpenGL2_NewFrame: procedure(); cdecl;
+  ImGui_ImplOpenGL2_RenderDrawData: procedure(draw_data: PImDrawData; virtual_width: Single; virtual_height: Single); cdecl;
+  ImGui_ImplOpenGL2_CreateFontsTexture: function(): Boolean; cdecl;
+  ImGui_ImplOpenGL2_DestroyFontsTexture: procedure(); cdecl;
+  ImGui_ImplOpenGL2_CreateDeviceObjects: function(): Boolean; cdecl;
+  ImGui_ImplOpenGL2_DestroyDeviceObjects: procedure(); cdecl;
 
 procedure GetExports(const aDLLHandle: THandle);
 
 {$ENDREGION}
 
 {$REGION ' Pyro.Common '}
+const
+  PyDONT_CARE = GLFW_DONT_CARE;
+
 type
   { TPyHAlign }
   TPyHAlign = (haLeft, haCenter, haRight);
@@ -13758,8 +19439,8 @@ type
     r,g,b,a: Single;
     function  FromByte(const r, g, b, a: Byte): TPyColor;
     function  FromFloat(const r, g, b, a: Single): TPyColor;
-    function  Fade(const AFrom, ATo: TPyColor; const APos: Single): TPyColor;
-    function  IsEqual(const AColor1, AColor2: TPyColor): Boolean;
+    function  Fade(const ATo: TPyColor; const APos: Single): TPyColor;
+    function  IsEqual(const AColor: TPyColor): Boolean;
   end;
 
 const
@@ -14166,6 +19847,7 @@ type
     function  GetTitle(): string;
     procedure SetTitle(const ATitle: string);
 
+    procedure SetSizeLimits(const AMinWidth, AMinHeight, AMaxWidth, AMaxHeight: Integer);
     procedure Resize(const AWidth, AHeight: Cardinal);
     procedure ToggleFullscreen();
     function  IsFullscreen(): Boolean;
@@ -15768,6 +21450,1473 @@ begin
   glfwWindowHint := GetProcAddress(aDLLHandle, 'glfwWindowHint');
   glfwWindowHintString := GetProcAddress(aDLLHandle, 'glfwWindowHintString');
   glfwWindowShouldClose := GetProcAddress(aDLLHandle, 'glfwWindowShouldClose');
+  igAcceptDragDropPayload := GetProcAddress(aDLLHandle, 'igAcceptDragDropPayload');
+  igActivateItemByID := GetProcAddress(aDLLHandle, 'igActivateItemByID');
+  igAddContextHook := GetProcAddress(aDLLHandle, 'igAddContextHook');
+  igAddDrawListToDrawDataEx := GetProcAddress(aDLLHandle, 'igAddDrawListToDrawDataEx');
+  igAddSettingsHandler := GetProcAddress(aDLLHandle, 'igAddSettingsHandler');
+  igAlignTextToFramePadding := GetProcAddress(aDLLHandle, 'igAlignTextToFramePadding');
+  igArrowButton := GetProcAddress(aDLLHandle, 'igArrowButton');
+  igArrowButtonEx := GetProcAddress(aDLLHandle, 'igArrowButtonEx');
+  igBegin := GetProcAddress(aDLLHandle, 'igBegin');
+  igBeginBoxSelect := GetProcAddress(aDLLHandle, 'igBeginBoxSelect');
+  igBeginChild_ID := GetProcAddress(aDLLHandle, 'igBeginChild_ID');
+  igBeginChild_Str := GetProcAddress(aDLLHandle, 'igBeginChild_Str');
+  igBeginChildEx := GetProcAddress(aDLLHandle, 'igBeginChildEx');
+  igBeginColumns := GetProcAddress(aDLLHandle, 'igBeginColumns');
+  igBeginCombo := GetProcAddress(aDLLHandle, 'igBeginCombo');
+  igBeginComboPopup := GetProcAddress(aDLLHandle, 'igBeginComboPopup');
+  igBeginComboPreview := GetProcAddress(aDLLHandle, 'igBeginComboPreview');
+  igBeginDisabled := GetProcAddress(aDLLHandle, 'igBeginDisabled');
+  igBeginDisabledOverrideReenable := GetProcAddress(aDLLHandle, 'igBeginDisabledOverrideReenable');
+  igBeginDockableDragDropSource := GetProcAddress(aDLLHandle, 'igBeginDockableDragDropSource');
+  igBeginDockableDragDropTarget := GetProcAddress(aDLLHandle, 'igBeginDockableDragDropTarget');
+  igBeginDocked := GetProcAddress(aDLLHandle, 'igBeginDocked');
+  igBeginDragDropSource := GetProcAddress(aDLLHandle, 'igBeginDragDropSource');
+  igBeginDragDropTarget := GetProcAddress(aDLLHandle, 'igBeginDragDropTarget');
+  igBeginDragDropTargetCustom := GetProcAddress(aDLLHandle, 'igBeginDragDropTargetCustom');
+  igBeginErrorTooltip := GetProcAddress(aDLLHandle, 'igBeginErrorTooltip');
+  igBeginGroup := GetProcAddress(aDLLHandle, 'igBeginGroup');
+  igBeginItemTooltip := GetProcAddress(aDLLHandle, 'igBeginItemTooltip');
+  igBeginListBox := GetProcAddress(aDLLHandle, 'igBeginListBox');
+  igBeginMainMenuBar := GetProcAddress(aDLLHandle, 'igBeginMainMenuBar');
+  igBeginMenu := GetProcAddress(aDLLHandle, 'igBeginMenu');
+  igBeginMenuBar := GetProcAddress(aDLLHandle, 'igBeginMenuBar');
+  igBeginMenuEx := GetProcAddress(aDLLHandle, 'igBeginMenuEx');
+  igBeginMultiSelect := GetProcAddress(aDLLHandle, 'igBeginMultiSelect');
+  igBeginPopup := GetProcAddress(aDLLHandle, 'igBeginPopup');
+  igBeginPopupContextItem := GetProcAddress(aDLLHandle, 'igBeginPopupContextItem');
+  igBeginPopupContextVoid := GetProcAddress(aDLLHandle, 'igBeginPopupContextVoid');
+  igBeginPopupContextWindow := GetProcAddress(aDLLHandle, 'igBeginPopupContextWindow');
+  igBeginPopupEx := GetProcAddress(aDLLHandle, 'igBeginPopupEx');
+  igBeginPopupModal := GetProcAddress(aDLLHandle, 'igBeginPopupModal');
+  igBeginTabBar := GetProcAddress(aDLLHandle, 'igBeginTabBar');
+  igBeginTabBarEx := GetProcAddress(aDLLHandle, 'igBeginTabBarEx');
+  igBeginTabItem := GetProcAddress(aDLLHandle, 'igBeginTabItem');
+  igBeginTable := GetProcAddress(aDLLHandle, 'igBeginTable');
+  igBeginTableEx := GetProcAddress(aDLLHandle, 'igBeginTableEx');
+  igBeginTooltip := GetProcAddress(aDLLHandle, 'igBeginTooltip');
+  igBeginTooltipEx := GetProcAddress(aDLLHandle, 'igBeginTooltipEx');
+  igBeginTooltipHidden := GetProcAddress(aDLLHandle, 'igBeginTooltipHidden');
+  igBeginViewportSideBar := GetProcAddress(aDLLHandle, 'igBeginViewportSideBar');
+  igBringWindowToDisplayBack := GetProcAddress(aDLLHandle, 'igBringWindowToDisplayBack');
+  igBringWindowToDisplayBehind := GetProcAddress(aDLLHandle, 'igBringWindowToDisplayBehind');
+  igBringWindowToDisplayFront := GetProcAddress(aDLLHandle, 'igBringWindowToDisplayFront');
+  igBringWindowToFocusFront := GetProcAddress(aDLLHandle, 'igBringWindowToFocusFront');
+  igBullet := GetProcAddress(aDLLHandle, 'igBullet');
+  igBulletText := GetProcAddress(aDLLHandle, 'igBulletText');
+  igBulletTextV := GetProcAddress(aDLLHandle, 'igBulletTextV');
+  igButton := GetProcAddress(aDLLHandle, 'igButton');
+  igButtonBehavior := GetProcAddress(aDLLHandle, 'igButtonBehavior');
+  igButtonEx := GetProcAddress(aDLLHandle, 'igButtonEx');
+  igCalcItemSize := GetProcAddress(aDLLHandle, 'igCalcItemSize');
+  igCalcItemWidth := GetProcAddress(aDLLHandle, 'igCalcItemWidth');
+  igCalcRoundingFlagsForRectInRect := GetProcAddress(aDLLHandle, 'igCalcRoundingFlagsForRectInRect');
+  igCalcTextSize := GetProcAddress(aDLLHandle, 'igCalcTextSize');
+  igCalcTypematicRepeatAmount := GetProcAddress(aDLLHandle, 'igCalcTypematicRepeatAmount');
+  igCalcWindowNextAutoFitSize := GetProcAddress(aDLLHandle, 'igCalcWindowNextAutoFitSize');
+  igCalcWrapWidthForPos := GetProcAddress(aDLLHandle, 'igCalcWrapWidthForPos');
+  igCallContextHooks := GetProcAddress(aDLLHandle, 'igCallContextHooks');
+  igCheckbox := GetProcAddress(aDLLHandle, 'igCheckbox');
+  igCheckboxFlags_IntPtr := GetProcAddress(aDLLHandle, 'igCheckboxFlags_IntPtr');
+  igCheckboxFlags_S64Ptr := GetProcAddress(aDLLHandle, 'igCheckboxFlags_S64Ptr');
+  igCheckboxFlags_U64Ptr := GetProcAddress(aDLLHandle, 'igCheckboxFlags_U64Ptr');
+  igCheckboxFlags_UintPtr := GetProcAddress(aDLLHandle, 'igCheckboxFlags_UintPtr');
+  igClearActiveID := GetProcAddress(aDLLHandle, 'igClearActiveID');
+  igClearDragDrop := GetProcAddress(aDLLHandle, 'igClearDragDrop');
+  igClearIniSettings := GetProcAddress(aDLLHandle, 'igClearIniSettings');
+  igClearWindowSettings := GetProcAddress(aDLLHandle, 'igClearWindowSettings');
+  igCloseButton := GetProcAddress(aDLLHandle, 'igCloseButton');
+  igCloseCurrentPopup := GetProcAddress(aDLLHandle, 'igCloseCurrentPopup');
+  igClosePopupsExceptModals := GetProcAddress(aDLLHandle, 'igClosePopupsExceptModals');
+  igClosePopupsOverWindow := GetProcAddress(aDLLHandle, 'igClosePopupsOverWindow');
+  igClosePopupToLevel := GetProcAddress(aDLLHandle, 'igClosePopupToLevel');
+  igCollapseButton := GetProcAddress(aDLLHandle, 'igCollapseButton');
+  igCollapsingHeader_BoolPtr := GetProcAddress(aDLLHandle, 'igCollapsingHeader_BoolPtr');
+  igCollapsingHeader_TreeNodeFlags := GetProcAddress(aDLLHandle, 'igCollapsingHeader_TreeNodeFlags');
+  igColorButton := GetProcAddress(aDLLHandle, 'igColorButton');
+  igColorConvertFloat4ToU32 := GetProcAddress(aDLLHandle, 'igColorConvertFloat4ToU32');
+  igColorConvertHSVtoRGB := GetProcAddress(aDLLHandle, 'igColorConvertHSVtoRGB');
+  igColorConvertRGBtoHSV := GetProcAddress(aDLLHandle, 'igColorConvertRGBtoHSV');
+  igColorConvertU32ToFloat4 := GetProcAddress(aDLLHandle, 'igColorConvertU32ToFloat4');
+  igColorEdit3 := GetProcAddress(aDLLHandle, 'igColorEdit3');
+  igColorEdit4 := GetProcAddress(aDLLHandle, 'igColorEdit4');
+  igColorEditOptionsPopup := GetProcAddress(aDLLHandle, 'igColorEditOptionsPopup');
+  igColorPicker3 := GetProcAddress(aDLLHandle, 'igColorPicker3');
+  igColorPicker4 := GetProcAddress(aDLLHandle, 'igColorPicker4');
+  igColorPickerOptionsPopup := GetProcAddress(aDLLHandle, 'igColorPickerOptionsPopup');
+  igColorTooltip := GetProcAddress(aDLLHandle, 'igColorTooltip');
+  igColumns := GetProcAddress(aDLLHandle, 'igColumns');
+  igCombo_FnStrPtr := GetProcAddress(aDLLHandle, 'igCombo_FnStrPtr');
+  igCombo_Str := GetProcAddress(aDLLHandle, 'igCombo_Str');
+  igCombo_Str_arr := GetProcAddress(aDLLHandle, 'igCombo_Str_arr');
+  igConvertSingleModFlagToKey := GetProcAddress(aDLLHandle, 'igConvertSingleModFlagToKey');
+  igCreateContext := GetProcAddress(aDLLHandle, 'igCreateContext');
+  igCreateNewWindowSettings := GetProcAddress(aDLLHandle, 'igCreateNewWindowSettings');
+  igDataTypeApplyFromText := GetProcAddress(aDLLHandle, 'igDataTypeApplyFromText');
+  igDataTypeApplyOp := GetProcAddress(aDLLHandle, 'igDataTypeApplyOp');
+  igDataTypeClamp := GetProcAddress(aDLLHandle, 'igDataTypeClamp');
+  igDataTypeCompare := GetProcAddress(aDLLHandle, 'igDataTypeCompare');
+  igDataTypeFormatString := GetProcAddress(aDLLHandle, 'igDataTypeFormatString');
+  igDataTypeGetInfo := GetProcAddress(aDLLHandle, 'igDataTypeGetInfo');
+  igDataTypeIsZero := GetProcAddress(aDLLHandle, 'igDataTypeIsZero');
+  igDebugAllocHook := GetProcAddress(aDLLHandle, 'igDebugAllocHook');
+  igDebugBreakButton := GetProcAddress(aDLLHandle, 'igDebugBreakButton');
+  igDebugBreakButtonTooltip := GetProcAddress(aDLLHandle, 'igDebugBreakButtonTooltip');
+  igDebugBreakClearData := GetProcAddress(aDLLHandle, 'igDebugBreakClearData');
+  igDebugCheckVersionAndDataLayout := GetProcAddress(aDLLHandle, 'igDebugCheckVersionAndDataLayout');
+  igDebugDrawCursorPos := GetProcAddress(aDLLHandle, 'igDebugDrawCursorPos');
+  igDebugDrawItemRect := GetProcAddress(aDLLHandle, 'igDebugDrawItemRect');
+  igDebugDrawLineExtents := GetProcAddress(aDLLHandle, 'igDebugDrawLineExtents');
+  igDebugFlashStyleColor := GetProcAddress(aDLLHandle, 'igDebugFlashStyleColor');
+  igDebugHookIdInfo := GetProcAddress(aDLLHandle, 'igDebugHookIdInfo');
+  igDebugLocateItem := GetProcAddress(aDLLHandle, 'igDebugLocateItem');
+  igDebugLocateItemOnHover := GetProcAddress(aDLLHandle, 'igDebugLocateItemOnHover');
+  igDebugLocateItemResolveWithLastItem := GetProcAddress(aDLLHandle, 'igDebugLocateItemResolveWithLastItem');
+  igDebugLog := GetProcAddress(aDLLHandle, 'igDebugLog');
+  igDebugLogV := GetProcAddress(aDLLHandle, 'igDebugLogV');
+  igDebugNodeColumns := GetProcAddress(aDLLHandle, 'igDebugNodeColumns');
+  igDebugNodeDockNode := GetProcAddress(aDLLHandle, 'igDebugNodeDockNode');
+  igDebugNodeDrawCmdShowMeshAndBoundingBox := GetProcAddress(aDLLHandle, 'igDebugNodeDrawCmdShowMeshAndBoundingBox');
+  igDebugNodeDrawList := GetProcAddress(aDLLHandle, 'igDebugNodeDrawList');
+  igDebugNodeFont := GetProcAddress(aDLLHandle, 'igDebugNodeFont');
+  igDebugNodeFontGlyph := GetProcAddress(aDLLHandle, 'igDebugNodeFontGlyph');
+  igDebugNodeInputTextState := GetProcAddress(aDLLHandle, 'igDebugNodeInputTextState');
+  igDebugNodeMultiSelectState := GetProcAddress(aDLLHandle, 'igDebugNodeMultiSelectState');
+  igDebugNodePlatformMonitor := GetProcAddress(aDLLHandle, 'igDebugNodePlatformMonitor');
+  igDebugNodeStorage := GetProcAddress(aDLLHandle, 'igDebugNodeStorage');
+  igDebugNodeTabBar := GetProcAddress(aDLLHandle, 'igDebugNodeTabBar');
+  igDebugNodeTable := GetProcAddress(aDLLHandle, 'igDebugNodeTable');
+  igDebugNodeTableSettings := GetProcAddress(aDLLHandle, 'igDebugNodeTableSettings');
+  igDebugNodeTypingSelectState := GetProcAddress(aDLLHandle, 'igDebugNodeTypingSelectState');
+  igDebugNodeViewport := GetProcAddress(aDLLHandle, 'igDebugNodeViewport');
+  igDebugNodeWindow := GetProcAddress(aDLLHandle, 'igDebugNodeWindow');
+  igDebugNodeWindowSettings := GetProcAddress(aDLLHandle, 'igDebugNodeWindowSettings');
+  igDebugNodeWindowsList := GetProcAddress(aDLLHandle, 'igDebugNodeWindowsList');
+  igDebugNodeWindowsListByBeginStackParent := GetProcAddress(aDLLHandle, 'igDebugNodeWindowsListByBeginStackParent');
+  igDebugRenderKeyboardPreview := GetProcAddress(aDLLHandle, 'igDebugRenderKeyboardPreview');
+  igDebugRenderViewportThumbnail := GetProcAddress(aDLLHandle, 'igDebugRenderViewportThumbnail');
+  igDebugStartItemPicker := GetProcAddress(aDLLHandle, 'igDebugStartItemPicker');
+  igDebugTextEncoding := GetProcAddress(aDLLHandle, 'igDebugTextEncoding');
+  igDebugTextUnformattedWithLocateItem := GetProcAddress(aDLLHandle, 'igDebugTextUnformattedWithLocateItem');
+  igDestroyContext := GetProcAddress(aDLLHandle, 'igDestroyContext');
+  igDestroyPlatformWindow := GetProcAddress(aDLLHandle, 'igDestroyPlatformWindow');
+  igDestroyPlatformWindows := GetProcAddress(aDLLHandle, 'igDestroyPlatformWindows');
+  igDockBuilderAddNode := GetProcAddress(aDLLHandle, 'igDockBuilderAddNode');
+  igDockBuilderCopyDockSpace := GetProcAddress(aDLLHandle, 'igDockBuilderCopyDockSpace');
+  igDockBuilderCopyNode := GetProcAddress(aDLLHandle, 'igDockBuilderCopyNode');
+  igDockBuilderCopyWindowSettings := GetProcAddress(aDLLHandle, 'igDockBuilderCopyWindowSettings');
+  igDockBuilderDockWindow := GetProcAddress(aDLLHandle, 'igDockBuilderDockWindow');
+  igDockBuilderFinish := GetProcAddress(aDLLHandle, 'igDockBuilderFinish');
+  igDockBuilderGetCentralNode := GetProcAddress(aDLLHandle, 'igDockBuilderGetCentralNode');
+  igDockBuilderGetNode := GetProcAddress(aDLLHandle, 'igDockBuilderGetNode');
+  igDockBuilderRemoveNode := GetProcAddress(aDLLHandle, 'igDockBuilderRemoveNode');
+  igDockBuilderRemoveNodeChildNodes := GetProcAddress(aDLLHandle, 'igDockBuilderRemoveNodeChildNodes');
+  igDockBuilderRemoveNodeDockedWindows := GetProcAddress(aDLLHandle, 'igDockBuilderRemoveNodeDockedWindows');
+  igDockBuilderSetNodePos := GetProcAddress(aDLLHandle, 'igDockBuilderSetNodePos');
+  igDockBuilderSetNodeSize := GetProcAddress(aDLLHandle, 'igDockBuilderSetNodeSize');
+  igDockBuilderSplitNode := GetProcAddress(aDLLHandle, 'igDockBuilderSplitNode');
+  igDockContextCalcDropPosForDocking := GetProcAddress(aDLLHandle, 'igDockContextCalcDropPosForDocking');
+  igDockContextClearNodes := GetProcAddress(aDLLHandle, 'igDockContextClearNodes');
+  igDockContextEndFrame := GetProcAddress(aDLLHandle, 'igDockContextEndFrame');
+  igDockContextFindNodeByID := GetProcAddress(aDLLHandle, 'igDockContextFindNodeByID');
+  igDockContextGenNodeID := GetProcAddress(aDLLHandle, 'igDockContextGenNodeID');
+  igDockContextInitialize := GetProcAddress(aDLLHandle, 'igDockContextInitialize');
+  igDockContextNewFrameUpdateDocking := GetProcAddress(aDLLHandle, 'igDockContextNewFrameUpdateDocking');
+  igDockContextNewFrameUpdateUndocking := GetProcAddress(aDLLHandle, 'igDockContextNewFrameUpdateUndocking');
+  igDockContextProcessUndockNode := GetProcAddress(aDLLHandle, 'igDockContextProcessUndockNode');
+  igDockContextProcessUndockWindow := GetProcAddress(aDLLHandle, 'igDockContextProcessUndockWindow');
+  igDockContextQueueDock := GetProcAddress(aDLLHandle, 'igDockContextQueueDock');
+  igDockContextQueueUndockNode := GetProcAddress(aDLLHandle, 'igDockContextQueueUndockNode');
+  igDockContextQueueUndockWindow := GetProcAddress(aDLLHandle, 'igDockContextQueueUndockWindow');
+  igDockContextRebuildNodes := GetProcAddress(aDLLHandle, 'igDockContextRebuildNodes');
+  igDockContextShutdown := GetProcAddress(aDLLHandle, 'igDockContextShutdown');
+  igDockNodeBeginAmendTabBar := GetProcAddress(aDLLHandle, 'igDockNodeBeginAmendTabBar');
+  igDockNodeEndAmendTabBar := GetProcAddress(aDLLHandle, 'igDockNodeEndAmendTabBar');
+  igDockNodeGetDepth := GetProcAddress(aDLLHandle, 'igDockNodeGetDepth');
+  igDockNodeGetRootNode := GetProcAddress(aDLLHandle, 'igDockNodeGetRootNode');
+  igDockNodeGetWindowMenuButtonId := GetProcAddress(aDLLHandle, 'igDockNodeGetWindowMenuButtonId');
+  igDockNodeIsInHierarchyOf := GetProcAddress(aDLLHandle, 'igDockNodeIsInHierarchyOf');
+  igDockNodeWindowMenuHandler_Default := GetProcAddress(aDLLHandle, 'igDockNodeWindowMenuHandler_Default');
+  igDockSpace := GetProcAddress(aDLLHandle, 'igDockSpace');
+  igDockSpaceOverViewport := GetProcAddress(aDLLHandle, 'igDockSpaceOverViewport');
+  igDragBehavior := GetProcAddress(aDLLHandle, 'igDragBehavior');
+  igDragFloat := GetProcAddress(aDLLHandle, 'igDragFloat');
+  igDragFloat2 := GetProcAddress(aDLLHandle, 'igDragFloat2');
+  igDragFloat3 := GetProcAddress(aDLLHandle, 'igDragFloat3');
+  igDragFloat4 := GetProcAddress(aDLLHandle, 'igDragFloat4');
+  igDragFloatRange2 := GetProcAddress(aDLLHandle, 'igDragFloatRange2');
+  igDragInt := GetProcAddress(aDLLHandle, 'igDragInt');
+  igDragInt2 := GetProcAddress(aDLLHandle, 'igDragInt2');
+  igDragInt3 := GetProcAddress(aDLLHandle, 'igDragInt3');
+  igDragInt4 := GetProcAddress(aDLLHandle, 'igDragInt4');
+  igDragIntRange2 := GetProcAddress(aDLLHandle, 'igDragIntRange2');
+  igDragScalar := GetProcAddress(aDLLHandle, 'igDragScalar');
+  igDragScalarN := GetProcAddress(aDLLHandle, 'igDragScalarN');
+  igDummy := GetProcAddress(aDLLHandle, 'igDummy');
+  igEnd := GetProcAddress(aDLLHandle, 'igEnd');
+  igEndBoxSelect := GetProcAddress(aDLLHandle, 'igEndBoxSelect');
+  igEndChild := GetProcAddress(aDLLHandle, 'igEndChild');
+  igEndColumns := GetProcAddress(aDLLHandle, 'igEndColumns');
+  igEndCombo := GetProcAddress(aDLLHandle, 'igEndCombo');
+  igEndComboPreview := GetProcAddress(aDLLHandle, 'igEndComboPreview');
+  igEndDisabled := GetProcAddress(aDLLHandle, 'igEndDisabled');
+  igEndDisabledOverrideReenable := GetProcAddress(aDLLHandle, 'igEndDisabledOverrideReenable');
+  igEndDragDropSource := GetProcAddress(aDLLHandle, 'igEndDragDropSource');
+  igEndDragDropTarget := GetProcAddress(aDLLHandle, 'igEndDragDropTarget');
+  igEndErrorTooltip := GetProcAddress(aDLLHandle, 'igEndErrorTooltip');
+  igEndFrame := GetProcAddress(aDLLHandle, 'igEndFrame');
+  igEndGroup := GetProcAddress(aDLLHandle, 'igEndGroup');
+  igEndListBox := GetProcAddress(aDLLHandle, 'igEndListBox');
+  igEndMainMenuBar := GetProcAddress(aDLLHandle, 'igEndMainMenuBar');
+  igEndMenu := GetProcAddress(aDLLHandle, 'igEndMenu');
+  igEndMenuBar := GetProcAddress(aDLLHandle, 'igEndMenuBar');
+  igEndMultiSelect := GetProcAddress(aDLLHandle, 'igEndMultiSelect');
+  igEndPopup := GetProcAddress(aDLLHandle, 'igEndPopup');
+  igEndTabBar := GetProcAddress(aDLLHandle, 'igEndTabBar');
+  igEndTabItem := GetProcAddress(aDLLHandle, 'igEndTabItem');
+  igEndTable := GetProcAddress(aDLLHandle, 'igEndTable');
+  igEndTooltip := GetProcAddress(aDLLHandle, 'igEndTooltip');
+  igErrorCheckEndFrameFinalizeErrorTooltip := GetProcAddress(aDLLHandle, 'igErrorCheckEndFrameFinalizeErrorTooltip');
+  igErrorCheckUsingSetCursorPosToExtendParentBoundaries := GetProcAddress(aDLLHandle, 'igErrorCheckUsingSetCursorPosToExtendParentBoundaries');
+  igErrorLog := GetProcAddress(aDLLHandle, 'igErrorLog');
+  igErrorRecoveryStoreState := GetProcAddress(aDLLHandle, 'igErrorRecoveryStoreState');
+  igErrorRecoveryTryToRecoverState := GetProcAddress(aDLLHandle, 'igErrorRecoveryTryToRecoverState');
+  igErrorRecoveryTryToRecoverWindowState := GetProcAddress(aDLLHandle, 'igErrorRecoveryTryToRecoverWindowState');
+  igFindBestWindowPosForPopup := GetProcAddress(aDLLHandle, 'igFindBestWindowPosForPopup');
+  igFindBestWindowPosForPopupEx := GetProcAddress(aDLLHandle, 'igFindBestWindowPosForPopupEx');
+  igFindBlockingModal := GetProcAddress(aDLLHandle, 'igFindBlockingModal');
+  igFindBottomMostVisibleWindowWithinBeginStack := GetProcAddress(aDLLHandle, 'igFindBottomMostVisibleWindowWithinBeginStack');
+  igFindHoveredViewportFromPlatformWindowStack := GetProcAddress(aDLLHandle, 'igFindHoveredViewportFromPlatformWindowStack');
+  igFindHoveredWindowEx := GetProcAddress(aDLLHandle, 'igFindHoveredWindowEx');
+  igFindOrCreateColumns := GetProcAddress(aDLLHandle, 'igFindOrCreateColumns');
+  igFindRenderedTextEnd := GetProcAddress(aDLLHandle, 'igFindRenderedTextEnd');
+  igFindSettingsHandler := GetProcAddress(aDLLHandle, 'igFindSettingsHandler');
+  igFindViewportByID := GetProcAddress(aDLLHandle, 'igFindViewportByID');
+  igFindViewportByPlatformHandle := GetProcAddress(aDLLHandle, 'igFindViewportByPlatformHandle');
+  igFindWindowByID := GetProcAddress(aDLLHandle, 'igFindWindowByID');
+  igFindWindowByName := GetProcAddress(aDLLHandle, 'igFindWindowByName');
+  igFindWindowDisplayIndex := GetProcAddress(aDLLHandle, 'igFindWindowDisplayIndex');
+  igFindWindowSettingsByID := GetProcAddress(aDLLHandle, 'igFindWindowSettingsByID');
+  igFindWindowSettingsByWindow := GetProcAddress(aDLLHandle, 'igFindWindowSettingsByWindow');
+  igFixupKeyChord := GetProcAddress(aDLLHandle, 'igFixupKeyChord');
+  igFocusItem := GetProcAddress(aDLLHandle, 'igFocusItem');
+  igFocusTopMostWindowUnderOne := GetProcAddress(aDLLHandle, 'igFocusTopMostWindowUnderOne');
+  igFocusWindow := GetProcAddress(aDLLHandle, 'igFocusWindow');
+  igGcAwakeTransientWindowBuffers := GetProcAddress(aDLLHandle, 'igGcAwakeTransientWindowBuffers');
+  igGcCompactTransientMiscBuffers := GetProcAddress(aDLLHandle, 'igGcCompactTransientMiscBuffers');
+  igGcCompactTransientWindowBuffers := GetProcAddress(aDLLHandle, 'igGcCompactTransientWindowBuffers');
+  igGET_FLT_MAX := GetProcAddress(aDLLHandle, 'igGET_FLT_MAX');
+  igGET_FLT_MIN := GetProcAddress(aDLLHandle, 'igGET_FLT_MIN');
+  igGetActiveID := GetProcAddress(aDLLHandle, 'igGetActiveID');
+  igGetAllocatorFunctions := GetProcAddress(aDLLHandle, 'igGetAllocatorFunctions');
+  igGetBackgroundDrawList := GetProcAddress(aDLLHandle, 'igGetBackgroundDrawList');
+  igGetBoxSelectState := GetProcAddress(aDLLHandle, 'igGetBoxSelectState');
+  igGetClipboardText := GetProcAddress(aDLLHandle, 'igGetClipboardText');
+  igGetColorU32_Col := GetProcAddress(aDLLHandle, 'igGetColorU32_Col');
+  igGetColorU32_U32 := GetProcAddress(aDLLHandle, 'igGetColorU32_U32');
+  igGetColorU32_Vec4 := GetProcAddress(aDLLHandle, 'igGetColorU32_Vec4');
+  igGetColumnIndex := GetProcAddress(aDLLHandle, 'igGetColumnIndex');
+  igGetColumnNormFromOffset := GetProcAddress(aDLLHandle, 'igGetColumnNormFromOffset');
+  igGetColumnOffset := GetProcAddress(aDLLHandle, 'igGetColumnOffset');
+  igGetColumnOffsetFromNorm := GetProcAddress(aDLLHandle, 'igGetColumnOffsetFromNorm');
+  igGetColumnsCount := GetProcAddress(aDLLHandle, 'igGetColumnsCount');
+  igGetColumnsID := GetProcAddress(aDLLHandle, 'igGetColumnsID');
+  igGetColumnWidth := GetProcAddress(aDLLHandle, 'igGetColumnWidth');
+  igGetContentRegionAvail := GetProcAddress(aDLLHandle, 'igGetContentRegionAvail');
+  igGetCurrentContext := GetProcAddress(aDLLHandle, 'igGetCurrentContext');
+  igGetCurrentFocusScope := GetProcAddress(aDLLHandle, 'igGetCurrentFocusScope');
+  igGetCurrentTabBar := GetProcAddress(aDLLHandle, 'igGetCurrentTabBar');
+  igGetCurrentTable := GetProcAddress(aDLLHandle, 'igGetCurrentTable');
+  igGetCurrentWindow := GetProcAddress(aDLLHandle, 'igGetCurrentWindow');
+  igGetCurrentWindowRead := GetProcAddress(aDLLHandle, 'igGetCurrentWindowRead');
+  igGetCursorPos := GetProcAddress(aDLLHandle, 'igGetCursorPos');
+  igGetCursorPosX := GetProcAddress(aDLLHandle, 'igGetCursorPosX');
+  igGetCursorPosY := GetProcAddress(aDLLHandle, 'igGetCursorPosY');
+  igGetCursorScreenPos := GetProcAddress(aDLLHandle, 'igGetCursorScreenPos');
+  igGetCursorStartPos := GetProcAddress(aDLLHandle, 'igGetCursorStartPos');
+  igGetDefaultFont := GetProcAddress(aDLLHandle, 'igGetDefaultFont');
+  igGetDragDropPayload := GetProcAddress(aDLLHandle, 'igGetDragDropPayload');
+  igGetDrawData := GetProcAddress(aDLLHandle, 'igGetDrawData');
+  igGetDrawListSharedData := GetProcAddress(aDLLHandle, 'igGetDrawListSharedData');
+  igGetFocusID := GetProcAddress(aDLLHandle, 'igGetFocusID');
+  igGetFont := GetProcAddress(aDLLHandle, 'igGetFont');
+  igGetFontSize := GetProcAddress(aDLLHandle, 'igGetFontSize');
+  igGetFontTexUvWhitePixel := GetProcAddress(aDLLHandle, 'igGetFontTexUvWhitePixel');
+  igGetForegroundDrawList_ViewportPtr := GetProcAddress(aDLLHandle, 'igGetForegroundDrawList_ViewportPtr');
+  igGetForegroundDrawList_WindowPtr := GetProcAddress(aDLLHandle, 'igGetForegroundDrawList_WindowPtr');
+  igGetFrameCount := GetProcAddress(aDLLHandle, 'igGetFrameCount');
+  igGetFrameHeight := GetProcAddress(aDLLHandle, 'igGetFrameHeight');
+  igGetFrameHeightWithSpacing := GetProcAddress(aDLLHandle, 'igGetFrameHeightWithSpacing');
+  igGetHoveredID := GetProcAddress(aDLLHandle, 'igGetHoveredID');
+  igGetID_Int := GetProcAddress(aDLLHandle, 'igGetID_Int');
+  igGetID_Ptr := GetProcAddress(aDLLHandle, 'igGetID_Ptr');
+  igGetID_Str := GetProcAddress(aDLLHandle, 'igGetID_Str');
+  igGetID_StrStr := GetProcAddress(aDLLHandle, 'igGetID_StrStr');
+  igGetIDWithSeed_Int := GetProcAddress(aDLLHandle, 'igGetIDWithSeed_Int');
+  igGetIDWithSeed_Str := GetProcAddress(aDLLHandle, 'igGetIDWithSeed_Str');
+  igGetInputTextState := GetProcAddress(aDLLHandle, 'igGetInputTextState');
+  igGetIO := GetProcAddress(aDLLHandle, 'igGetIO');
+  igGetIOEx := GetProcAddress(aDLLHandle, 'igGetIOEx');
+  igGetItemFlags := GetProcAddress(aDLLHandle, 'igGetItemFlags');
+  igGetItemID := GetProcAddress(aDLLHandle, 'igGetItemID');
+  igGetItemRectMax := GetProcAddress(aDLLHandle, 'igGetItemRectMax');
+  igGetItemRectMin := GetProcAddress(aDLLHandle, 'igGetItemRectMin');
+  igGetItemRectSize := GetProcAddress(aDLLHandle, 'igGetItemRectSize');
+  igGetItemStatusFlags := GetProcAddress(aDLLHandle, 'igGetItemStatusFlags');
+  igGetKeyChordName := GetProcAddress(aDLLHandle, 'igGetKeyChordName');
+  igGetKeyData_ContextPtr := GetProcAddress(aDLLHandle, 'igGetKeyData_ContextPtr');
+  igGetKeyData_Key := GetProcAddress(aDLLHandle, 'igGetKeyData_Key');
+  igGetKeyMagnitude2d := GetProcAddress(aDLLHandle, 'igGetKeyMagnitude2d');
+  igGetKeyName := GetProcAddress(aDLLHandle, 'igGetKeyName');
+  igGetKeyOwner := GetProcAddress(aDLLHandle, 'igGetKeyOwner');
+  igGetKeyOwnerData := GetProcAddress(aDLLHandle, 'igGetKeyOwnerData');
+  igGetKeyPressedAmount := GetProcAddress(aDLLHandle, 'igGetKeyPressedAmount');
+  igGetMainViewport := GetProcAddress(aDLLHandle, 'igGetMainViewport');
+  igGetMouseClickedCount := GetProcAddress(aDLLHandle, 'igGetMouseClickedCount');
+  igGetMouseCursor := GetProcAddress(aDLLHandle, 'igGetMouseCursor');
+  igGetMouseDragDelta := GetProcAddress(aDLLHandle, 'igGetMouseDragDelta');
+  igGetMousePos := GetProcAddress(aDLLHandle, 'igGetMousePos');
+  igGetMousePosOnOpeningCurrentPopup := GetProcAddress(aDLLHandle, 'igGetMousePosOnOpeningCurrentPopup');
+  igGetMultiSelectState := GetProcAddress(aDLLHandle, 'igGetMultiSelectState');
+  igGetNavTweakPressedAmount := GetProcAddress(aDLLHandle, 'igGetNavTweakPressedAmount');
+  igGetPlatformIO := GetProcAddress(aDLLHandle, 'igGetPlatformIO');
+  igGetPlatformIOEx := GetProcAddress(aDLLHandle, 'igGetPlatformIOEx');
+  igGetPopupAllowedExtentRect := GetProcAddress(aDLLHandle, 'igGetPopupAllowedExtentRect');
+  igGetScrollMaxX := GetProcAddress(aDLLHandle, 'igGetScrollMaxX');
+  igGetScrollMaxY := GetProcAddress(aDLLHandle, 'igGetScrollMaxY');
+  igGetScrollX := GetProcAddress(aDLLHandle, 'igGetScrollX');
+  igGetScrollY := GetProcAddress(aDLLHandle, 'igGetScrollY');
+  igGetShortcutRoutingData := GetProcAddress(aDLLHandle, 'igGetShortcutRoutingData');
+  igGetStateStorage := GetProcAddress(aDLLHandle, 'igGetStateStorage');
+  igGetStyle := GetProcAddress(aDLLHandle, 'igGetStyle');
+  igGetStyleColorName := GetProcAddress(aDLLHandle, 'igGetStyleColorName');
+  igGetStyleColorVec4 := GetProcAddress(aDLLHandle, 'igGetStyleColorVec4');
+  igGetStyleVarInfo := GetProcAddress(aDLLHandle, 'igGetStyleVarInfo');
+  igGetTextLineHeight := GetProcAddress(aDLLHandle, 'igGetTextLineHeight');
+  igGetTextLineHeightWithSpacing := GetProcAddress(aDLLHandle, 'igGetTextLineHeightWithSpacing');
+  igGetTime := GetProcAddress(aDLLHandle, 'igGetTime');
+  igGetTopMostAndVisiblePopupModal := GetProcAddress(aDLLHandle, 'igGetTopMostAndVisiblePopupModal');
+  igGetTopMostPopupModal := GetProcAddress(aDLLHandle, 'igGetTopMostPopupModal');
+  igGetTreeNodeToLabelSpacing := GetProcAddress(aDLLHandle, 'igGetTreeNodeToLabelSpacing');
+  igGetTypematicRepeatRate := GetProcAddress(aDLLHandle, 'igGetTypematicRepeatRate');
+  igGetTypingSelectRequest := GetProcAddress(aDLLHandle, 'igGetTypingSelectRequest');
+  igGetVersion := GetProcAddress(aDLLHandle, 'igGetVersion');
+  igGetViewportPlatformMonitor := GetProcAddress(aDLLHandle, 'igGetViewportPlatformMonitor');
+  igGetWindowAlwaysWantOwnTabBar := GetProcAddress(aDLLHandle, 'igGetWindowAlwaysWantOwnTabBar');
+  igGetWindowDockID := GetProcAddress(aDLLHandle, 'igGetWindowDockID');
+  igGetWindowDockNode := GetProcAddress(aDLLHandle, 'igGetWindowDockNode');
+  igGetWindowDpiScale := GetProcAddress(aDLLHandle, 'igGetWindowDpiScale');
+  igGetWindowDrawList := GetProcAddress(aDLLHandle, 'igGetWindowDrawList');
+  igGetWindowHeight := GetProcAddress(aDLLHandle, 'igGetWindowHeight');
+  igGetWindowPos := GetProcAddress(aDLLHandle, 'igGetWindowPos');
+  igGetWindowResizeBorderID := GetProcAddress(aDLLHandle, 'igGetWindowResizeBorderID');
+  igGetWindowResizeCornerID := GetProcAddress(aDLLHandle, 'igGetWindowResizeCornerID');
+  igGetWindowScrollbarID := GetProcAddress(aDLLHandle, 'igGetWindowScrollbarID');
+  igGetWindowScrollbarRect := GetProcAddress(aDLLHandle, 'igGetWindowScrollbarRect');
+  igGetWindowSize := GetProcAddress(aDLLHandle, 'igGetWindowSize');
+  igGetWindowViewport := GetProcAddress(aDLLHandle, 'igGetWindowViewport');
+  igGetWindowWidth := GetProcAddress(aDLLHandle, 'igGetWindowWidth');
+  igImAbs_double := GetProcAddress(aDLLHandle, 'igImAbs_double');
+  igImAbs_Float := GetProcAddress(aDLLHandle, 'igImAbs_Float');
+  igImAbs_Int := GetProcAddress(aDLLHandle, 'igImAbs_Int');
+  igImage := GetProcAddress(aDLLHandle, 'igImage');
+  igImageButton := GetProcAddress(aDLLHandle, 'igImageButton');
+  igImageButtonEx := GetProcAddress(aDLLHandle, 'igImageButtonEx');
+  igImAlphaBlendColors := GetProcAddress(aDLLHandle, 'igImAlphaBlendColors');
+  igImBezierCubicCalc := GetProcAddress(aDLLHandle, 'igImBezierCubicCalc');
+  igImBezierCubicClosestPoint := GetProcAddress(aDLLHandle, 'igImBezierCubicClosestPoint');
+  igImBezierCubicClosestPointCasteljau := GetProcAddress(aDLLHandle, 'igImBezierCubicClosestPointCasteljau');
+  igImBezierQuadraticCalc := GetProcAddress(aDLLHandle, 'igImBezierQuadraticCalc');
+  igImBitArrayClearAllBits := GetProcAddress(aDLLHandle, 'igImBitArrayClearAllBits');
+  igImBitArrayClearBit := GetProcAddress(aDLLHandle, 'igImBitArrayClearBit');
+  igImBitArrayGetStorageSizeInBytes := GetProcAddress(aDLLHandle, 'igImBitArrayGetStorageSizeInBytes');
+  igImBitArraySetBit := GetProcAddress(aDLLHandle, 'igImBitArraySetBit');
+  igImBitArraySetBitRange := GetProcAddress(aDLLHandle, 'igImBitArraySetBitRange');
+  igImBitArrayTestBit := GetProcAddress(aDLLHandle, 'igImBitArrayTestBit');
+  igImCharIsBlankA := GetProcAddress(aDLLHandle, 'igImCharIsBlankA');
+  igImCharIsBlankW := GetProcAddress(aDLLHandle, 'igImCharIsBlankW');
+  igImCharIsXdigitA := GetProcAddress(aDLLHandle, 'igImCharIsXdigitA');
+  igImClamp := GetProcAddress(aDLLHandle, 'igImClamp');
+  igImDot := GetProcAddress(aDLLHandle, 'igImDot');
+  igImExponentialMovingAverage := GetProcAddress(aDLLHandle, 'igImExponentialMovingAverage');
+  igImFileClose := GetProcAddress(aDLLHandle, 'igImFileClose');
+  igImFileGetSize := GetProcAddress(aDLLHandle, 'igImFileGetSize');
+  igImFileLoadToMemory := GetProcAddress(aDLLHandle, 'igImFileLoadToMemory');
+  igImFileOpen := GetProcAddress(aDLLHandle, 'igImFileOpen');
+  igImFileRead := GetProcAddress(aDLLHandle, 'igImFileRead');
+  igImFileWrite := GetProcAddress(aDLLHandle, 'igImFileWrite');
+  igImFloor_Float := GetProcAddress(aDLLHandle, 'igImFloor_Float');
+  igImFloor_Vec2 := GetProcAddress(aDLLHandle, 'igImFloor_Vec2');
+  igImFontAtlasBuildFinish := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildFinish');
+  igImFontAtlasBuildInit := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildInit');
+  igImFontAtlasBuildMultiplyCalcLookupTable := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildMultiplyCalcLookupTable');
+  igImFontAtlasBuildMultiplyRectAlpha8 := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildMultiplyRectAlpha8');
+  igImFontAtlasBuildPackCustomRects := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildPackCustomRects');
+  igImFontAtlasBuildRender32bppRectFromString := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildRender32bppRectFromString');
+  igImFontAtlasBuildRender8bppRectFromString := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildRender8bppRectFromString');
+  igImFontAtlasBuildSetupFont := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildSetupFont');
+  igImFontAtlasGetBuilderForStbTruetype := GetProcAddress(aDLLHandle, 'igImFontAtlasGetBuilderForStbTruetype');
+  igImFontAtlasUpdateConfigDataPointers := GetProcAddress(aDLLHandle, 'igImFontAtlasUpdateConfigDataPointers');
+  igImFormatString := GetProcAddress(aDLLHandle, 'igImFormatString');
+  igImFormatStringToTempBuffer := GetProcAddress(aDLLHandle, 'igImFormatStringToTempBuffer');
+  igImFormatStringToTempBufferV := GetProcAddress(aDLLHandle, 'igImFormatStringToTempBufferV');
+  igImFormatStringV := GetProcAddress(aDLLHandle, 'igImFormatStringV');
+  igImHashData := GetProcAddress(aDLLHandle, 'igImHashData');
+  igImHashStr := GetProcAddress(aDLLHandle, 'igImHashStr');
+  igImInvLength := GetProcAddress(aDLLHandle, 'igImInvLength');
+  igImIsFloatAboveGuaranteedIntegerPrecision := GetProcAddress(aDLLHandle, 'igImIsFloatAboveGuaranteedIntegerPrecision');
+  igImIsPowerOfTwo_Int := GetProcAddress(aDLLHandle, 'igImIsPowerOfTwo_Int');
+  igImIsPowerOfTwo_U64 := GetProcAddress(aDLLHandle, 'igImIsPowerOfTwo_U64');
+  igImLengthSqr_Vec2 := GetProcAddress(aDLLHandle, 'igImLengthSqr_Vec2');
+  igImLengthSqr_Vec4 := GetProcAddress(aDLLHandle, 'igImLengthSqr_Vec4');
+  igImLerp_Vec2Float := GetProcAddress(aDLLHandle, 'igImLerp_Vec2Float');
+  igImLerp_Vec2Vec2 := GetProcAddress(aDLLHandle, 'igImLerp_Vec2Vec2');
+  igImLerp_Vec4 := GetProcAddress(aDLLHandle, 'igImLerp_Vec4');
+  igImLinearRemapClamp := GetProcAddress(aDLLHandle, 'igImLinearRemapClamp');
+  igImLinearSweep := GetProcAddress(aDLLHandle, 'igImLinearSweep');
+  igImLineClosestPoint := GetProcAddress(aDLLHandle, 'igImLineClosestPoint');
+  igImLog_double := GetProcAddress(aDLLHandle, 'igImLog_double');
+  igImLog_Float := GetProcAddress(aDLLHandle, 'igImLog_Float');
+  igImLowerBound := GetProcAddress(aDLLHandle, 'igImLowerBound');
+  igImMax := GetProcAddress(aDLLHandle, 'igImMax');
+  igImMin := GetProcAddress(aDLLHandle, 'igImMin');
+  igImModPositive := GetProcAddress(aDLLHandle, 'igImModPositive');
+  igImMul := GetProcAddress(aDLLHandle, 'igImMul');
+  igImParseFormatFindEnd := GetProcAddress(aDLLHandle, 'igImParseFormatFindEnd');
+  igImParseFormatFindStart := GetProcAddress(aDLLHandle, 'igImParseFormatFindStart');
+  igImParseFormatPrecision := GetProcAddress(aDLLHandle, 'igImParseFormatPrecision');
+  igImParseFormatSanitizeForPrinting := GetProcAddress(aDLLHandle, 'igImParseFormatSanitizeForPrinting');
+  igImParseFormatSanitizeForScanning := GetProcAddress(aDLLHandle, 'igImParseFormatSanitizeForScanning');
+  igImParseFormatTrimDecorations := GetProcAddress(aDLLHandle, 'igImParseFormatTrimDecorations');
+  igImPow_double := GetProcAddress(aDLLHandle, 'igImPow_double');
+  igImPow_Float := GetProcAddress(aDLLHandle, 'igImPow_Float');
+  igImQsort := GetProcAddress(aDLLHandle, 'igImQsort');
+  igImRotate := GetProcAddress(aDLLHandle, 'igImRotate');
+  igImRsqrt_double := GetProcAddress(aDLLHandle, 'igImRsqrt_double');
+  igImRsqrt_Float := GetProcAddress(aDLLHandle, 'igImRsqrt_Float');
+  igImSaturate := GetProcAddress(aDLLHandle, 'igImSaturate');
+  igImSign_double := GetProcAddress(aDLLHandle, 'igImSign_double');
+  igImSign_Float := GetProcAddress(aDLLHandle, 'igImSign_Float');
+  igImStrbol := GetProcAddress(aDLLHandle, 'igImStrbol');
+  igImStrchrRange := GetProcAddress(aDLLHandle, 'igImStrchrRange');
+  igImStrdup := GetProcAddress(aDLLHandle, 'igImStrdup');
+  igImStrdupcpy := GetProcAddress(aDLLHandle, 'igImStrdupcpy');
+  igImStreolRange := GetProcAddress(aDLLHandle, 'igImStreolRange');
+  igImStricmp := GetProcAddress(aDLLHandle, 'igImStricmp');
+  igImStristr := GetProcAddress(aDLLHandle, 'igImStristr');
+  igImStrlenW := GetProcAddress(aDLLHandle, 'igImStrlenW');
+  igImStrncpy := GetProcAddress(aDLLHandle, 'igImStrncpy');
+  igImStrnicmp := GetProcAddress(aDLLHandle, 'igImStrnicmp');
+  igImStrSkipBlank := GetProcAddress(aDLLHandle, 'igImStrSkipBlank');
+  igImStrTrimBlanks := GetProcAddress(aDLLHandle, 'igImStrTrimBlanks');
+  igImTextCharFromUtf8 := GetProcAddress(aDLLHandle, 'igImTextCharFromUtf8');
+  igImTextCharToUtf8 := GetProcAddress(aDLLHandle, 'igImTextCharToUtf8');
+  igImTextCountCharsFromUtf8 := GetProcAddress(aDLLHandle, 'igImTextCountCharsFromUtf8');
+  igImTextCountLines := GetProcAddress(aDLLHandle, 'igImTextCountLines');
+  igImTextCountUtf8BytesFromChar := GetProcAddress(aDLLHandle, 'igImTextCountUtf8BytesFromChar');
+  igImTextCountUtf8BytesFromStr := GetProcAddress(aDLLHandle, 'igImTextCountUtf8BytesFromStr');
+  igImTextFindPreviousUtf8Codepoint := GetProcAddress(aDLLHandle, 'igImTextFindPreviousUtf8Codepoint');
+  igImTextStrFromUtf8 := GetProcAddress(aDLLHandle, 'igImTextStrFromUtf8');
+  igImTextStrToUtf8 := GetProcAddress(aDLLHandle, 'igImTextStrToUtf8');
+  igImToUpper := GetProcAddress(aDLLHandle, 'igImToUpper');
+  igImTriangleArea := GetProcAddress(aDLLHandle, 'igImTriangleArea');
+  igImTriangleBarycentricCoords := GetProcAddress(aDLLHandle, 'igImTriangleBarycentricCoords');
+  igImTriangleClosestPoint := GetProcAddress(aDLLHandle, 'igImTriangleClosestPoint');
+  igImTriangleContainsPoint := GetProcAddress(aDLLHandle, 'igImTriangleContainsPoint');
+  igImTriangleIsClockwise := GetProcAddress(aDLLHandle, 'igImTriangleIsClockwise');
+  igImTrunc_Float := GetProcAddress(aDLLHandle, 'igImTrunc_Float');
+  igImTrunc_Vec2 := GetProcAddress(aDLLHandle, 'igImTrunc_Vec2');
+  igImUpperPowerOfTwo := GetProcAddress(aDLLHandle, 'igImUpperPowerOfTwo');
+  igIndent := GetProcAddress(aDLLHandle, 'igIndent');
+  igInitialize := GetProcAddress(aDLLHandle, 'igInitialize');
+  igInputDouble := GetProcAddress(aDLLHandle, 'igInputDouble');
+  igInputFloat := GetProcAddress(aDLLHandle, 'igInputFloat');
+  igInputFloat2 := GetProcAddress(aDLLHandle, 'igInputFloat2');
+  igInputFloat3 := GetProcAddress(aDLLHandle, 'igInputFloat3');
+  igInputFloat4 := GetProcAddress(aDLLHandle, 'igInputFloat4');
+  igInputInt := GetProcAddress(aDLLHandle, 'igInputInt');
+  igInputInt2 := GetProcAddress(aDLLHandle, 'igInputInt2');
+  igInputInt3 := GetProcAddress(aDLLHandle, 'igInputInt3');
+  igInputInt4 := GetProcAddress(aDLLHandle, 'igInputInt4');
+  igInputScalar := GetProcAddress(aDLLHandle, 'igInputScalar');
+  igInputScalarN := GetProcAddress(aDLLHandle, 'igInputScalarN');
+  igInputText := GetProcAddress(aDLLHandle, 'igInputText');
+  igInputTextDeactivateHook := GetProcAddress(aDLLHandle, 'igInputTextDeactivateHook');
+  igInputTextEx := GetProcAddress(aDLLHandle, 'igInputTextEx');
+  igInputTextMultiline := GetProcAddress(aDLLHandle, 'igInputTextMultiline');
+  igInputTextWithHint := GetProcAddress(aDLLHandle, 'igInputTextWithHint');
+  igInvisibleButton := GetProcAddress(aDLLHandle, 'igInvisibleButton');
+  igIsActiveIdUsingNavDir := GetProcAddress(aDLLHandle, 'igIsActiveIdUsingNavDir');
+  igIsAliasKey := GetProcAddress(aDLLHandle, 'igIsAliasKey');
+  igIsAnyItemActive := GetProcAddress(aDLLHandle, 'igIsAnyItemActive');
+  igIsAnyItemFocused := GetProcAddress(aDLLHandle, 'igIsAnyItemFocused');
+  igIsAnyItemHovered := GetProcAddress(aDLLHandle, 'igIsAnyItemHovered');
+  igIsAnyMouseDown := GetProcAddress(aDLLHandle, 'igIsAnyMouseDown');
+  igIsClippedEx := GetProcAddress(aDLLHandle, 'igIsClippedEx');
+  igIsDragDropActive := GetProcAddress(aDLLHandle, 'igIsDragDropActive');
+  igIsDragDropPayloadBeingAccepted := GetProcAddress(aDLLHandle, 'igIsDragDropPayloadBeingAccepted');
+  igIsGamepadKey := GetProcAddress(aDLLHandle, 'igIsGamepadKey');
+  igIsItemActivated := GetProcAddress(aDLLHandle, 'igIsItemActivated');
+  igIsItemActive := GetProcAddress(aDLLHandle, 'igIsItemActive');
+  igIsItemClicked := GetProcAddress(aDLLHandle, 'igIsItemClicked');
+  igIsItemDeactivated := GetProcAddress(aDLLHandle, 'igIsItemDeactivated');
+  igIsItemDeactivatedAfterEdit := GetProcAddress(aDLLHandle, 'igIsItemDeactivatedAfterEdit');
+  igIsItemEdited := GetProcAddress(aDLLHandle, 'igIsItemEdited');
+  igIsItemFocused := GetProcAddress(aDLLHandle, 'igIsItemFocused');
+  igIsItemHovered := GetProcAddress(aDLLHandle, 'igIsItemHovered');
+  igIsItemToggledOpen := GetProcAddress(aDLLHandle, 'igIsItemToggledOpen');
+  igIsItemToggledSelection := GetProcAddress(aDLLHandle, 'igIsItemToggledSelection');
+  igIsItemVisible := GetProcAddress(aDLLHandle, 'igIsItemVisible');
+  igIsKeyboardKey := GetProcAddress(aDLLHandle, 'igIsKeyboardKey');
+  igIsKeyChordPressed_InputFlags := GetProcAddress(aDLLHandle, 'igIsKeyChordPressed_InputFlags');
+  igIsKeyChordPressed_Nil := GetProcAddress(aDLLHandle, 'igIsKeyChordPressed_Nil');
+  igIsKeyDown_ID := GetProcAddress(aDLLHandle, 'igIsKeyDown_ID');
+  igIsKeyDown_Nil := GetProcAddress(aDLLHandle, 'igIsKeyDown_Nil');
+  igIsKeyPressed_Bool := GetProcAddress(aDLLHandle, 'igIsKeyPressed_Bool');
+  igIsKeyPressed_InputFlags := GetProcAddress(aDLLHandle, 'igIsKeyPressed_InputFlags');
+  igIsKeyReleased_ID := GetProcAddress(aDLLHandle, 'igIsKeyReleased_ID');
+  igIsKeyReleased_Nil := GetProcAddress(aDLLHandle, 'igIsKeyReleased_Nil');
+  igIsLegacyKey := GetProcAddress(aDLLHandle, 'igIsLegacyKey');
+  igIsLRModKey := GetProcAddress(aDLLHandle, 'igIsLRModKey');
+  igIsMouseClicked_Bool := GetProcAddress(aDLLHandle, 'igIsMouseClicked_Bool');
+  igIsMouseClicked_InputFlags := GetProcAddress(aDLLHandle, 'igIsMouseClicked_InputFlags');
+  igIsMouseDoubleClicked_ID := GetProcAddress(aDLLHandle, 'igIsMouseDoubleClicked_ID');
+  igIsMouseDoubleClicked_Nil := GetProcAddress(aDLLHandle, 'igIsMouseDoubleClicked_Nil');
+  igIsMouseDown_ID := GetProcAddress(aDLLHandle, 'igIsMouseDown_ID');
+  igIsMouseDown_Nil := GetProcAddress(aDLLHandle, 'igIsMouseDown_Nil');
+  igIsMouseDragging := GetProcAddress(aDLLHandle, 'igIsMouseDragging');
+  igIsMouseDragPastThreshold := GetProcAddress(aDLLHandle, 'igIsMouseDragPastThreshold');
+  igIsMouseHoveringRect := GetProcAddress(aDLLHandle, 'igIsMouseHoveringRect');
+  igIsMouseKey := GetProcAddress(aDLLHandle, 'igIsMouseKey');
+  igIsMousePosValid := GetProcAddress(aDLLHandle, 'igIsMousePosValid');
+  igIsMouseReleased_ID := GetProcAddress(aDLLHandle, 'igIsMouseReleased_ID');
+  igIsMouseReleased_Nil := GetProcAddress(aDLLHandle, 'igIsMouseReleased_Nil');
+  igIsNamedKey := GetProcAddress(aDLLHandle, 'igIsNamedKey');
+  igIsNamedKeyOrMod := GetProcAddress(aDLLHandle, 'igIsNamedKeyOrMod');
+  igIsPopupOpen_ID := GetProcAddress(aDLLHandle, 'igIsPopupOpen_ID');
+  igIsPopupOpen_Str := GetProcAddress(aDLLHandle, 'igIsPopupOpen_Str');
+  igIsRectVisible_Nil := GetProcAddress(aDLLHandle, 'igIsRectVisible_Nil');
+  igIsRectVisible_Vec2 := GetProcAddress(aDLLHandle, 'igIsRectVisible_Vec2');
+  igIsWindowAbove := GetProcAddress(aDLLHandle, 'igIsWindowAbove');
+  igIsWindowAppearing := GetProcAddress(aDLLHandle, 'igIsWindowAppearing');
+  igIsWindowChildOf := GetProcAddress(aDLLHandle, 'igIsWindowChildOf');
+  igIsWindowCollapsed := GetProcAddress(aDLLHandle, 'igIsWindowCollapsed');
+  igIsWindowContentHoverable := GetProcAddress(aDLLHandle, 'igIsWindowContentHoverable');
+  igIsWindowDocked := GetProcAddress(aDLLHandle, 'igIsWindowDocked');
+  igIsWindowFocused := GetProcAddress(aDLLHandle, 'igIsWindowFocused');
+  igIsWindowHovered := GetProcAddress(aDLLHandle, 'igIsWindowHovered');
+  igIsWindowNavFocusable := GetProcAddress(aDLLHandle, 'igIsWindowNavFocusable');
+  igIsWindowWithinBeginStackOf := GetProcAddress(aDLLHandle, 'igIsWindowWithinBeginStackOf');
+  igItemAdd := GetProcAddress(aDLLHandle, 'igItemAdd');
+  igItemHoverable := GetProcAddress(aDLLHandle, 'igItemHoverable');
+  igItemSize_Rect := GetProcAddress(aDLLHandle, 'igItemSize_Rect');
+  igItemSize_Vec2 := GetProcAddress(aDLLHandle, 'igItemSize_Vec2');
+  igKeepAliveID := GetProcAddress(aDLLHandle, 'igKeepAliveID');
+  igLabelText := GetProcAddress(aDLLHandle, 'igLabelText');
+  igLabelTextV := GetProcAddress(aDLLHandle, 'igLabelTextV');
+  igListBox_FnStrPtr := GetProcAddress(aDLLHandle, 'igListBox_FnStrPtr');
+  igListBox_Str_arr := GetProcAddress(aDLLHandle, 'igListBox_Str_arr');
+  igLoadIniSettingsFromDisk := GetProcAddress(aDLLHandle, 'igLoadIniSettingsFromDisk');
+  igLoadIniSettingsFromMemory := GetProcAddress(aDLLHandle, 'igLoadIniSettingsFromMemory');
+  igLocalizeGetMsg := GetProcAddress(aDLLHandle, 'igLocalizeGetMsg');
+  igLocalizeRegisterEntries := GetProcAddress(aDLLHandle, 'igLocalizeRegisterEntries');
+  igLogBegin := GetProcAddress(aDLLHandle, 'igLogBegin');
+  igLogButtons := GetProcAddress(aDLLHandle, 'igLogButtons');
+  igLogFinish := GetProcAddress(aDLLHandle, 'igLogFinish');
+  igLogRenderedText := GetProcAddress(aDLLHandle, 'igLogRenderedText');
+  igLogSetNextTextDecoration := GetProcAddress(aDLLHandle, 'igLogSetNextTextDecoration');
+  igLogText := GetProcAddress(aDLLHandle, 'igLogText');
+  igLogTextV := GetProcAddress(aDLLHandle, 'igLogTextV');
+  igLogToBuffer := GetProcAddress(aDLLHandle, 'igLogToBuffer');
+  igLogToClipboard := GetProcAddress(aDLLHandle, 'igLogToClipboard');
+  igLogToFile := GetProcAddress(aDLLHandle, 'igLogToFile');
+  igLogToTTY := GetProcAddress(aDLLHandle, 'igLogToTTY');
+  igMarkIniSettingsDirty_Nil := GetProcAddress(aDLLHandle, 'igMarkIniSettingsDirty_Nil');
+  igMarkIniSettingsDirty_WindowPtr := GetProcAddress(aDLLHandle, 'igMarkIniSettingsDirty_WindowPtr');
+  igMarkItemEdited := GetProcAddress(aDLLHandle, 'igMarkItemEdited');
+  igMemAlloc := GetProcAddress(aDLLHandle, 'igMemAlloc');
+  igMemFree := GetProcAddress(aDLLHandle, 'igMemFree');
+  igMenuItem_Bool := GetProcAddress(aDLLHandle, 'igMenuItem_Bool');
+  igMenuItem_BoolPtr := GetProcAddress(aDLLHandle, 'igMenuItem_BoolPtr');
+  igMenuItemEx := GetProcAddress(aDLLHandle, 'igMenuItemEx');
+  igMouseButtonToKey := GetProcAddress(aDLLHandle, 'igMouseButtonToKey');
+  igMultiSelectAddSetAll := GetProcAddress(aDLLHandle, 'igMultiSelectAddSetAll');
+  igMultiSelectAddSetRange := GetProcAddress(aDLLHandle, 'igMultiSelectAddSetRange');
+  igMultiSelectItemFooter := GetProcAddress(aDLLHandle, 'igMultiSelectItemFooter');
+  igMultiSelectItemHeader := GetProcAddress(aDLLHandle, 'igMultiSelectItemHeader');
+  igNavClearPreferredPosForAxis := GetProcAddress(aDLLHandle, 'igNavClearPreferredPosForAxis');
+  igNavHighlightActivated := GetProcAddress(aDLLHandle, 'igNavHighlightActivated');
+  igNavInitRequestApplyResult := GetProcAddress(aDLLHandle, 'igNavInitRequestApplyResult');
+  igNavInitWindow := GetProcAddress(aDLLHandle, 'igNavInitWindow');
+  igNavMoveRequestApplyResult := GetProcAddress(aDLLHandle, 'igNavMoveRequestApplyResult');
+  igNavMoveRequestButNoResultYet := GetProcAddress(aDLLHandle, 'igNavMoveRequestButNoResultYet');
+  igNavMoveRequestCancel := GetProcAddress(aDLLHandle, 'igNavMoveRequestCancel');
+  igNavMoveRequestForward := GetProcAddress(aDLLHandle, 'igNavMoveRequestForward');
+  igNavMoveRequestResolveWithLastItem := GetProcAddress(aDLLHandle, 'igNavMoveRequestResolveWithLastItem');
+  igNavMoveRequestResolveWithPastTreeNode := GetProcAddress(aDLLHandle, 'igNavMoveRequestResolveWithPastTreeNode');
+  igNavMoveRequestSubmit := GetProcAddress(aDLLHandle, 'igNavMoveRequestSubmit');
+  igNavMoveRequestTryWrapping := GetProcAddress(aDLLHandle, 'igNavMoveRequestTryWrapping');
+  igNavUpdateCurrentWindowIsScrollPushableX := GetProcAddress(aDLLHandle, 'igNavUpdateCurrentWindowIsScrollPushableX');
+  igNewFrame := GetProcAddress(aDLLHandle, 'igNewFrame');
+  igNewLine := GetProcAddress(aDLLHandle, 'igNewLine');
+  igNextColumn := GetProcAddress(aDLLHandle, 'igNextColumn');
+  igOpenPopup_ID := GetProcAddress(aDLLHandle, 'igOpenPopup_ID');
+  igOpenPopup_Str := GetProcAddress(aDLLHandle, 'igOpenPopup_Str');
+  igOpenPopupEx := GetProcAddress(aDLLHandle, 'igOpenPopupEx');
+  igOpenPopupOnItemClick := GetProcAddress(aDLLHandle, 'igOpenPopupOnItemClick');
+  igPlotEx := GetProcAddress(aDLLHandle, 'igPlotEx');
+  igPlotHistogram_FloatPtr := GetProcAddress(aDLLHandle, 'igPlotHistogram_FloatPtr');
+  igPlotHistogram_FnFloatPtr := GetProcAddress(aDLLHandle, 'igPlotHistogram_FnFloatPtr');
+  igPlotLines_FloatPtr := GetProcAddress(aDLLHandle, 'igPlotLines_FloatPtr');
+  igPlotLines_FnFloatPtr := GetProcAddress(aDLLHandle, 'igPlotLines_FnFloatPtr');
+  igPopClipRect := GetProcAddress(aDLLHandle, 'igPopClipRect');
+  igPopColumnsBackground := GetProcAddress(aDLLHandle, 'igPopColumnsBackground');
+  igPopFocusScope := GetProcAddress(aDLLHandle, 'igPopFocusScope');
+  igPopFont := GetProcAddress(aDLLHandle, 'igPopFont');
+  igPopID := GetProcAddress(aDLLHandle, 'igPopID');
+  igPopItemFlag := GetProcAddress(aDLLHandle, 'igPopItemFlag');
+  igPopItemWidth := GetProcAddress(aDLLHandle, 'igPopItemWidth');
+  igPopStyleColor := GetProcAddress(aDLLHandle, 'igPopStyleColor');
+  igPopStyleVar := GetProcAddress(aDLLHandle, 'igPopStyleVar');
+  igPopTextWrapPos := GetProcAddress(aDLLHandle, 'igPopTextWrapPos');
+  igProgressBar := GetProcAddress(aDLLHandle, 'igProgressBar');
+  igPushClipRect := GetProcAddress(aDLLHandle, 'igPushClipRect');
+  igPushColumnClipRect := GetProcAddress(aDLLHandle, 'igPushColumnClipRect');
+  igPushColumnsBackground := GetProcAddress(aDLLHandle, 'igPushColumnsBackground');
+  igPushFocusScope := GetProcAddress(aDLLHandle, 'igPushFocusScope');
+  igPushFont := GetProcAddress(aDLLHandle, 'igPushFont');
+  igPushID_Int := GetProcAddress(aDLLHandle, 'igPushID_Int');
+  igPushID_Ptr := GetProcAddress(aDLLHandle, 'igPushID_Ptr');
+  igPushID_Str := GetProcAddress(aDLLHandle, 'igPushID_Str');
+  igPushID_StrStr := GetProcAddress(aDLLHandle, 'igPushID_StrStr');
+  igPushItemFlag := GetProcAddress(aDLLHandle, 'igPushItemFlag');
+  igPushItemWidth := GetProcAddress(aDLLHandle, 'igPushItemWidth');
+  igPushMultiItemsWidths := GetProcAddress(aDLLHandle, 'igPushMultiItemsWidths');
+  igPushOverrideID := GetProcAddress(aDLLHandle, 'igPushOverrideID');
+  igPushStyleColor_U32 := GetProcAddress(aDLLHandle, 'igPushStyleColor_U32');
+  igPushStyleColor_Vec4 := GetProcAddress(aDLLHandle, 'igPushStyleColor_Vec4');
+  igPushStyleVar_Float := GetProcAddress(aDLLHandle, 'igPushStyleVar_Float');
+  igPushStyleVar_Vec2 := GetProcAddress(aDLLHandle, 'igPushStyleVar_Vec2');
+  igPushStyleVarX := GetProcAddress(aDLLHandle, 'igPushStyleVarX');
+  igPushStyleVarY := GetProcAddress(aDLLHandle, 'igPushStyleVarY');
+  igPushTextWrapPos := GetProcAddress(aDLLHandle, 'igPushTextWrapPos');
+  igRadioButton_Bool := GetProcAddress(aDLLHandle, 'igRadioButton_Bool');
+  igRadioButton_IntPtr := GetProcAddress(aDLLHandle, 'igRadioButton_IntPtr');
+  igRemoveContextHook := GetProcAddress(aDLLHandle, 'igRemoveContextHook');
+  igRemoveSettingsHandler := GetProcAddress(aDLLHandle, 'igRemoveSettingsHandler');
+  igRender := GetProcAddress(aDLLHandle, 'igRender');
+  igRenderArrow := GetProcAddress(aDLLHandle, 'igRenderArrow');
+  igRenderArrowDockMenu := GetProcAddress(aDLLHandle, 'igRenderArrowDockMenu');
+  igRenderArrowPointingAt := GetProcAddress(aDLLHandle, 'igRenderArrowPointingAt');
+  igRenderBullet := GetProcAddress(aDLLHandle, 'igRenderBullet');
+  igRenderCheckMark := GetProcAddress(aDLLHandle, 'igRenderCheckMark');
+  igRenderColorRectWithAlphaCheckerboard := GetProcAddress(aDLLHandle, 'igRenderColorRectWithAlphaCheckerboard');
+  igRenderDragDropTargetRect := GetProcAddress(aDLLHandle, 'igRenderDragDropTargetRect');
+  igRenderFrame := GetProcAddress(aDLLHandle, 'igRenderFrame');
+  igRenderFrameBorder := GetProcAddress(aDLLHandle, 'igRenderFrameBorder');
+  igRenderMouseCursor := GetProcAddress(aDLLHandle, 'igRenderMouseCursor');
+  igRenderNavCursor := GetProcAddress(aDLLHandle, 'igRenderNavCursor');
+  igRenderPlatformWindowsDefault := GetProcAddress(aDLLHandle, 'igRenderPlatformWindowsDefault');
+  igRenderRectFilledRangeH := GetProcAddress(aDLLHandle, 'igRenderRectFilledRangeH');
+  igRenderRectFilledWithHole := GetProcAddress(aDLLHandle, 'igRenderRectFilledWithHole');
+  igRenderText := GetProcAddress(aDLLHandle, 'igRenderText');
+  igRenderTextClipped := GetProcAddress(aDLLHandle, 'igRenderTextClipped');
+  igRenderTextClippedEx := GetProcAddress(aDLLHandle, 'igRenderTextClippedEx');
+  igRenderTextEllipsis := GetProcAddress(aDLLHandle, 'igRenderTextEllipsis');
+  igRenderTextWrapped := GetProcAddress(aDLLHandle, 'igRenderTextWrapped');
+  igResetMouseDragDelta := GetProcAddress(aDLLHandle, 'igResetMouseDragDelta');
+  igSameLine := GetProcAddress(aDLLHandle, 'igSameLine');
+  igSaveIniSettingsToDisk := GetProcAddress(aDLLHandle, 'igSaveIniSettingsToDisk');
+  igSaveIniSettingsToMemory := GetProcAddress(aDLLHandle, 'igSaveIniSettingsToMemory');
+  igScaleWindowsInViewport := GetProcAddress(aDLLHandle, 'igScaleWindowsInViewport');
+  igScrollbar := GetProcAddress(aDLLHandle, 'igScrollbar');
+  igScrollbarEx := GetProcAddress(aDLLHandle, 'igScrollbarEx');
+  igScrollToBringRectIntoView := GetProcAddress(aDLLHandle, 'igScrollToBringRectIntoView');
+  igScrollToItem := GetProcAddress(aDLLHandle, 'igScrollToItem');
+  igScrollToRect := GetProcAddress(aDLLHandle, 'igScrollToRect');
+  igScrollToRectEx := GetProcAddress(aDLLHandle, 'igScrollToRectEx');
+  igSelectable_Bool := GetProcAddress(aDLLHandle, 'igSelectable_Bool');
+  igSelectable_BoolPtr := GetProcAddress(aDLLHandle, 'igSelectable_BoolPtr');
+  igSeparator := GetProcAddress(aDLLHandle, 'igSeparator');
+  igSeparatorEx := GetProcAddress(aDLLHandle, 'igSeparatorEx');
+  igSeparatorText := GetProcAddress(aDLLHandle, 'igSeparatorText');
+  igSeparatorTextEx := GetProcAddress(aDLLHandle, 'igSeparatorTextEx');
+  igSetActiveID := GetProcAddress(aDLLHandle, 'igSetActiveID');
+  igSetActiveIdUsingAllKeyboardKeys := GetProcAddress(aDLLHandle, 'igSetActiveIdUsingAllKeyboardKeys');
+  igSetAllocatorFunctions := GetProcAddress(aDLLHandle, 'igSetAllocatorFunctions');
+  igSetClipboardText := GetProcAddress(aDLLHandle, 'igSetClipboardText');
+  igSetColorEditOptions := GetProcAddress(aDLLHandle, 'igSetColorEditOptions');
+  igSetColumnOffset := GetProcAddress(aDLLHandle, 'igSetColumnOffset');
+  igSetColumnWidth := GetProcAddress(aDLLHandle, 'igSetColumnWidth');
+  igSetCurrentContext := GetProcAddress(aDLLHandle, 'igSetCurrentContext');
+  igSetCurrentFont := GetProcAddress(aDLLHandle, 'igSetCurrentFont');
+  igSetCurrentViewport := GetProcAddress(aDLLHandle, 'igSetCurrentViewport');
+  igSetCursorPos := GetProcAddress(aDLLHandle, 'igSetCursorPos');
+  igSetCursorPosX := GetProcAddress(aDLLHandle, 'igSetCursorPosX');
+  igSetCursorPosY := GetProcAddress(aDLLHandle, 'igSetCursorPosY');
+  igSetCursorScreenPos := GetProcAddress(aDLLHandle, 'igSetCursorScreenPos');
+  igSetDragDropPayload := GetProcAddress(aDLLHandle, 'igSetDragDropPayload');
+  igSetFocusID := GetProcAddress(aDLLHandle, 'igSetFocusID');
+  igSetHoveredID := GetProcAddress(aDLLHandle, 'igSetHoveredID');
+  igSetItemDefaultFocus := GetProcAddress(aDLLHandle, 'igSetItemDefaultFocus');
+  igSetItemKeyOwner_InputFlags := GetProcAddress(aDLLHandle, 'igSetItemKeyOwner_InputFlags');
+  igSetItemKeyOwner_Nil := GetProcAddress(aDLLHandle, 'igSetItemKeyOwner_Nil');
+  igSetItemTooltip := GetProcAddress(aDLLHandle, 'igSetItemTooltip');
+  igSetItemTooltipV := GetProcAddress(aDLLHandle, 'igSetItemTooltipV');
+  igSetKeyboardFocusHere := GetProcAddress(aDLLHandle, 'igSetKeyboardFocusHere');
+  igSetKeyOwner := GetProcAddress(aDLLHandle, 'igSetKeyOwner');
+  igSetKeyOwnersForKeyChord := GetProcAddress(aDLLHandle, 'igSetKeyOwnersForKeyChord');
+  igSetLastItemData := GetProcAddress(aDLLHandle, 'igSetLastItemData');
+  igSetMouseCursor := GetProcAddress(aDLLHandle, 'igSetMouseCursor');
+  igSetNavCursorVisible := GetProcAddress(aDLLHandle, 'igSetNavCursorVisible');
+  igSetNavCursorVisibleAfterMove := GetProcAddress(aDLLHandle, 'igSetNavCursorVisibleAfterMove');
+  igSetNavFocusScope := GetProcAddress(aDLLHandle, 'igSetNavFocusScope');
+  igSetNavID := GetProcAddress(aDLLHandle, 'igSetNavID');
+  igSetNavWindow := GetProcAddress(aDLLHandle, 'igSetNavWindow');
+  igSetNextFrameWantCaptureKeyboard := GetProcAddress(aDLLHandle, 'igSetNextFrameWantCaptureKeyboard');
+  igSetNextFrameWantCaptureMouse := GetProcAddress(aDLLHandle, 'igSetNextFrameWantCaptureMouse');
+  igSetNextItemAllowOverlap := GetProcAddress(aDLLHandle, 'igSetNextItemAllowOverlap');
+  igSetNextItemOpen := GetProcAddress(aDLLHandle, 'igSetNextItemOpen');
+  igSetNextItemRefVal := GetProcAddress(aDLLHandle, 'igSetNextItemRefVal');
+  igSetNextItemSelectionUserData := GetProcAddress(aDLLHandle, 'igSetNextItemSelectionUserData');
+  igSetNextItemShortcut := GetProcAddress(aDLLHandle, 'igSetNextItemShortcut');
+  igSetNextItemStorageID := GetProcAddress(aDLLHandle, 'igSetNextItemStorageID');
+  igSetNextItemWidth := GetProcAddress(aDLLHandle, 'igSetNextItemWidth');
+  igSetNextWindowBgAlpha := GetProcAddress(aDLLHandle, 'igSetNextWindowBgAlpha');
+  igSetNextWindowClass := GetProcAddress(aDLLHandle, 'igSetNextWindowClass');
+  igSetNextWindowCollapsed := GetProcAddress(aDLLHandle, 'igSetNextWindowCollapsed');
+  igSetNextWindowContentSize := GetProcAddress(aDLLHandle, 'igSetNextWindowContentSize');
+  igSetNextWindowDockID := GetProcAddress(aDLLHandle, 'igSetNextWindowDockID');
+  igSetNextWindowFocus := GetProcAddress(aDLLHandle, 'igSetNextWindowFocus');
+  igSetNextWindowPos := GetProcAddress(aDLLHandle, 'igSetNextWindowPos');
+  igSetNextWindowRefreshPolicy := GetProcAddress(aDLLHandle, 'igSetNextWindowRefreshPolicy');
+  igSetNextWindowScroll := GetProcAddress(aDLLHandle, 'igSetNextWindowScroll');
+  igSetNextWindowSize := GetProcAddress(aDLLHandle, 'igSetNextWindowSize');
+  igSetNextWindowSizeConstraints := GetProcAddress(aDLLHandle, 'igSetNextWindowSizeConstraints');
+  igSetNextWindowViewport := GetProcAddress(aDLLHandle, 'igSetNextWindowViewport');
+  igSetScrollFromPosX_Float := GetProcAddress(aDLLHandle, 'igSetScrollFromPosX_Float');
+  igSetScrollFromPosX_WindowPtr := GetProcAddress(aDLLHandle, 'igSetScrollFromPosX_WindowPtr');
+  igSetScrollFromPosY_Float := GetProcAddress(aDLLHandle, 'igSetScrollFromPosY_Float');
+  igSetScrollFromPosY_WindowPtr := GetProcAddress(aDLLHandle, 'igSetScrollFromPosY_WindowPtr');
+  igSetScrollHereX := GetProcAddress(aDLLHandle, 'igSetScrollHereX');
+  igSetScrollHereY := GetProcAddress(aDLLHandle, 'igSetScrollHereY');
+  igSetScrollX_Float := GetProcAddress(aDLLHandle, 'igSetScrollX_Float');
+  igSetScrollX_WindowPtr := GetProcAddress(aDLLHandle, 'igSetScrollX_WindowPtr');
+  igSetScrollY_Float := GetProcAddress(aDLLHandle, 'igSetScrollY_Float');
+  igSetScrollY_WindowPtr := GetProcAddress(aDLLHandle, 'igSetScrollY_WindowPtr');
+  igSetShortcutRouting := GetProcAddress(aDLLHandle, 'igSetShortcutRouting');
+  igSetStateStorage := GetProcAddress(aDLLHandle, 'igSetStateStorage');
+  igSetTabItemClosed := GetProcAddress(aDLLHandle, 'igSetTabItemClosed');
+  igSetTooltip := GetProcAddress(aDLLHandle, 'igSetTooltip');
+  igSetTooltipV := GetProcAddress(aDLLHandle, 'igSetTooltipV');
+  igSetWindowClipRectBeforeSetChannel := GetProcAddress(aDLLHandle, 'igSetWindowClipRectBeforeSetChannel');
+  igSetWindowCollapsed_Bool := GetProcAddress(aDLLHandle, 'igSetWindowCollapsed_Bool');
+  igSetWindowCollapsed_Str := GetProcAddress(aDLLHandle, 'igSetWindowCollapsed_Str');
+  igSetWindowCollapsed_WindowPtr := GetProcAddress(aDLLHandle, 'igSetWindowCollapsed_WindowPtr');
+  igSetWindowDock := GetProcAddress(aDLLHandle, 'igSetWindowDock');
+  igSetWindowFocus_Nil := GetProcAddress(aDLLHandle, 'igSetWindowFocus_Nil');
+  igSetWindowFocus_Str := GetProcAddress(aDLLHandle, 'igSetWindowFocus_Str');
+  igSetWindowFontScale := GetProcAddress(aDLLHandle, 'igSetWindowFontScale');
+  igSetWindowHiddenAndSkipItemsForCurrentFrame := GetProcAddress(aDLLHandle, 'igSetWindowHiddenAndSkipItemsForCurrentFrame');
+  igSetWindowHitTestHole := GetProcAddress(aDLLHandle, 'igSetWindowHitTestHole');
+  igSetWindowParentWindowForFocusRoute := GetProcAddress(aDLLHandle, 'igSetWindowParentWindowForFocusRoute');
+  igSetWindowPos_Str := GetProcAddress(aDLLHandle, 'igSetWindowPos_Str');
+  igSetWindowPos_Vec2 := GetProcAddress(aDLLHandle, 'igSetWindowPos_Vec2');
+  igSetWindowPos_WindowPtr := GetProcAddress(aDLLHandle, 'igSetWindowPos_WindowPtr');
+  igSetWindowSize_Str := GetProcAddress(aDLLHandle, 'igSetWindowSize_Str');
+  igSetWindowSize_Vec2 := GetProcAddress(aDLLHandle, 'igSetWindowSize_Vec2');
+  igSetWindowSize_WindowPtr := GetProcAddress(aDLLHandle, 'igSetWindowSize_WindowPtr');
+  igSetWindowViewport := GetProcAddress(aDLLHandle, 'igSetWindowViewport');
+  igShadeVertsLinearColorGradientKeepAlpha := GetProcAddress(aDLLHandle, 'igShadeVertsLinearColorGradientKeepAlpha');
+  igShadeVertsLinearUV := GetProcAddress(aDLLHandle, 'igShadeVertsLinearUV');
+  igShadeVertsTransformPos := GetProcAddress(aDLLHandle, 'igShadeVertsTransformPos');
+  igShortcut_ID := GetProcAddress(aDLLHandle, 'igShortcut_ID');
+  igShortcut_Nil := GetProcAddress(aDLLHandle, 'igShortcut_Nil');
+  igShowAboutWindow := GetProcAddress(aDLLHandle, 'igShowAboutWindow');
+  igShowDebugLogWindow := GetProcAddress(aDLLHandle, 'igShowDebugLogWindow');
+  igShowDemoWindow := GetProcAddress(aDLLHandle, 'igShowDemoWindow');
+  igShowFontAtlas := GetProcAddress(aDLLHandle, 'igShowFontAtlas');
+  igShowFontSelector := GetProcAddress(aDLLHandle, 'igShowFontSelector');
+  igShowIDStackToolWindow := GetProcAddress(aDLLHandle, 'igShowIDStackToolWindow');
+  igShowMetricsWindow := GetProcAddress(aDLLHandle, 'igShowMetricsWindow');
+  igShowStyleEditor := GetProcAddress(aDLLHandle, 'igShowStyleEditor');
+  igShowStyleSelector := GetProcAddress(aDLLHandle, 'igShowStyleSelector');
+  igShowUserGuide := GetProcAddress(aDLLHandle, 'igShowUserGuide');
+  igShrinkWidths := GetProcAddress(aDLLHandle, 'igShrinkWidths');
+  igShutdown := GetProcAddress(aDLLHandle, 'igShutdown');
+  igSliderAngle := GetProcAddress(aDLLHandle, 'igSliderAngle');
+  igSliderBehavior := GetProcAddress(aDLLHandle, 'igSliderBehavior');
+  igSliderFloat := GetProcAddress(aDLLHandle, 'igSliderFloat');
+  igSliderFloat2 := GetProcAddress(aDLLHandle, 'igSliderFloat2');
+  igSliderFloat3 := GetProcAddress(aDLLHandle, 'igSliderFloat3');
+  igSliderFloat4 := GetProcAddress(aDLLHandle, 'igSliderFloat4');
+  igSliderInt := GetProcAddress(aDLLHandle, 'igSliderInt');
+  igSliderInt2 := GetProcAddress(aDLLHandle, 'igSliderInt2');
+  igSliderInt3 := GetProcAddress(aDLLHandle, 'igSliderInt3');
+  igSliderInt4 := GetProcAddress(aDLLHandle, 'igSliderInt4');
+  igSliderScalar := GetProcAddress(aDLLHandle, 'igSliderScalar');
+  igSliderScalarN := GetProcAddress(aDLLHandle, 'igSliderScalarN');
+  igSmallButton := GetProcAddress(aDLLHandle, 'igSmallButton');
+  igSpacing := GetProcAddress(aDLLHandle, 'igSpacing');
+  igSplitterBehavior := GetProcAddress(aDLLHandle, 'igSplitterBehavior');
+  igStartMouseMovingWindow := GetProcAddress(aDLLHandle, 'igStartMouseMovingWindow');
+  igStartMouseMovingWindowOrNode := GetProcAddress(aDLLHandle, 'igStartMouseMovingWindowOrNode');
+  igStyleColorsClassic := GetProcAddress(aDLLHandle, 'igStyleColorsClassic');
+  igStyleColorsDark := GetProcAddress(aDLLHandle, 'igStyleColorsDark');
+  igStyleColorsLight := GetProcAddress(aDLLHandle, 'igStyleColorsLight');
+  igTabBarAddTab := GetProcAddress(aDLLHandle, 'igTabBarAddTab');
+  igTabBarCloseTab := GetProcAddress(aDLLHandle, 'igTabBarCloseTab');
+  igTabBarFindMostRecentlySelectedTabForActiveWindow := GetProcAddress(aDLLHandle, 'igTabBarFindMostRecentlySelectedTabForActiveWindow');
+  igTabBarFindTabByID := GetProcAddress(aDLLHandle, 'igTabBarFindTabByID');
+  igTabBarFindTabByOrder := GetProcAddress(aDLLHandle, 'igTabBarFindTabByOrder');
+  igTabBarGetCurrentTab := GetProcAddress(aDLLHandle, 'igTabBarGetCurrentTab');
+  igTabBarGetTabName := GetProcAddress(aDLLHandle, 'igTabBarGetTabName');
+  igTabBarGetTabOrder := GetProcAddress(aDLLHandle, 'igTabBarGetTabOrder');
+  igTabBarProcessReorder := GetProcAddress(aDLLHandle, 'igTabBarProcessReorder');
+  igTabBarQueueFocus_Str := GetProcAddress(aDLLHandle, 'igTabBarQueueFocus_Str');
+  igTabBarQueueFocus_TabItemPtr := GetProcAddress(aDLLHandle, 'igTabBarQueueFocus_TabItemPtr');
+  igTabBarQueueReorder := GetProcAddress(aDLLHandle, 'igTabBarQueueReorder');
+  igTabBarQueueReorderFromMousePos := GetProcAddress(aDLLHandle, 'igTabBarQueueReorderFromMousePos');
+  igTabBarRemoveTab := GetProcAddress(aDLLHandle, 'igTabBarRemoveTab');
+  igTabItemBackground := GetProcAddress(aDLLHandle, 'igTabItemBackground');
+  igTabItemButton := GetProcAddress(aDLLHandle, 'igTabItemButton');
+  igTabItemCalcSize_Str := GetProcAddress(aDLLHandle, 'igTabItemCalcSize_Str');
+  igTabItemCalcSize_WindowPtr := GetProcAddress(aDLLHandle, 'igTabItemCalcSize_WindowPtr');
+  igTabItemEx := GetProcAddress(aDLLHandle, 'igTabItemEx');
+  igTabItemLabelAndCloseButton := GetProcAddress(aDLLHandle, 'igTabItemLabelAndCloseButton');
+  igTableAngledHeadersRow := GetProcAddress(aDLLHandle, 'igTableAngledHeadersRow');
+  igTableAngledHeadersRowEx := GetProcAddress(aDLLHandle, 'igTableAngledHeadersRowEx');
+  igTableBeginApplyRequests := GetProcAddress(aDLLHandle, 'igTableBeginApplyRequests');
+  igTableBeginCell := GetProcAddress(aDLLHandle, 'igTableBeginCell');
+  igTableBeginContextMenuPopup := GetProcAddress(aDLLHandle, 'igTableBeginContextMenuPopup');
+  igTableBeginInitMemory := GetProcAddress(aDLLHandle, 'igTableBeginInitMemory');
+  igTableBeginRow := GetProcAddress(aDLLHandle, 'igTableBeginRow');
+  igTableCalcMaxColumnWidth := GetProcAddress(aDLLHandle, 'igTableCalcMaxColumnWidth');
+  igTableDrawBorders := GetProcAddress(aDLLHandle, 'igTableDrawBorders');
+  igTableDrawDefaultContextMenu := GetProcAddress(aDLLHandle, 'igTableDrawDefaultContextMenu');
+  igTableEndCell := GetProcAddress(aDLLHandle, 'igTableEndCell');
+  igTableEndRow := GetProcAddress(aDLLHandle, 'igTableEndRow');
+  igTableFindByID := GetProcAddress(aDLLHandle, 'igTableFindByID');
+  igTableFixColumnSortDirection := GetProcAddress(aDLLHandle, 'igTableFixColumnSortDirection');
+  igTableGcCompactSettings := GetProcAddress(aDLLHandle, 'igTableGcCompactSettings');
+  igTableGcCompactTransientBuffers_TablePtr := GetProcAddress(aDLLHandle, 'igTableGcCompactTransientBuffers_TablePtr');
+  igTableGcCompactTransientBuffers_TableTempDataPtr := GetProcAddress(aDLLHandle, 'igTableGcCompactTransientBuffers_TableTempDataPtr');
+  igTableGetBoundSettings := GetProcAddress(aDLLHandle, 'igTableGetBoundSettings');
+  igTableGetCellBgRect := GetProcAddress(aDLLHandle, 'igTableGetCellBgRect');
+  igTableGetColumnCount := GetProcAddress(aDLLHandle, 'igTableGetColumnCount');
+  igTableGetColumnFlags := GetProcAddress(aDLLHandle, 'igTableGetColumnFlags');
+  igTableGetColumnIndex := GetProcAddress(aDLLHandle, 'igTableGetColumnIndex');
+  igTableGetColumnName_Int := GetProcAddress(aDLLHandle, 'igTableGetColumnName_Int');
+  igTableGetColumnName_TablePtr := GetProcAddress(aDLLHandle, 'igTableGetColumnName_TablePtr');
+  igTableGetColumnNextSortDirection := GetProcAddress(aDLLHandle, 'igTableGetColumnNextSortDirection');
+  igTableGetColumnResizeID := GetProcAddress(aDLLHandle, 'igTableGetColumnResizeID');
+  igTableGetColumnWidthAuto := GetProcAddress(aDLLHandle, 'igTableGetColumnWidthAuto');
+  igTableGetHeaderAngledMaxLabelWidth := GetProcAddress(aDLLHandle, 'igTableGetHeaderAngledMaxLabelWidth');
+  igTableGetHeaderRowHeight := GetProcAddress(aDLLHandle, 'igTableGetHeaderRowHeight');
+  igTableGetHoveredColumn := GetProcAddress(aDLLHandle, 'igTableGetHoveredColumn');
+  igTableGetHoveredRow := GetProcAddress(aDLLHandle, 'igTableGetHoveredRow');
+  igTableGetInstanceData := GetProcAddress(aDLLHandle, 'igTableGetInstanceData');
+  igTableGetInstanceID := GetProcAddress(aDLLHandle, 'igTableGetInstanceID');
+  igTableGetRowIndex := GetProcAddress(aDLLHandle, 'igTableGetRowIndex');
+  igTableGetSortSpecs := GetProcAddress(aDLLHandle, 'igTableGetSortSpecs');
+  igTableHeader := GetProcAddress(aDLLHandle, 'igTableHeader');
+  igTableHeadersRow := GetProcAddress(aDLLHandle, 'igTableHeadersRow');
+  igTableLoadSettings := GetProcAddress(aDLLHandle, 'igTableLoadSettings');
+  igTableMergeDrawChannels := GetProcAddress(aDLLHandle, 'igTableMergeDrawChannels');
+  igTableNextColumn := GetProcAddress(aDLLHandle, 'igTableNextColumn');
+  igTableNextRow := GetProcAddress(aDLLHandle, 'igTableNextRow');
+  igTableOpenContextMenu := GetProcAddress(aDLLHandle, 'igTableOpenContextMenu');
+  igTablePopBackgroundChannel := GetProcAddress(aDLLHandle, 'igTablePopBackgroundChannel');
+  igTablePushBackgroundChannel := GetProcAddress(aDLLHandle, 'igTablePushBackgroundChannel');
+  igTableRemove := GetProcAddress(aDLLHandle, 'igTableRemove');
+  igTableResetSettings := GetProcAddress(aDLLHandle, 'igTableResetSettings');
+  igTableSaveSettings := GetProcAddress(aDLLHandle, 'igTableSaveSettings');
+  igTableSetBgColor := GetProcAddress(aDLLHandle, 'igTableSetBgColor');
+  igTableSetColumnEnabled := GetProcAddress(aDLLHandle, 'igTableSetColumnEnabled');
+  igTableSetColumnIndex := GetProcAddress(aDLLHandle, 'igTableSetColumnIndex');
+  igTableSetColumnSortDirection := GetProcAddress(aDLLHandle, 'igTableSetColumnSortDirection');
+  igTableSetColumnWidth := GetProcAddress(aDLLHandle, 'igTableSetColumnWidth');
+  igTableSetColumnWidthAutoAll := GetProcAddress(aDLLHandle, 'igTableSetColumnWidthAutoAll');
+  igTableSetColumnWidthAutoSingle := GetProcAddress(aDLLHandle, 'igTableSetColumnWidthAutoSingle');
+  igTableSettingsAddSettingsHandler := GetProcAddress(aDLLHandle, 'igTableSettingsAddSettingsHandler');
+  igTableSettingsCreate := GetProcAddress(aDLLHandle, 'igTableSettingsCreate');
+  igTableSettingsFindByID := GetProcAddress(aDLLHandle, 'igTableSettingsFindByID');
+  igTableSetupColumn := GetProcAddress(aDLLHandle, 'igTableSetupColumn');
+  igTableSetupDrawChannels := GetProcAddress(aDLLHandle, 'igTableSetupDrawChannels');
+  igTableSetupScrollFreeze := GetProcAddress(aDLLHandle, 'igTableSetupScrollFreeze');
+  igTableSortSpecsBuild := GetProcAddress(aDLLHandle, 'igTableSortSpecsBuild');
+  igTableSortSpecsSanitize := GetProcAddress(aDLLHandle, 'igTableSortSpecsSanitize');
+  igTableUpdateBorders := GetProcAddress(aDLLHandle, 'igTableUpdateBorders');
+  igTableUpdateColumnsWeightFromWidth := GetProcAddress(aDLLHandle, 'igTableUpdateColumnsWeightFromWidth');
+  igTableUpdateLayout := GetProcAddress(aDLLHandle, 'igTableUpdateLayout');
+  igTeleportMousePos := GetProcAddress(aDLLHandle, 'igTeleportMousePos');
+  igTempInputIsActive := GetProcAddress(aDLLHandle, 'igTempInputIsActive');
+  igTempInputScalar := GetProcAddress(aDLLHandle, 'igTempInputScalar');
+  igTempInputText := GetProcAddress(aDLLHandle, 'igTempInputText');
+  igTestKeyOwner := GetProcAddress(aDLLHandle, 'igTestKeyOwner');
+  igTestShortcutRouting := GetProcAddress(aDLLHandle, 'igTestShortcutRouting');
+  igText := GetProcAddress(aDLLHandle, 'igText');
+  igTextColored := GetProcAddress(aDLLHandle, 'igTextColored');
+  igTextColoredV := GetProcAddress(aDLLHandle, 'igTextColoredV');
+  igTextDisabled := GetProcAddress(aDLLHandle, 'igTextDisabled');
+  igTextDisabledV := GetProcAddress(aDLLHandle, 'igTextDisabledV');
+  igTextEx := GetProcAddress(aDLLHandle, 'igTextEx');
+  igTextLink := GetProcAddress(aDLLHandle, 'igTextLink');
+  igTextLinkOpenURL := GetProcAddress(aDLLHandle, 'igTextLinkOpenURL');
+  igTextUnformatted := GetProcAddress(aDLLHandle, 'igTextUnformatted');
+  igTextV := GetProcAddress(aDLLHandle, 'igTextV');
+  igTextWrapped := GetProcAddress(aDLLHandle, 'igTextWrapped');
+  igTextWrappedV := GetProcAddress(aDLLHandle, 'igTextWrappedV');
+  igTranslateWindowsInViewport := GetProcAddress(aDLLHandle, 'igTranslateWindowsInViewport');
+  igTreeNode_Ptr := GetProcAddress(aDLLHandle, 'igTreeNode_Ptr');
+  igTreeNode_Str := GetProcAddress(aDLLHandle, 'igTreeNode_Str');
+  igTreeNode_StrStr := GetProcAddress(aDLLHandle, 'igTreeNode_StrStr');
+  igTreeNodeBehavior := GetProcAddress(aDLLHandle, 'igTreeNodeBehavior');
+  igTreeNodeEx_Ptr := GetProcAddress(aDLLHandle, 'igTreeNodeEx_Ptr');
+  igTreeNodeEx_Str := GetProcAddress(aDLLHandle, 'igTreeNodeEx_Str');
+  igTreeNodeEx_StrStr := GetProcAddress(aDLLHandle, 'igTreeNodeEx_StrStr');
+  igTreeNodeExV_Ptr := GetProcAddress(aDLLHandle, 'igTreeNodeExV_Ptr');
+  igTreeNodeExV_Str := GetProcAddress(aDLLHandle, 'igTreeNodeExV_Str');
+  igTreeNodeGetOpen := GetProcAddress(aDLLHandle, 'igTreeNodeGetOpen');
+  igTreeNodeSetOpen := GetProcAddress(aDLLHandle, 'igTreeNodeSetOpen');
+  igTreeNodeUpdateNextOpen := GetProcAddress(aDLLHandle, 'igTreeNodeUpdateNextOpen');
+  igTreeNodeV_Ptr := GetProcAddress(aDLLHandle, 'igTreeNodeV_Ptr');
+  igTreeNodeV_Str := GetProcAddress(aDLLHandle, 'igTreeNodeV_Str');
+  igTreePop := GetProcAddress(aDLLHandle, 'igTreePop');
+  igTreePush_Ptr := GetProcAddress(aDLLHandle, 'igTreePush_Ptr');
+  igTreePush_Str := GetProcAddress(aDLLHandle, 'igTreePush_Str');
+  igTreePushOverrideID := GetProcAddress(aDLLHandle, 'igTreePushOverrideID');
+  igTypingSelectFindBestLeadingMatch := GetProcAddress(aDLLHandle, 'igTypingSelectFindBestLeadingMatch');
+  igTypingSelectFindMatch := GetProcAddress(aDLLHandle, 'igTypingSelectFindMatch');
+  igTypingSelectFindNextSingleCharMatch := GetProcAddress(aDLLHandle, 'igTypingSelectFindNextSingleCharMatch');
+  igUnindent := GetProcAddress(aDLLHandle, 'igUnindent');
+  igUpdateHoveredWindowAndCaptureFlags := GetProcAddress(aDLLHandle, 'igUpdateHoveredWindowAndCaptureFlags');
+  igUpdateInputEvents := GetProcAddress(aDLLHandle, 'igUpdateInputEvents');
+  igUpdateMouseMovingWindowEndFrame := GetProcAddress(aDLLHandle, 'igUpdateMouseMovingWindowEndFrame');
+  igUpdateMouseMovingWindowNewFrame := GetProcAddress(aDLLHandle, 'igUpdateMouseMovingWindowNewFrame');
+  igUpdatePlatformWindows := GetProcAddress(aDLLHandle, 'igUpdatePlatformWindows');
+  igUpdateWindowParentAndRootLinks := GetProcAddress(aDLLHandle, 'igUpdateWindowParentAndRootLinks');
+  igUpdateWindowSkipRefresh := GetProcAddress(aDLLHandle, 'igUpdateWindowSkipRefresh');
+  igValue_Bool := GetProcAddress(aDLLHandle, 'igValue_Bool');
+  igValue_Float := GetProcAddress(aDLLHandle, 'igValue_Float');
+  igValue_Int := GetProcAddress(aDLLHandle, 'igValue_Int');
+  igValue_Uint := GetProcAddress(aDLLHandle, 'igValue_Uint');
+  igVSliderFloat := GetProcAddress(aDLLHandle, 'igVSliderFloat');
+  igVSliderInt := GetProcAddress(aDLLHandle, 'igVSliderInt');
+  igVSliderScalar := GetProcAddress(aDLLHandle, 'igVSliderScalar');
+  igWindowPosAbsToRel := GetProcAddress(aDLLHandle, 'igWindowPosAbsToRel');
+  igWindowPosRelToAbs := GetProcAddress(aDLLHandle, 'igWindowPosRelToAbs');
+  igWindowRectAbsToRel := GetProcAddress(aDLLHandle, 'igWindowRectAbsToRel');
+  igWindowRectRelToAbs := GetProcAddress(aDLLHandle, 'igWindowRectRelToAbs');
+  ImBitVector_Clear := GetProcAddress(aDLLHandle, 'ImBitVector_Clear');
+  ImBitVector_ClearBit := GetProcAddress(aDLLHandle, 'ImBitVector_ClearBit');
+  ImBitVector_Create := GetProcAddress(aDLLHandle, 'ImBitVector_Create');
+  ImBitVector_SetBit := GetProcAddress(aDLLHandle, 'ImBitVector_SetBit');
+  ImBitVector_TestBit := GetProcAddress(aDLLHandle, 'ImBitVector_TestBit');
+  ImColor_destroy := GetProcAddress(aDLLHandle, 'ImColor_destroy');
+  ImColor_HSV := GetProcAddress(aDLLHandle, 'ImColor_HSV');
+  ImColor_ImColor_Float := GetProcAddress(aDLLHandle, 'ImColor_ImColor_Float');
+  ImColor_ImColor_Int := GetProcAddress(aDLLHandle, 'ImColor_ImColor_Int');
+  ImColor_ImColor_Nil := GetProcAddress(aDLLHandle, 'ImColor_ImColor_Nil');
+  ImColor_ImColor_U32 := GetProcAddress(aDLLHandle, 'ImColor_ImColor_U32');
+  ImColor_ImColor_Vec4 := GetProcAddress(aDLLHandle, 'ImColor_ImColor_Vec4');
+  ImColor_SetHSV := GetProcAddress(aDLLHandle, 'ImColor_SetHSV');
+  ImDrawCmd_destroy := GetProcAddress(aDLLHandle, 'ImDrawCmd_destroy');
+  ImDrawCmd_GetTexID := GetProcAddress(aDLLHandle, 'ImDrawCmd_GetTexID');
+  ImDrawCmd_ImDrawCmd := GetProcAddress(aDLLHandle, 'ImDrawCmd_ImDrawCmd');
+  ImDrawData_AddDrawList := GetProcAddress(aDLLHandle, 'ImDrawData_AddDrawList');
+  ImDrawData_Clear := GetProcAddress(aDLLHandle, 'ImDrawData_Clear');
+  ImDrawData_DeIndexAllBuffers := GetProcAddress(aDLLHandle, 'ImDrawData_DeIndexAllBuffers');
+  ImDrawData_destroy := GetProcAddress(aDLLHandle, 'ImDrawData_destroy');
+  ImDrawData_ImDrawData := GetProcAddress(aDLLHandle, 'ImDrawData_ImDrawData');
+  ImDrawData_ScaleClipRects := GetProcAddress(aDLLHandle, 'ImDrawData_ScaleClipRects');
+  ImDrawDataBuilder_destroy := GetProcAddress(aDLLHandle, 'ImDrawDataBuilder_destroy');
+  ImDrawDataBuilder_ImDrawDataBuilder := GetProcAddress(aDLLHandle, 'ImDrawDataBuilder_ImDrawDataBuilder');
+  ImDrawList__CalcCircleAutoSegmentCount := GetProcAddress(aDLLHandle, 'ImDrawList__CalcCircleAutoSegmentCount');
+  ImDrawList__ClearFreeMemory := GetProcAddress(aDLLHandle, 'ImDrawList__ClearFreeMemory');
+  ImDrawList__OnChangedClipRect := GetProcAddress(aDLLHandle, 'ImDrawList__OnChangedClipRect');
+  ImDrawList__OnChangedTextureID := GetProcAddress(aDLLHandle, 'ImDrawList__OnChangedTextureID');
+  ImDrawList__OnChangedVtxOffset := GetProcAddress(aDLLHandle, 'ImDrawList__OnChangedVtxOffset');
+  ImDrawList__PathArcToFastEx := GetProcAddress(aDLLHandle, 'ImDrawList__PathArcToFastEx');
+  ImDrawList__PathArcToN := GetProcAddress(aDLLHandle, 'ImDrawList__PathArcToN');
+  ImDrawList__PopUnusedDrawCmd := GetProcAddress(aDLLHandle, 'ImDrawList__PopUnusedDrawCmd');
+  ImDrawList__ResetForNewFrame := GetProcAddress(aDLLHandle, 'ImDrawList__ResetForNewFrame');
+  ImDrawList__SetTextureID := GetProcAddress(aDLLHandle, 'ImDrawList__SetTextureID');
+  ImDrawList__TryMergeDrawCmds := GetProcAddress(aDLLHandle, 'ImDrawList__TryMergeDrawCmds');
+  ImDrawList_AddBezierCubic := GetProcAddress(aDLLHandle, 'ImDrawList_AddBezierCubic');
+  ImDrawList_AddBezierQuadratic := GetProcAddress(aDLLHandle, 'ImDrawList_AddBezierQuadratic');
+  ImDrawList_AddCallback := GetProcAddress(aDLLHandle, 'ImDrawList_AddCallback');
+  ImDrawList_AddCircle := GetProcAddress(aDLLHandle, 'ImDrawList_AddCircle');
+  ImDrawList_AddCircleFilled := GetProcAddress(aDLLHandle, 'ImDrawList_AddCircleFilled');
+  ImDrawList_AddConcavePolyFilled := GetProcAddress(aDLLHandle, 'ImDrawList_AddConcavePolyFilled');
+  ImDrawList_AddConvexPolyFilled := GetProcAddress(aDLLHandle, 'ImDrawList_AddConvexPolyFilled');
+  ImDrawList_AddDrawCmd := GetProcAddress(aDLLHandle, 'ImDrawList_AddDrawCmd');
+  ImDrawList_AddEllipse := GetProcAddress(aDLLHandle, 'ImDrawList_AddEllipse');
+  ImDrawList_AddEllipseFilled := GetProcAddress(aDLLHandle, 'ImDrawList_AddEllipseFilled');
+  ImDrawList_AddImage := GetProcAddress(aDLLHandle, 'ImDrawList_AddImage');
+  ImDrawList_AddImageQuad := GetProcAddress(aDLLHandle, 'ImDrawList_AddImageQuad');
+  ImDrawList_AddImageRounded := GetProcAddress(aDLLHandle, 'ImDrawList_AddImageRounded');
+  ImDrawList_AddLine := GetProcAddress(aDLLHandle, 'ImDrawList_AddLine');
+  ImDrawList_AddNgon := GetProcAddress(aDLLHandle, 'ImDrawList_AddNgon');
+  ImDrawList_AddNgonFilled := GetProcAddress(aDLLHandle, 'ImDrawList_AddNgonFilled');
+  ImDrawList_AddPolyline := GetProcAddress(aDLLHandle, 'ImDrawList_AddPolyline');
+  ImDrawList_AddQuad := GetProcAddress(aDLLHandle, 'ImDrawList_AddQuad');
+  ImDrawList_AddQuadFilled := GetProcAddress(aDLLHandle, 'ImDrawList_AddQuadFilled');
+  ImDrawList_AddRect := GetProcAddress(aDLLHandle, 'ImDrawList_AddRect');
+  ImDrawList_AddRectFilled := GetProcAddress(aDLLHandle, 'ImDrawList_AddRectFilled');
+  ImDrawList_AddRectFilledMultiColor := GetProcAddress(aDLLHandle, 'ImDrawList_AddRectFilledMultiColor');
+  ImDrawList_AddText_FontPtr := GetProcAddress(aDLLHandle, 'ImDrawList_AddText_FontPtr');
+  ImDrawList_AddText_Vec2 := GetProcAddress(aDLLHandle, 'ImDrawList_AddText_Vec2');
+  ImDrawList_AddTriangle := GetProcAddress(aDLLHandle, 'ImDrawList_AddTriangle');
+  ImDrawList_AddTriangleFilled := GetProcAddress(aDLLHandle, 'ImDrawList_AddTriangleFilled');
+  ImDrawList_ChannelsMerge := GetProcAddress(aDLLHandle, 'ImDrawList_ChannelsMerge');
+  ImDrawList_ChannelsSetCurrent := GetProcAddress(aDLLHandle, 'ImDrawList_ChannelsSetCurrent');
+  ImDrawList_ChannelsSplit := GetProcAddress(aDLLHandle, 'ImDrawList_ChannelsSplit');
+  ImDrawList_CloneOutput := GetProcAddress(aDLLHandle, 'ImDrawList_CloneOutput');
+  ImDrawList_destroy := GetProcAddress(aDLLHandle, 'ImDrawList_destroy');
+  ImDrawList_GetClipRectMax := GetProcAddress(aDLLHandle, 'ImDrawList_GetClipRectMax');
+  ImDrawList_GetClipRectMin := GetProcAddress(aDLLHandle, 'ImDrawList_GetClipRectMin');
+  ImDrawList_ImDrawList := GetProcAddress(aDLLHandle, 'ImDrawList_ImDrawList');
+  ImDrawList_PathArcTo := GetProcAddress(aDLLHandle, 'ImDrawList_PathArcTo');
+  ImDrawList_PathArcToFast := GetProcAddress(aDLLHandle, 'ImDrawList_PathArcToFast');
+  ImDrawList_PathBezierCubicCurveTo := GetProcAddress(aDLLHandle, 'ImDrawList_PathBezierCubicCurveTo');
+  ImDrawList_PathBezierQuadraticCurveTo := GetProcAddress(aDLLHandle, 'ImDrawList_PathBezierQuadraticCurveTo');
+  ImDrawList_PathClear := GetProcAddress(aDLLHandle, 'ImDrawList_PathClear');
+  ImDrawList_PathEllipticalArcTo := GetProcAddress(aDLLHandle, 'ImDrawList_PathEllipticalArcTo');
+  ImDrawList_PathFillConcave := GetProcAddress(aDLLHandle, 'ImDrawList_PathFillConcave');
+  ImDrawList_PathFillConvex := GetProcAddress(aDLLHandle, 'ImDrawList_PathFillConvex');
+  ImDrawList_PathLineTo := GetProcAddress(aDLLHandle, 'ImDrawList_PathLineTo');
+  ImDrawList_PathLineToMergeDuplicate := GetProcAddress(aDLLHandle, 'ImDrawList_PathLineToMergeDuplicate');
+  ImDrawList_PathRect := GetProcAddress(aDLLHandle, 'ImDrawList_PathRect');
+  ImDrawList_PathStroke := GetProcAddress(aDLLHandle, 'ImDrawList_PathStroke');
+  ImDrawList_PopClipRect := GetProcAddress(aDLLHandle, 'ImDrawList_PopClipRect');
+  ImDrawList_PopTextureID := GetProcAddress(aDLLHandle, 'ImDrawList_PopTextureID');
+  ImDrawList_PrimQuadUV := GetProcAddress(aDLLHandle, 'ImDrawList_PrimQuadUV');
+  ImDrawList_PrimRect := GetProcAddress(aDLLHandle, 'ImDrawList_PrimRect');
+  ImDrawList_PrimRectUV := GetProcAddress(aDLLHandle, 'ImDrawList_PrimRectUV');
+  ImDrawList_PrimReserve := GetProcAddress(aDLLHandle, 'ImDrawList_PrimReserve');
+  ImDrawList_PrimUnreserve := GetProcAddress(aDLLHandle, 'ImDrawList_PrimUnreserve');
+  ImDrawList_PrimVtx := GetProcAddress(aDLLHandle, 'ImDrawList_PrimVtx');
+  ImDrawList_PrimWriteIdx := GetProcAddress(aDLLHandle, 'ImDrawList_PrimWriteIdx');
+  ImDrawList_PrimWriteVtx := GetProcAddress(aDLLHandle, 'ImDrawList_PrimWriteVtx');
+  ImDrawList_PushClipRect := GetProcAddress(aDLLHandle, 'ImDrawList_PushClipRect');
+  ImDrawList_PushClipRectFullScreen := GetProcAddress(aDLLHandle, 'ImDrawList_PushClipRectFullScreen');
+  ImDrawList_PushTextureID := GetProcAddress(aDLLHandle, 'ImDrawList_PushTextureID');
+  ImDrawListSharedData_destroy := GetProcAddress(aDLLHandle, 'ImDrawListSharedData_destroy');
+  ImDrawListSharedData_ImDrawListSharedData := GetProcAddress(aDLLHandle, 'ImDrawListSharedData_ImDrawListSharedData');
+  ImDrawListSharedData_SetCircleTessellationMaxError := GetProcAddress(aDLLHandle, 'ImDrawListSharedData_SetCircleTessellationMaxError');
+  ImDrawListSplitter_Clear := GetProcAddress(aDLLHandle, 'ImDrawListSplitter_Clear');
+  ImDrawListSplitter_ClearFreeMemory := GetProcAddress(aDLLHandle, 'ImDrawListSplitter_ClearFreeMemory');
+  ImDrawListSplitter_destroy := GetProcAddress(aDLLHandle, 'ImDrawListSplitter_destroy');
+  ImDrawListSplitter_ImDrawListSplitter := GetProcAddress(aDLLHandle, 'ImDrawListSplitter_ImDrawListSplitter');
+  ImDrawListSplitter_Merge := GetProcAddress(aDLLHandle, 'ImDrawListSplitter_Merge');
+  ImDrawListSplitter_SetCurrentChannel := GetProcAddress(aDLLHandle, 'ImDrawListSplitter_SetCurrentChannel');
+  ImDrawListSplitter_Split := GetProcAddress(aDLLHandle, 'ImDrawListSplitter_Split');
+  ImFont_AddGlyph := GetProcAddress(aDLLHandle, 'ImFont_AddGlyph');
+  ImFont_AddRemapChar := GetProcAddress(aDLLHandle, 'ImFont_AddRemapChar');
+  ImFont_BuildLookupTable := GetProcAddress(aDLLHandle, 'ImFont_BuildLookupTable');
+  ImFont_CalcTextSizeA := GetProcAddress(aDLLHandle, 'ImFont_CalcTextSizeA');
+  ImFont_CalcWordWrapPositionA := GetProcAddress(aDLLHandle, 'ImFont_CalcWordWrapPositionA');
+  ImFont_ClearOutputData := GetProcAddress(aDLLHandle, 'ImFont_ClearOutputData');
+  ImFont_destroy := GetProcAddress(aDLLHandle, 'ImFont_destroy');
+  ImFont_FindGlyph := GetProcAddress(aDLLHandle, 'ImFont_FindGlyph');
+  ImFont_FindGlyphNoFallback := GetProcAddress(aDLLHandle, 'ImFont_FindGlyphNoFallback');
+  ImFont_GetCharAdvance := GetProcAddress(aDLLHandle, 'ImFont_GetCharAdvance');
+  ImFont_GetDebugName := GetProcAddress(aDLLHandle, 'ImFont_GetDebugName');
+  ImFont_GrowIndex := GetProcAddress(aDLLHandle, 'ImFont_GrowIndex');
+  ImFont_ImFont := GetProcAddress(aDLLHandle, 'ImFont_ImFont');
+  ImFont_IsGlyphRangeUnused := GetProcAddress(aDLLHandle, 'ImFont_IsGlyphRangeUnused');
+  ImFont_IsLoaded := GetProcAddress(aDLLHandle, 'ImFont_IsLoaded');
+  ImFont_RenderChar := GetProcAddress(aDLLHandle, 'ImFont_RenderChar');
+  ImFont_RenderText := GetProcAddress(aDLLHandle, 'ImFont_RenderText');
+  ImFont_SetGlyphVisible := GetProcAddress(aDLLHandle, 'ImFont_SetGlyphVisible');
+  ImFontAtlas_AddCustomRectFontGlyph := GetProcAddress(aDLLHandle, 'ImFontAtlas_AddCustomRectFontGlyph');
+  ImFontAtlas_AddCustomRectRegular := GetProcAddress(aDLLHandle, 'ImFontAtlas_AddCustomRectRegular');
+  ImFontAtlas_AddFont := GetProcAddress(aDLLHandle, 'ImFontAtlas_AddFont');
+  ImFontAtlas_AddFontDefault := GetProcAddress(aDLLHandle, 'ImFontAtlas_AddFontDefault');
+  ImFontAtlas_AddFontFromFileTTF := GetProcAddress(aDLLHandle, 'ImFontAtlas_AddFontFromFileTTF');
+  ImFontAtlas_AddFontFromMemoryCompressedBase85TTF := GetProcAddress(aDLLHandle, 'ImFontAtlas_AddFontFromMemoryCompressedBase85TTF');
+  ImFontAtlas_AddFontFromMemoryCompressedTTF := GetProcAddress(aDLLHandle, 'ImFontAtlas_AddFontFromMemoryCompressedTTF');
+  ImFontAtlas_AddFontFromMemoryTTF := GetProcAddress(aDLLHandle, 'ImFontAtlas_AddFontFromMemoryTTF');
+  ImFontAtlas_Build := GetProcAddress(aDLLHandle, 'ImFontAtlas_Build');
+  ImFontAtlas_CalcCustomRectUV := GetProcAddress(aDLLHandle, 'ImFontAtlas_CalcCustomRectUV');
+  ImFontAtlas_Clear := GetProcAddress(aDLLHandle, 'ImFontAtlas_Clear');
+  ImFontAtlas_ClearFonts := GetProcAddress(aDLLHandle, 'ImFontAtlas_ClearFonts');
+  ImFontAtlas_ClearInputData := GetProcAddress(aDLLHandle, 'ImFontAtlas_ClearInputData');
+  ImFontAtlas_ClearTexData := GetProcAddress(aDLLHandle, 'ImFontAtlas_ClearTexData');
+  ImFontAtlas_destroy := GetProcAddress(aDLLHandle, 'ImFontAtlas_destroy');
+  ImFontAtlas_GetCustomRectByIndex := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetCustomRectByIndex');
+  ImFontAtlas_GetGlyphRangesChineseFull := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetGlyphRangesChineseFull');
+  ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon');
+  ImFontAtlas_GetGlyphRangesCyrillic := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetGlyphRangesCyrillic');
+  ImFontAtlas_GetGlyphRangesDefault := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetGlyphRangesDefault');
+  ImFontAtlas_GetGlyphRangesGreek := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetGlyphRangesGreek');
+  ImFontAtlas_GetGlyphRangesJapanese := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetGlyphRangesJapanese');
+  ImFontAtlas_GetGlyphRangesKorean := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetGlyphRangesKorean');
+  ImFontAtlas_GetGlyphRangesThai := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetGlyphRangesThai');
+  ImFontAtlas_GetGlyphRangesVietnamese := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetGlyphRangesVietnamese');
+  ImFontAtlas_GetMouseCursorTexData := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetMouseCursorTexData');
+  ImFontAtlas_GetTexDataAsAlpha8 := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetTexDataAsAlpha8');
+  ImFontAtlas_GetTexDataAsRGBA32 := GetProcAddress(aDLLHandle, 'ImFontAtlas_GetTexDataAsRGBA32');
+  ImFontAtlas_ImFontAtlas := GetProcAddress(aDLLHandle, 'ImFontAtlas_ImFontAtlas');
+  ImFontAtlas_IsBuilt := GetProcAddress(aDLLHandle, 'ImFontAtlas_IsBuilt');
+  ImFontAtlas_SetTexID := GetProcAddress(aDLLHandle, 'ImFontAtlas_SetTexID');
+  ImFontAtlasCustomRect_destroy := GetProcAddress(aDLLHandle, 'ImFontAtlasCustomRect_destroy');
+  ImFontAtlasCustomRect_ImFontAtlasCustomRect := GetProcAddress(aDLLHandle, 'ImFontAtlasCustomRect_ImFontAtlasCustomRect');
+  ImFontAtlasCustomRect_IsPacked := GetProcAddress(aDLLHandle, 'ImFontAtlasCustomRect_IsPacked');
+  ImFontConfig_destroy := GetProcAddress(aDLLHandle, 'ImFontConfig_destroy');
+  ImFontConfig_ImFontConfig := GetProcAddress(aDLLHandle, 'ImFontConfig_ImFontConfig');
+  ImFontGlyphRangesBuilder_AddChar := GetProcAddress(aDLLHandle, 'ImFontGlyphRangesBuilder_AddChar');
+  ImFontGlyphRangesBuilder_AddRanges := GetProcAddress(aDLLHandle, 'ImFontGlyphRangesBuilder_AddRanges');
+  ImFontGlyphRangesBuilder_AddText := GetProcAddress(aDLLHandle, 'ImFontGlyphRangesBuilder_AddText');
+  ImFontGlyphRangesBuilder_BuildRanges := GetProcAddress(aDLLHandle, 'ImFontGlyphRangesBuilder_BuildRanges');
+  ImFontGlyphRangesBuilder_Clear := GetProcAddress(aDLLHandle, 'ImFontGlyphRangesBuilder_Clear');
+  ImFontGlyphRangesBuilder_destroy := GetProcAddress(aDLLHandle, 'ImFontGlyphRangesBuilder_destroy');
+  ImFontGlyphRangesBuilder_GetBit := GetProcAddress(aDLLHandle, 'ImFontGlyphRangesBuilder_GetBit');
+  ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder := GetProcAddress(aDLLHandle, 'ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder');
+  ImFontGlyphRangesBuilder_SetBit := GetProcAddress(aDLLHandle, 'ImFontGlyphRangesBuilder_SetBit');
+  ImGui_ImplGlfw_CharCallback := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_CharCallback');
+  ImGui_ImplGlfw_CursorEnterCallback := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_CursorEnterCallback');
+  ImGui_ImplGlfw_CursorPosCallback := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_CursorPosCallback');
+  ImGui_ImplGlfw_InitForOpenGL := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_InitForOpenGL');
+  ImGui_ImplGlfw_InitForOther := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_InitForOther');
+  ImGui_ImplGlfw_InitForVulkan := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_InitForVulkan');
+  ImGui_ImplGlfw_InstallCallbacks := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_InstallCallbacks');
+  ImGui_ImplGlfw_KeyCallback := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_KeyCallback');
+  ImGui_ImplGlfw_MonitorCallback := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_MonitorCallback');
+  ImGui_ImplGlfw_MouseButtonCallback := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_MouseButtonCallback');
+  ImGui_ImplGlfw_NewFrame := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_NewFrame');
+  ImGui_ImplGlfw_RestoreCallbacks := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_RestoreCallbacks');
+  ImGui_ImplGlfw_ScrollCallback := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_ScrollCallback');
+  ImGui_ImplGlfw_SetCallbacksChainForAllWindows := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_SetCallbacksChainForAllWindows');
+  ImGui_ImplGlfw_Shutdown := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_Shutdown');
+  ImGui_ImplGlfw_Sleep := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_Sleep');
+  ImGui_ImplGlfw_WindowFocusCallback := GetProcAddress(aDLLHandle, 'ImGui_ImplGlfw_WindowFocusCallback');
+  ImGui_ImplOpenGL2_CreateDeviceObjects := GetProcAddress(aDLLHandle, 'ImGui_ImplOpenGL2_CreateDeviceObjects');
+  ImGui_ImplOpenGL2_CreateFontsTexture := GetProcAddress(aDLLHandle, 'ImGui_ImplOpenGL2_CreateFontsTexture');
+  ImGui_ImplOpenGL2_DestroyDeviceObjects := GetProcAddress(aDLLHandle, 'ImGui_ImplOpenGL2_DestroyDeviceObjects');
+  ImGui_ImplOpenGL2_DestroyFontsTexture := GetProcAddress(aDLLHandle, 'ImGui_ImplOpenGL2_DestroyFontsTexture');
+  ImGui_ImplOpenGL2_Init := GetProcAddress(aDLLHandle, 'ImGui_ImplOpenGL2_Init');
+  ImGui_ImplOpenGL2_NewFrame := GetProcAddress(aDLLHandle, 'ImGui_ImplOpenGL2_NewFrame');
+  ImGui_ImplOpenGL2_RenderDrawData := GetProcAddress(aDLLHandle, 'ImGui_ImplOpenGL2_RenderDrawData');
+  ImGui_ImplOpenGL2_Shutdown := GetProcAddress(aDLLHandle, 'ImGui_ImplOpenGL2_Shutdown');
+  ImGuiBoxSelectState_destroy := GetProcAddress(aDLLHandle, 'ImGuiBoxSelectState_destroy');
+  ImGuiBoxSelectState_ImGuiBoxSelectState := GetProcAddress(aDLLHandle, 'ImGuiBoxSelectState_ImGuiBoxSelectState');
+  ImGuiComboPreviewData_destroy := GetProcAddress(aDLLHandle, 'ImGuiComboPreviewData_destroy');
+  ImGuiComboPreviewData_ImGuiComboPreviewData := GetProcAddress(aDLLHandle, 'ImGuiComboPreviewData_ImGuiComboPreviewData');
+  ImGuiContext_destroy := GetProcAddress(aDLLHandle, 'ImGuiContext_destroy');
+  ImGuiContext_ImGuiContext := GetProcAddress(aDLLHandle, 'ImGuiContext_ImGuiContext');
+  ImGuiContextHook_destroy := GetProcAddress(aDLLHandle, 'ImGuiContextHook_destroy');
+  ImGuiContextHook_ImGuiContextHook := GetProcAddress(aDLLHandle, 'ImGuiContextHook_ImGuiContextHook');
+  ImGuiDataVarInfo_GetVarPtr := GetProcAddress(aDLLHandle, 'ImGuiDataVarInfo_GetVarPtr');
+  ImGuiDebugAllocInfo_destroy := GetProcAddress(aDLLHandle, 'ImGuiDebugAllocInfo_destroy');
+  ImGuiDebugAllocInfo_ImGuiDebugAllocInfo := GetProcAddress(aDLLHandle, 'ImGuiDebugAllocInfo_ImGuiDebugAllocInfo');
+  ImGuiDockContext_destroy := GetProcAddress(aDLLHandle, 'ImGuiDockContext_destroy');
+  ImGuiDockContext_ImGuiDockContext := GetProcAddress(aDLLHandle, 'ImGuiDockContext_ImGuiDockContext');
+  ImGuiDockNode_destroy := GetProcAddress(aDLLHandle, 'ImGuiDockNode_destroy');
+  ImGuiDockNode_ImGuiDockNode := GetProcAddress(aDLLHandle, 'ImGuiDockNode_ImGuiDockNode');
+  ImGuiDockNode_IsCentralNode := GetProcAddress(aDLLHandle, 'ImGuiDockNode_IsCentralNode');
+  ImGuiDockNode_IsDockSpace := GetProcAddress(aDLLHandle, 'ImGuiDockNode_IsDockSpace');
+  ImGuiDockNode_IsEmpty := GetProcAddress(aDLLHandle, 'ImGuiDockNode_IsEmpty');
+  ImGuiDockNode_IsFloatingNode := GetProcAddress(aDLLHandle, 'ImGuiDockNode_IsFloatingNode');
+  ImGuiDockNode_IsHiddenTabBar := GetProcAddress(aDLLHandle, 'ImGuiDockNode_IsHiddenTabBar');
+  ImGuiDockNode_IsLeafNode := GetProcAddress(aDLLHandle, 'ImGuiDockNode_IsLeafNode');
+  ImGuiDockNode_IsNoTabBar := GetProcAddress(aDLLHandle, 'ImGuiDockNode_IsNoTabBar');
+  ImGuiDockNode_IsRootNode := GetProcAddress(aDLLHandle, 'ImGuiDockNode_IsRootNode');
+  ImGuiDockNode_IsSplitNode := GetProcAddress(aDLLHandle, 'ImGuiDockNode_IsSplitNode');
+  ImGuiDockNode_Rect := GetProcAddress(aDLLHandle, 'ImGuiDockNode_Rect');
+  ImGuiDockNode_SetLocalFlags := GetProcAddress(aDLLHandle, 'ImGuiDockNode_SetLocalFlags');
+  ImGuiDockNode_UpdateMergedFlags := GetProcAddress(aDLLHandle, 'ImGuiDockNode_UpdateMergedFlags');
+  ImGuiErrorRecoveryState_destroy := GetProcAddress(aDLLHandle, 'ImGuiErrorRecoveryState_destroy');
+  ImGuiErrorRecoveryState_ImGuiErrorRecoveryState := GetProcAddress(aDLLHandle, 'ImGuiErrorRecoveryState_ImGuiErrorRecoveryState');
+  ImGuiIDStackTool_destroy := GetProcAddress(aDLLHandle, 'ImGuiIDStackTool_destroy');
+  ImGuiIDStackTool_ImGuiIDStackTool := GetProcAddress(aDLLHandle, 'ImGuiIDStackTool_ImGuiIDStackTool');
+  ImGuiInputEvent_destroy := GetProcAddress(aDLLHandle, 'ImGuiInputEvent_destroy');
+  ImGuiInputEvent_ImGuiInputEvent := GetProcAddress(aDLLHandle, 'ImGuiInputEvent_ImGuiInputEvent');
+  ImGuiInputTextCallbackData_ClearSelection := GetProcAddress(aDLLHandle, 'ImGuiInputTextCallbackData_ClearSelection');
+  ImGuiInputTextCallbackData_DeleteChars := GetProcAddress(aDLLHandle, 'ImGuiInputTextCallbackData_DeleteChars');
+  ImGuiInputTextCallbackData_destroy := GetProcAddress(aDLLHandle, 'ImGuiInputTextCallbackData_destroy');
+  ImGuiInputTextCallbackData_HasSelection := GetProcAddress(aDLLHandle, 'ImGuiInputTextCallbackData_HasSelection');
+  ImGuiInputTextCallbackData_ImGuiInputTextCallbackData := GetProcAddress(aDLLHandle, 'ImGuiInputTextCallbackData_ImGuiInputTextCallbackData');
+  ImGuiInputTextCallbackData_InsertChars := GetProcAddress(aDLLHandle, 'ImGuiInputTextCallbackData_InsertChars');
+  ImGuiInputTextCallbackData_SelectAll := GetProcAddress(aDLLHandle, 'ImGuiInputTextCallbackData_SelectAll');
+  ImGuiInputTextDeactivatedState_ClearFreeMemory := GetProcAddress(aDLLHandle, 'ImGuiInputTextDeactivatedState_ClearFreeMemory');
+  ImGuiInputTextDeactivatedState_destroy := GetProcAddress(aDLLHandle, 'ImGuiInputTextDeactivatedState_destroy');
+  ImGuiInputTextDeactivatedState_ImGuiInputTextDeactivatedState := GetProcAddress(aDLLHandle, 'ImGuiInputTextDeactivatedState_ImGuiInputTextDeactivatedState');
+  ImGuiInputTextState_ClearFreeMemory := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_ClearFreeMemory');
+  ImGuiInputTextState_ClearSelection := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_ClearSelection');
+  ImGuiInputTextState_ClearText := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_ClearText');
+  ImGuiInputTextState_CursorAnimReset := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_CursorAnimReset');
+  ImGuiInputTextState_CursorClamp := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_CursorClamp');
+  ImGuiInputTextState_destroy := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_destroy');
+  ImGuiInputTextState_GetCursorPos := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_GetCursorPos');
+  ImGuiInputTextState_GetSelectionEnd := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_GetSelectionEnd');
+  ImGuiInputTextState_GetSelectionStart := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_GetSelectionStart');
+  ImGuiInputTextState_HasSelection := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_HasSelection');
+  ImGuiInputTextState_ImGuiInputTextState := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_ImGuiInputTextState');
+  ImGuiInputTextState_OnCharPressed := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_OnCharPressed');
+  ImGuiInputTextState_OnKeyPressed := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_OnKeyPressed');
+  ImGuiInputTextState_ReloadUserBufAndKeepSelection := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_ReloadUserBufAndKeepSelection');
+  ImGuiInputTextState_ReloadUserBufAndMoveToEnd := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_ReloadUserBufAndMoveToEnd');
+  ImGuiInputTextState_ReloadUserBufAndSelectAll := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_ReloadUserBufAndSelectAll');
+  ImGuiInputTextState_SelectAll := GetProcAddress(aDLLHandle, 'ImGuiInputTextState_SelectAll');
+  ImGuiIO_AddFocusEvent := GetProcAddress(aDLLHandle, 'ImGuiIO_AddFocusEvent');
+  ImGuiIO_AddInputCharacter := GetProcAddress(aDLLHandle, 'ImGuiIO_AddInputCharacter');
+  ImGuiIO_AddInputCharactersUTF8 := GetProcAddress(aDLLHandle, 'ImGuiIO_AddInputCharactersUTF8');
+  ImGuiIO_AddInputCharacterUTF16 := GetProcAddress(aDLLHandle, 'ImGuiIO_AddInputCharacterUTF16');
+  ImGuiIO_AddKeyAnalogEvent := GetProcAddress(aDLLHandle, 'ImGuiIO_AddKeyAnalogEvent');
+  ImGuiIO_AddKeyEvent := GetProcAddress(aDLLHandle, 'ImGuiIO_AddKeyEvent');
+  ImGuiIO_AddMouseButtonEvent := GetProcAddress(aDLLHandle, 'ImGuiIO_AddMouseButtonEvent');
+  ImGuiIO_AddMousePosEvent := GetProcAddress(aDLLHandle, 'ImGuiIO_AddMousePosEvent');
+  ImGuiIO_AddMouseSourceEvent := GetProcAddress(aDLLHandle, 'ImGuiIO_AddMouseSourceEvent');
+  ImGuiIO_AddMouseViewportEvent := GetProcAddress(aDLLHandle, 'ImGuiIO_AddMouseViewportEvent');
+  ImGuiIO_AddMouseWheelEvent := GetProcAddress(aDLLHandle, 'ImGuiIO_AddMouseWheelEvent');
+  ImGuiIO_ClearEventsQueue := GetProcAddress(aDLLHandle, 'ImGuiIO_ClearEventsQueue');
+  ImGuiIO_ClearInputKeys := GetProcAddress(aDLLHandle, 'ImGuiIO_ClearInputKeys');
+  ImGuiIO_ClearInputMouse := GetProcAddress(aDLLHandle, 'ImGuiIO_ClearInputMouse');
+  ImGuiIO_destroy := GetProcAddress(aDLLHandle, 'ImGuiIO_destroy');
+  ImGuiIO_ImGuiIO := GetProcAddress(aDLLHandle, 'ImGuiIO_ImGuiIO');
+  ImGuiIO_SetAppAcceptingEvents := GetProcAddress(aDLLHandle, 'ImGuiIO_SetAppAcceptingEvents');
+  ImGuiIO_SetKeyEventNativeData := GetProcAddress(aDLLHandle, 'ImGuiIO_SetKeyEventNativeData');
+  ImGuiKeyOwnerData_destroy := GetProcAddress(aDLLHandle, 'ImGuiKeyOwnerData_destroy');
+  ImGuiKeyOwnerData_ImGuiKeyOwnerData := GetProcAddress(aDLLHandle, 'ImGuiKeyOwnerData_ImGuiKeyOwnerData');
+  ImGuiKeyRoutingData_destroy := GetProcAddress(aDLLHandle, 'ImGuiKeyRoutingData_destroy');
+  ImGuiKeyRoutingData_ImGuiKeyRoutingData := GetProcAddress(aDLLHandle, 'ImGuiKeyRoutingData_ImGuiKeyRoutingData');
+  ImGuiKeyRoutingTable_Clear := GetProcAddress(aDLLHandle, 'ImGuiKeyRoutingTable_Clear');
+  ImGuiKeyRoutingTable_destroy := GetProcAddress(aDLLHandle, 'ImGuiKeyRoutingTable_destroy');
+  ImGuiKeyRoutingTable_ImGuiKeyRoutingTable := GetProcAddress(aDLLHandle, 'ImGuiKeyRoutingTable_ImGuiKeyRoutingTable');
+  ImGuiLastItemData_destroy := GetProcAddress(aDLLHandle, 'ImGuiLastItemData_destroy');
+  ImGuiLastItemData_ImGuiLastItemData := GetProcAddress(aDLLHandle, 'ImGuiLastItemData_ImGuiLastItemData');
+  ImGuiListClipper_Begin := GetProcAddress(aDLLHandle, 'ImGuiListClipper_Begin');
+  ImGuiListClipper_destroy := GetProcAddress(aDLLHandle, 'ImGuiListClipper_destroy');
+  ImGuiListClipper_End := GetProcAddress(aDLLHandle, 'ImGuiListClipper_End');
+  ImGuiListClipper_ImGuiListClipper := GetProcAddress(aDLLHandle, 'ImGuiListClipper_ImGuiListClipper');
+  ImGuiListClipper_IncludeItemByIndex := GetProcAddress(aDLLHandle, 'ImGuiListClipper_IncludeItemByIndex');
+  ImGuiListClipper_IncludeItemsByIndex := GetProcAddress(aDLLHandle, 'ImGuiListClipper_IncludeItemsByIndex');
+  ImGuiListClipper_SeekCursorForItem := GetProcAddress(aDLLHandle, 'ImGuiListClipper_SeekCursorForItem');
+  ImGuiListClipper_Step := GetProcAddress(aDLLHandle, 'ImGuiListClipper_Step');
+  ImGuiListClipperData_destroy := GetProcAddress(aDLLHandle, 'ImGuiListClipperData_destroy');
+  ImGuiListClipperData_ImGuiListClipperData := GetProcAddress(aDLLHandle, 'ImGuiListClipperData_ImGuiListClipperData');
+  ImGuiListClipperData_Reset := GetProcAddress(aDLLHandle, 'ImGuiListClipperData_Reset');
+  ImGuiListClipperRange_FromIndices := GetProcAddress(aDLLHandle, 'ImGuiListClipperRange_FromIndices');
+  ImGuiListClipperRange_FromPositions := GetProcAddress(aDLLHandle, 'ImGuiListClipperRange_FromPositions');
+  ImGuiMenuColumns_CalcNextTotalWidth := GetProcAddress(aDLLHandle, 'ImGuiMenuColumns_CalcNextTotalWidth');
+  ImGuiMenuColumns_DeclColumns := GetProcAddress(aDLLHandle, 'ImGuiMenuColumns_DeclColumns');
+  ImGuiMenuColumns_destroy := GetProcAddress(aDLLHandle, 'ImGuiMenuColumns_destroy');
+  ImGuiMenuColumns_ImGuiMenuColumns := GetProcAddress(aDLLHandle, 'ImGuiMenuColumns_ImGuiMenuColumns');
+  ImGuiMenuColumns_Update := GetProcAddress(aDLLHandle, 'ImGuiMenuColumns_Update');
+  ImGuiMultiSelectState_destroy := GetProcAddress(aDLLHandle, 'ImGuiMultiSelectState_destroy');
+  ImGuiMultiSelectState_ImGuiMultiSelectState := GetProcAddress(aDLLHandle, 'ImGuiMultiSelectState_ImGuiMultiSelectState');
+  ImGuiMultiSelectTempData_Clear := GetProcAddress(aDLLHandle, 'ImGuiMultiSelectTempData_Clear');
+  ImGuiMultiSelectTempData_ClearIO := GetProcAddress(aDLLHandle, 'ImGuiMultiSelectTempData_ClearIO');
+  ImGuiMultiSelectTempData_destroy := GetProcAddress(aDLLHandle, 'ImGuiMultiSelectTempData_destroy');
+  ImGuiMultiSelectTempData_ImGuiMultiSelectTempData := GetProcAddress(aDLLHandle, 'ImGuiMultiSelectTempData_ImGuiMultiSelectTempData');
+  ImGuiNavItemData_Clear := GetProcAddress(aDLLHandle, 'ImGuiNavItemData_Clear');
+  ImGuiNavItemData_destroy := GetProcAddress(aDLLHandle, 'ImGuiNavItemData_destroy');
+  ImGuiNavItemData_ImGuiNavItemData := GetProcAddress(aDLLHandle, 'ImGuiNavItemData_ImGuiNavItemData');
+  ImGuiNextItemData_ClearFlags := GetProcAddress(aDLLHandle, 'ImGuiNextItemData_ClearFlags');
+  ImGuiNextItemData_destroy := GetProcAddress(aDLLHandle, 'ImGuiNextItemData_destroy');
+  ImGuiNextItemData_ImGuiNextItemData := GetProcAddress(aDLLHandle, 'ImGuiNextItemData_ImGuiNextItemData');
+  ImGuiNextWindowData_ClearFlags := GetProcAddress(aDLLHandle, 'ImGuiNextWindowData_ClearFlags');
+  ImGuiNextWindowData_destroy := GetProcAddress(aDLLHandle, 'ImGuiNextWindowData_destroy');
+  ImGuiNextWindowData_ImGuiNextWindowData := GetProcAddress(aDLLHandle, 'ImGuiNextWindowData_ImGuiNextWindowData');
+  ImGuiOldColumnData_destroy := GetProcAddress(aDLLHandle, 'ImGuiOldColumnData_destroy');
+  ImGuiOldColumnData_ImGuiOldColumnData := GetProcAddress(aDLLHandle, 'ImGuiOldColumnData_ImGuiOldColumnData');
+  ImGuiOldColumns_destroy := GetProcAddress(aDLLHandle, 'ImGuiOldColumns_destroy');
+  ImGuiOldColumns_ImGuiOldColumns := GetProcAddress(aDLLHandle, 'ImGuiOldColumns_ImGuiOldColumns');
+  ImGuiOnceUponAFrame_destroy := GetProcAddress(aDLLHandle, 'ImGuiOnceUponAFrame_destroy');
+  ImGuiOnceUponAFrame_ImGuiOnceUponAFrame := GetProcAddress(aDLLHandle, 'ImGuiOnceUponAFrame_ImGuiOnceUponAFrame');
+  ImGuiPayload_Clear := GetProcAddress(aDLLHandle, 'ImGuiPayload_Clear');
+  ImGuiPayload_destroy := GetProcAddress(aDLLHandle, 'ImGuiPayload_destroy');
+  ImGuiPayload_ImGuiPayload := GetProcAddress(aDLLHandle, 'ImGuiPayload_ImGuiPayload');
+  ImGuiPayload_IsDataType := GetProcAddress(aDLLHandle, 'ImGuiPayload_IsDataType');
+  ImGuiPayload_IsDelivery := GetProcAddress(aDLLHandle, 'ImGuiPayload_IsDelivery');
+  ImGuiPayload_IsPreview := GetProcAddress(aDLLHandle, 'ImGuiPayload_IsPreview');
+  ImGuiPlatformImeData_destroy := GetProcAddress(aDLLHandle, 'ImGuiPlatformImeData_destroy');
+  ImGuiPlatformImeData_ImGuiPlatformImeData := GetProcAddress(aDLLHandle, 'ImGuiPlatformImeData_ImGuiPlatformImeData');
+  ImGuiPlatformIO_destroy := GetProcAddress(aDLLHandle, 'ImGuiPlatformIO_destroy');
+  ImGuiPlatformIO_ImGuiPlatformIO := GetProcAddress(aDLLHandle, 'ImGuiPlatformIO_ImGuiPlatformIO');
+  ImGuiPlatformIO_Set_Platform_GetWindowPos := GetProcAddress(aDLLHandle, 'ImGuiPlatformIO_Set_Platform_GetWindowPos');
+  ImGuiPlatformIO_Set_Platform_GetWindowSize := GetProcAddress(aDLLHandle, 'ImGuiPlatformIO_Set_Platform_GetWindowSize');
+  ImGuiPlatformMonitor_destroy := GetProcAddress(aDLLHandle, 'ImGuiPlatformMonitor_destroy');
+  ImGuiPlatformMonitor_ImGuiPlatformMonitor := GetProcAddress(aDLLHandle, 'ImGuiPlatformMonitor_ImGuiPlatformMonitor');
+  ImGuiPopupData_destroy := GetProcAddress(aDLLHandle, 'ImGuiPopupData_destroy');
+  ImGuiPopupData_ImGuiPopupData := GetProcAddress(aDLLHandle, 'ImGuiPopupData_ImGuiPopupData');
+  ImGuiPtrOrIndex_destroy := GetProcAddress(aDLLHandle, 'ImGuiPtrOrIndex_destroy');
+  ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int := GetProcAddress(aDLLHandle, 'ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int');
+  ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr := GetProcAddress(aDLLHandle, 'ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr');
+  ImGuiSelectionBasicStorage_ApplyRequests := GetProcAddress(aDLLHandle, 'ImGuiSelectionBasicStorage_ApplyRequests');
+  ImGuiSelectionBasicStorage_Clear := GetProcAddress(aDLLHandle, 'ImGuiSelectionBasicStorage_Clear');
+  ImGuiSelectionBasicStorage_Contains := GetProcAddress(aDLLHandle, 'ImGuiSelectionBasicStorage_Contains');
+  ImGuiSelectionBasicStorage_destroy := GetProcAddress(aDLLHandle, 'ImGuiSelectionBasicStorage_destroy');
+  ImGuiSelectionBasicStorage_GetNextSelectedItem := GetProcAddress(aDLLHandle, 'ImGuiSelectionBasicStorage_GetNextSelectedItem');
+  ImGuiSelectionBasicStorage_GetStorageIdFromIndex := GetProcAddress(aDLLHandle, 'ImGuiSelectionBasicStorage_GetStorageIdFromIndex');
+  ImGuiSelectionBasicStorage_ImGuiSelectionBasicStorage := GetProcAddress(aDLLHandle, 'ImGuiSelectionBasicStorage_ImGuiSelectionBasicStorage');
+  ImGuiSelectionBasicStorage_SetItemSelected := GetProcAddress(aDLLHandle, 'ImGuiSelectionBasicStorage_SetItemSelected');
+  ImGuiSelectionBasicStorage_Swap := GetProcAddress(aDLLHandle, 'ImGuiSelectionBasicStorage_Swap');
+  ImGuiSelectionExternalStorage_ApplyRequests := GetProcAddress(aDLLHandle, 'ImGuiSelectionExternalStorage_ApplyRequests');
+  ImGuiSelectionExternalStorage_destroy := GetProcAddress(aDLLHandle, 'ImGuiSelectionExternalStorage_destroy');
+  ImGuiSelectionExternalStorage_ImGuiSelectionExternalStorage := GetProcAddress(aDLLHandle, 'ImGuiSelectionExternalStorage_ImGuiSelectionExternalStorage');
+  ImGuiSettingsHandler_destroy := GetProcAddress(aDLLHandle, 'ImGuiSettingsHandler_destroy');
+  ImGuiSettingsHandler_ImGuiSettingsHandler := GetProcAddress(aDLLHandle, 'ImGuiSettingsHandler_ImGuiSettingsHandler');
+  ImGuiStackLevelInfo_destroy := GetProcAddress(aDLLHandle, 'ImGuiStackLevelInfo_destroy');
+  ImGuiStackLevelInfo_ImGuiStackLevelInfo := GetProcAddress(aDLLHandle, 'ImGuiStackLevelInfo_ImGuiStackLevelInfo');
+  ImGuiStorage_BuildSortByKey := GetProcAddress(aDLLHandle, 'ImGuiStorage_BuildSortByKey');
+  ImGuiStorage_Clear := GetProcAddress(aDLLHandle, 'ImGuiStorage_Clear');
+  ImGuiStorage_GetBool := GetProcAddress(aDLLHandle, 'ImGuiStorage_GetBool');
+  ImGuiStorage_GetBoolRef := GetProcAddress(aDLLHandle, 'ImGuiStorage_GetBoolRef');
+  ImGuiStorage_GetFloat := GetProcAddress(aDLLHandle, 'ImGuiStorage_GetFloat');
+  ImGuiStorage_GetFloatRef := GetProcAddress(aDLLHandle, 'ImGuiStorage_GetFloatRef');
+  ImGuiStorage_GetInt := GetProcAddress(aDLLHandle, 'ImGuiStorage_GetInt');
+  ImGuiStorage_GetIntRef := GetProcAddress(aDLLHandle, 'ImGuiStorage_GetIntRef');
+  ImGuiStorage_GetVoidPtr := GetProcAddress(aDLLHandle, 'ImGuiStorage_GetVoidPtr');
+  ImGuiStorage_GetVoidPtrRef := GetProcAddress(aDLLHandle, 'ImGuiStorage_GetVoidPtrRef');
+  ImGuiStorage_SetAllInt := GetProcAddress(aDLLHandle, 'ImGuiStorage_SetAllInt');
+  ImGuiStorage_SetBool := GetProcAddress(aDLLHandle, 'ImGuiStorage_SetBool');
+  ImGuiStorage_SetFloat := GetProcAddress(aDLLHandle, 'ImGuiStorage_SetFloat');
+  ImGuiStorage_SetInt := GetProcAddress(aDLLHandle, 'ImGuiStorage_SetInt');
+  ImGuiStorage_SetVoidPtr := GetProcAddress(aDLLHandle, 'ImGuiStorage_SetVoidPtr');
+  ImGuiStoragePair_destroy := GetProcAddress(aDLLHandle, 'ImGuiStoragePair_destroy');
+  ImGuiStoragePair_ImGuiStoragePair_Float := GetProcAddress(aDLLHandle, 'ImGuiStoragePair_ImGuiStoragePair_Float');
+  ImGuiStoragePair_ImGuiStoragePair_Int := GetProcAddress(aDLLHandle, 'ImGuiStoragePair_ImGuiStoragePair_Int');
+  ImGuiStoragePair_ImGuiStoragePair_Ptr := GetProcAddress(aDLLHandle, 'ImGuiStoragePair_ImGuiStoragePair_Ptr');
+  ImGuiStyle_destroy := GetProcAddress(aDLLHandle, 'ImGuiStyle_destroy');
+  ImGuiStyle_ImGuiStyle := GetProcAddress(aDLLHandle, 'ImGuiStyle_ImGuiStyle');
+  ImGuiStyle_ScaleAllSizes := GetProcAddress(aDLLHandle, 'ImGuiStyle_ScaleAllSizes');
+  ImGuiStyleMod_destroy := GetProcAddress(aDLLHandle, 'ImGuiStyleMod_destroy');
+  ImGuiStyleMod_ImGuiStyleMod_Float := GetProcAddress(aDLLHandle, 'ImGuiStyleMod_ImGuiStyleMod_Float');
+  ImGuiStyleMod_ImGuiStyleMod_Int := GetProcAddress(aDLLHandle, 'ImGuiStyleMod_ImGuiStyleMod_Int');
+  ImGuiStyleMod_ImGuiStyleMod_Vec2 := GetProcAddress(aDLLHandle, 'ImGuiStyleMod_ImGuiStyleMod_Vec2');
+  ImGuiTabBar_destroy := GetProcAddress(aDLLHandle, 'ImGuiTabBar_destroy');
+  ImGuiTabBar_ImGuiTabBar := GetProcAddress(aDLLHandle, 'ImGuiTabBar_ImGuiTabBar');
+  ImGuiTabItem_destroy := GetProcAddress(aDLLHandle, 'ImGuiTabItem_destroy');
+  ImGuiTabItem_ImGuiTabItem := GetProcAddress(aDLLHandle, 'ImGuiTabItem_ImGuiTabItem');
+  ImGuiTable_destroy := GetProcAddress(aDLLHandle, 'ImGuiTable_destroy');
+  ImGuiTable_ImGuiTable := GetProcAddress(aDLLHandle, 'ImGuiTable_ImGuiTable');
+  ImGuiTableColumn_destroy := GetProcAddress(aDLLHandle, 'ImGuiTableColumn_destroy');
+  ImGuiTableColumn_ImGuiTableColumn := GetProcAddress(aDLLHandle, 'ImGuiTableColumn_ImGuiTableColumn');
+  ImGuiTableColumnSettings_destroy := GetProcAddress(aDLLHandle, 'ImGuiTableColumnSettings_destroy');
+  ImGuiTableColumnSettings_ImGuiTableColumnSettings := GetProcAddress(aDLLHandle, 'ImGuiTableColumnSettings_ImGuiTableColumnSettings');
+  ImGuiTableColumnSortSpecs_destroy := GetProcAddress(aDLLHandle, 'ImGuiTableColumnSortSpecs_destroy');
+  ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs := GetProcAddress(aDLLHandle, 'ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs');
+  ImGuiTableInstanceData_destroy := GetProcAddress(aDLLHandle, 'ImGuiTableInstanceData_destroy');
+  ImGuiTableInstanceData_ImGuiTableInstanceData := GetProcAddress(aDLLHandle, 'ImGuiTableInstanceData_ImGuiTableInstanceData');
+  ImGuiTableSettings_destroy := GetProcAddress(aDLLHandle, 'ImGuiTableSettings_destroy');
+  ImGuiTableSettings_GetColumnSettings := GetProcAddress(aDLLHandle, 'ImGuiTableSettings_GetColumnSettings');
+  ImGuiTableSettings_ImGuiTableSettings := GetProcAddress(aDLLHandle, 'ImGuiTableSettings_ImGuiTableSettings');
+  ImGuiTableSortSpecs_destroy := GetProcAddress(aDLLHandle, 'ImGuiTableSortSpecs_destroy');
+  ImGuiTableSortSpecs_ImGuiTableSortSpecs := GetProcAddress(aDLLHandle, 'ImGuiTableSortSpecs_ImGuiTableSortSpecs');
+  ImGuiTableTempData_destroy := GetProcAddress(aDLLHandle, 'ImGuiTableTempData_destroy');
+  ImGuiTableTempData_ImGuiTableTempData := GetProcAddress(aDLLHandle, 'ImGuiTableTempData_ImGuiTableTempData');
+  ImGuiTextBuffer_append := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_append');
+  ImGuiTextBuffer_appendf := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_appendf');
+  ImGuiTextBuffer_appendfv := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_appendfv');
+  ImGuiTextBuffer_begin := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_begin');
+  ImGuiTextBuffer_c_str := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_c_str');
+  ImGuiTextBuffer_clear := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_clear');
+  ImGuiTextBuffer_destroy := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_destroy');
+  ImGuiTextBuffer_empty := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_empty');
+  ImGuiTextBuffer_end := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_end');
+  ImGuiTextBuffer_ImGuiTextBuffer := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_ImGuiTextBuffer');
+  ImGuiTextBuffer_reserve := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_reserve');
+  ImGuiTextBuffer_size := GetProcAddress(aDLLHandle, 'ImGuiTextBuffer_size');
+  ImGuiTextFilter_Build := GetProcAddress(aDLLHandle, 'ImGuiTextFilter_Build');
+  ImGuiTextFilter_Clear := GetProcAddress(aDLLHandle, 'ImGuiTextFilter_Clear');
+  ImGuiTextFilter_destroy := GetProcAddress(aDLLHandle, 'ImGuiTextFilter_destroy');
+  ImGuiTextFilter_Draw := GetProcAddress(aDLLHandle, 'ImGuiTextFilter_Draw');
+  ImGuiTextFilter_ImGuiTextFilter := GetProcAddress(aDLLHandle, 'ImGuiTextFilter_ImGuiTextFilter');
+  ImGuiTextFilter_IsActive := GetProcAddress(aDLLHandle, 'ImGuiTextFilter_IsActive');
+  ImGuiTextFilter_PassFilter := GetProcAddress(aDLLHandle, 'ImGuiTextFilter_PassFilter');
+  ImGuiTextIndex_append := GetProcAddress(aDLLHandle, 'ImGuiTextIndex_append');
+  ImGuiTextIndex_clear := GetProcAddress(aDLLHandle, 'ImGuiTextIndex_clear');
+  ImGuiTextIndex_get_line_begin := GetProcAddress(aDLLHandle, 'ImGuiTextIndex_get_line_begin');
+  ImGuiTextIndex_get_line_end := GetProcAddress(aDLLHandle, 'ImGuiTextIndex_get_line_end');
+  ImGuiTextIndex_size := GetProcAddress(aDLLHandle, 'ImGuiTextIndex_size');
+  ImGuiTextRange_destroy := GetProcAddress(aDLLHandle, 'ImGuiTextRange_destroy');
+  ImGuiTextRange_empty := GetProcAddress(aDLLHandle, 'ImGuiTextRange_empty');
+  ImGuiTextRange_ImGuiTextRange_Nil := GetProcAddress(aDLLHandle, 'ImGuiTextRange_ImGuiTextRange_Nil');
+  ImGuiTextRange_ImGuiTextRange_Str := GetProcAddress(aDLLHandle, 'ImGuiTextRange_ImGuiTextRange_Str');
+  ImGuiTextRange_split := GetProcAddress(aDLLHandle, 'ImGuiTextRange_split');
+  ImGuiTypingSelectState_Clear := GetProcAddress(aDLLHandle, 'ImGuiTypingSelectState_Clear');
+  ImGuiTypingSelectState_destroy := GetProcAddress(aDLLHandle, 'ImGuiTypingSelectState_destroy');
+  ImGuiTypingSelectState_ImGuiTypingSelectState := GetProcAddress(aDLLHandle, 'ImGuiTypingSelectState_ImGuiTypingSelectState');
+  ImGuiViewport_destroy := GetProcAddress(aDLLHandle, 'ImGuiViewport_destroy');
+  ImGuiViewport_GetCenter := GetProcAddress(aDLLHandle, 'ImGuiViewport_GetCenter');
+  ImGuiViewport_GetWorkCenter := GetProcAddress(aDLLHandle, 'ImGuiViewport_GetWorkCenter');
+  ImGuiViewport_ImGuiViewport := GetProcAddress(aDLLHandle, 'ImGuiViewport_ImGuiViewport');
+  ImGuiViewportP_CalcWorkRectPos := GetProcAddress(aDLLHandle, 'ImGuiViewportP_CalcWorkRectPos');
+  ImGuiViewportP_CalcWorkRectSize := GetProcAddress(aDLLHandle, 'ImGuiViewportP_CalcWorkRectSize');
+  ImGuiViewportP_ClearRequestFlags := GetProcAddress(aDLLHandle, 'ImGuiViewportP_ClearRequestFlags');
+  ImGuiViewportP_destroy := GetProcAddress(aDLLHandle, 'ImGuiViewportP_destroy');
+  ImGuiViewportP_GetBuildWorkRect := GetProcAddress(aDLLHandle, 'ImGuiViewportP_GetBuildWorkRect');
+  ImGuiViewportP_GetMainRect := GetProcAddress(aDLLHandle, 'ImGuiViewportP_GetMainRect');
+  ImGuiViewportP_GetWorkRect := GetProcAddress(aDLLHandle, 'ImGuiViewportP_GetWorkRect');
+  ImGuiViewportP_ImGuiViewportP := GetProcAddress(aDLLHandle, 'ImGuiViewportP_ImGuiViewportP');
+  ImGuiViewportP_UpdateWorkRect := GetProcAddress(aDLLHandle, 'ImGuiViewportP_UpdateWorkRect');
+  ImGuiWindow_CalcFontSize := GetProcAddress(aDLLHandle, 'ImGuiWindow_CalcFontSize');
+  ImGuiWindow_destroy := GetProcAddress(aDLLHandle, 'ImGuiWindow_destroy');
+  ImGuiWindow_GetID_Int := GetProcAddress(aDLLHandle, 'ImGuiWindow_GetID_Int');
+  ImGuiWindow_GetID_Ptr := GetProcAddress(aDLLHandle, 'ImGuiWindow_GetID_Ptr');
+  ImGuiWindow_GetID_Str := GetProcAddress(aDLLHandle, 'ImGuiWindow_GetID_Str');
+  ImGuiWindow_GetIDFromPos := GetProcAddress(aDLLHandle, 'ImGuiWindow_GetIDFromPos');
+  ImGuiWindow_GetIDFromRectangle := GetProcAddress(aDLLHandle, 'ImGuiWindow_GetIDFromRectangle');
+  ImGuiWindow_ImGuiWindow := GetProcAddress(aDLLHandle, 'ImGuiWindow_ImGuiWindow');
+  ImGuiWindow_MenuBarRect := GetProcAddress(aDLLHandle, 'ImGuiWindow_MenuBarRect');
+  ImGuiWindow_Rect := GetProcAddress(aDLLHandle, 'ImGuiWindow_Rect');
+  ImGuiWindow_TitleBarRect := GetProcAddress(aDLLHandle, 'ImGuiWindow_TitleBarRect');
+  ImGuiWindowClass_destroy := GetProcAddress(aDLLHandle, 'ImGuiWindowClass_destroy');
+  ImGuiWindowClass_ImGuiWindowClass := GetProcAddress(aDLLHandle, 'ImGuiWindowClass_ImGuiWindowClass');
+  ImGuiWindowSettings_destroy := GetProcAddress(aDLLHandle, 'ImGuiWindowSettings_destroy');
+  ImGuiWindowSettings_GetName := GetProcAddress(aDLLHandle, 'ImGuiWindowSettings_GetName');
+  ImGuiWindowSettings_ImGuiWindowSettings := GetProcAddress(aDLLHandle, 'ImGuiWindowSettings_ImGuiWindowSettings');
+  ImRect_Add_Rect := GetProcAddress(aDLLHandle, 'ImRect_Add_Rect');
+  ImRect_Add_Vec2 := GetProcAddress(aDLLHandle, 'ImRect_Add_Vec2');
+  ImRect_ClipWith := GetProcAddress(aDLLHandle, 'ImRect_ClipWith');
+  ImRect_ClipWithFull := GetProcAddress(aDLLHandle, 'ImRect_ClipWithFull');
+  ImRect_Contains_Rect := GetProcAddress(aDLLHandle, 'ImRect_Contains_Rect');
+  ImRect_Contains_Vec2 := GetProcAddress(aDLLHandle, 'ImRect_Contains_Vec2');
+  ImRect_ContainsWithPad := GetProcAddress(aDLLHandle, 'ImRect_ContainsWithPad');
+  ImRect_destroy := GetProcAddress(aDLLHandle, 'ImRect_destroy');
+  ImRect_Expand_Float := GetProcAddress(aDLLHandle, 'ImRect_Expand_Float');
+  ImRect_Expand_Vec2 := GetProcAddress(aDLLHandle, 'ImRect_Expand_Vec2');
+  ImRect_Floor := GetProcAddress(aDLLHandle, 'ImRect_Floor');
+  ImRect_GetArea := GetProcAddress(aDLLHandle, 'ImRect_GetArea');
+  ImRect_GetBL := GetProcAddress(aDLLHandle, 'ImRect_GetBL');
+  ImRect_GetBR := GetProcAddress(aDLLHandle, 'ImRect_GetBR');
+  ImRect_GetCenter := GetProcAddress(aDLLHandle, 'ImRect_GetCenter');
+  ImRect_GetHeight := GetProcAddress(aDLLHandle, 'ImRect_GetHeight');
+  ImRect_GetSize := GetProcAddress(aDLLHandle, 'ImRect_GetSize');
+  ImRect_GetTL := GetProcAddress(aDLLHandle, 'ImRect_GetTL');
+  ImRect_GetTR := GetProcAddress(aDLLHandle, 'ImRect_GetTR');
+  ImRect_GetWidth := GetProcAddress(aDLLHandle, 'ImRect_GetWidth');
+  ImRect_ImRect_Float := GetProcAddress(aDLLHandle, 'ImRect_ImRect_Float');
+  ImRect_ImRect_Nil := GetProcAddress(aDLLHandle, 'ImRect_ImRect_Nil');
+  ImRect_ImRect_Vec2 := GetProcAddress(aDLLHandle, 'ImRect_ImRect_Vec2');
+  ImRect_ImRect_Vec4 := GetProcAddress(aDLLHandle, 'ImRect_ImRect_Vec4');
+  ImRect_IsInverted := GetProcAddress(aDLLHandle, 'ImRect_IsInverted');
+  ImRect_Overlaps := GetProcAddress(aDLLHandle, 'ImRect_Overlaps');
+  ImRect_ToVec4 := GetProcAddress(aDLLHandle, 'ImRect_ToVec4');
+  ImRect_Translate := GetProcAddress(aDLLHandle, 'ImRect_Translate');
+  ImRect_TranslateX := GetProcAddress(aDLLHandle, 'ImRect_TranslateX');
+  ImRect_TranslateY := GetProcAddress(aDLLHandle, 'ImRect_TranslateY');
+  ImVec1_destroy := GetProcAddress(aDLLHandle, 'ImVec1_destroy');
+  ImVec1_ImVec1_Float := GetProcAddress(aDLLHandle, 'ImVec1_ImVec1_Float');
+  ImVec1_ImVec1_Nil := GetProcAddress(aDLLHandle, 'ImVec1_ImVec1_Nil');
+  ImVec2_destroy := GetProcAddress(aDLLHandle, 'ImVec2_destroy');
+  ImVec2_ImVec2_Float := GetProcAddress(aDLLHandle, 'ImVec2_ImVec2_Float');
+  ImVec2_ImVec2_Nil := GetProcAddress(aDLLHandle, 'ImVec2_ImVec2_Nil');
+  ImVec2ih_destroy := GetProcAddress(aDLLHandle, 'ImVec2ih_destroy');
+  ImVec2ih_ImVec2ih_Nil := GetProcAddress(aDLLHandle, 'ImVec2ih_ImVec2ih_Nil');
+  ImVec2ih_ImVec2ih_short := GetProcAddress(aDLLHandle, 'ImVec2ih_ImVec2ih_short');
+  ImVec2ih_ImVec2ih_Vec2 := GetProcAddress(aDLLHandle, 'ImVec2ih_ImVec2ih_Vec2');
+  ImVec4_destroy := GetProcAddress(aDLLHandle, 'ImVec4_destroy');
+  ImVec4_ImVec4_Float := GetProcAddress(aDLLHandle, 'ImVec4_ImVec4_Float');
+  ImVec4_ImVec4_Nil := GetProcAddress(aDLLHandle, 'ImVec4_ImVec4_Nil');
+  ImVector_ImWchar_create := GetProcAddress(aDLLHandle, 'ImVector_ImWchar_create');
+  ImVector_ImWchar_destroy := GetProcAddress(aDLLHandle, 'ImVector_ImWchar_destroy');
+  ImVector_ImWchar_Init := GetProcAddress(aDLLHandle, 'ImVector_ImWchar_Init');
+  ImVector_ImWchar_UnInit := GetProcAddress(aDLLHandle, 'ImVector_ImWchar_UnInit');
   initGL := GetProcAddress(aDLLHandle, 'initGL');
   lua_atpanic := GetProcAddress(aDLLHandle, 'lua_atpanic');
   lua_call := GetProcAddress(aDLLHandle, 'lua_call');
@@ -15860,7 +23009,7 @@ begin
   luaJIT_profile_start := GetProcAddress(aDLLHandle, 'luaJIT_profile_start');
   luaJIT_profile_stop := GetProcAddress(aDLLHandle, 'luaJIT_profile_stop');
   luaJIT_setmode := GetProcAddress(aDLLHandle, 'luaJIT_setmode');
-  luaJIT_version_2_1_1734355927 := GetProcAddress(aDLLHandle, 'luaJIT_version_2_1_1734355927');
+  luaJIT_version_2_1_1736781742 := GetProcAddress(aDLLHandle, 'luaJIT_version_2_1_1736781742');
   luaL_addlstring := GetProcAddress(aDLLHandle, 'luaL_addlstring');
   luaL_addstring := GetProcAddress(aDLLHandle, 'luaL_addstring');
   luaL_addvalue := GetProcAddress(aDLLHandle, 'luaL_addvalue');
@@ -18367,6 +25516,249 @@ begin
   zipOpenNewFileInZip3_64 := GetProcAddress(aDLLHandle, 'zipOpenNewFileInZip3_64');
   zipWriteInFileInZip := GetProcAddress(aDLLHandle, 'zipWriteInFileInZip');
 end;
+
+{ImFontGlyph}
+
+function ImFontGlyph.GetData0Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data0 shr Offset) and Mask;
+end;
+
+procedure ImFontGlyph.SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data0 := (Data0 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
+{ImFontAtlasCustomRect}
+
+function ImFontAtlasCustomRect.GetData0Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data0 shr Offset) and Mask;
+end;
+
+procedure ImFontAtlasCustomRect.SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data0 := (Data0 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
+{ImGuiBoxSelectState}
+
+function ImGuiBoxSelectState.GetData0Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data0 shr Offset) and Mask;
+end;
+
+procedure ImGuiBoxSelectState.SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data0 := (Data0 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
+{ImGuiDockNode}
+
+function ImGuiDockNode.GetData0Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data0 shr Offset) and Mask;
+end;
+
+procedure ImGuiDockNode.SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data0 := (Data0 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
+{ImGuiStackLevelInfo}
+
+function ImGuiStackLevelInfo.GetData0Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data0 shr Offset) and Mask;
+end;
+
+procedure ImGuiStackLevelInfo.SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data0 := (Data0 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
+{ImGuiContext}
+
+function ImGuiContext.GetData0Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data0 shr Offset) and Mask;
+end;
+
+procedure ImGuiContext.SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data0 := (Data0 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
+{ImGuiWindow}
+
+function ImGuiWindow.GetData0Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data0 shr Offset) and Mask;
+end;
+
+procedure ImGuiWindow.SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data0 := (Data0 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
+{ImGuiWindow}
+
+function ImGuiWindow.GetData1Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data1 shr Offset) and Mask;
+end;
+
+procedure ImGuiWindow.SetData1Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data1 := (Data1 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
+{ImGuiTableColumn}
+
+function ImGuiTableColumn.GetData0Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data0 shr Offset) and Mask;
+end;
+
+procedure ImGuiTableColumn.SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data0 := (Data0 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
+{ImGuiTable}
+
+function ImGuiTable.GetData0Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data0 shr Offset) and Mask;
+end;
+
+procedure ImGuiTable.SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data0 := (Data0 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
+{ImGuiTableColumnSettings}
+
+function ImGuiTableColumnSettings.GetData0Value(const AIndex: Integer): Cardinal;
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Result := (Data0 shr Offset) and Mask;
+end;
+
+procedure ImGuiTableColumnSettings.SetData0Value(const AIndex: Integer; const AValue: Cardinal);
+var
+  BitCount, Offset, Mask: Cardinal;
+begin
+  BitCount := AIndex and $FF;
+  Offset := AIndex shr 8;
+  Mask := ((1 shl BitCount) - 1);
+  Data0 := (Data0 and (not (Mask shl Offset))) or (AValue shl Offset);
+end;
+
 
 {$ENDREGION}
 
@@ -29186,6 +36578,8 @@ begin
   Result.g := EnsureRange(g, 0, 255) / $FF;
   Result.b := EnsureRange(b, 0, 255) / $FF;
   Result.a := EnsureRange(a, 0, 255) / $FF;
+
+  Self := Result;
 end;
 
 function  TPyColor.FromFloat(const r, g, b, a: Single): TPyColor;
@@ -29194,25 +36588,27 @@ begin
   Result.g := EnsureRange(g, 0, 1);
   Result.b := EnsureRange(b, 0, 1);
   Result.a := EnsureRange(a, 0, 1);
+
+  Self := Result;
 end;
 
-function  TPyColor.Fade(const AFrom, ATo: TPyColor; const APos: Single): TPyColor;
+function  TPyColor.Fade(const ATo: TPyColor; const APos: Single): TPyColor;
 var
   LPos: Single;
 begin
   LPos := EnsureRange(APos, 0, 1);
-  Result.r := AFrom.r + ((ATo.r - AFrom.r) * LPos);
-  Result.g := AFrom.g + ((ATo.g - AFrom.g) * LPos);
-  Result.b := AFrom.b + ((ATo.b - AFrom.b) * LPos);
-  Result.a := AFrom.a + ((ATo.a - AFrom.a) * LPos);
+  Result.r := r + ((ATo.r - r) * LPos);
+  Result.g := g + ((ATo.g - g) * LPos);
+  Result.b := b + ((ATo.b - b) * LPos);
+  Result.a := a + ((ATo.a - a) * LPos);
 end;
 
-function  TPyColor.IsEqual(const AColor1, AColor2: TPyColor): Boolean;
+function  TPyColor.IsEqual(const AColor: TPyColor): Boolean;
 begin
-  Result := (AColor1.r = AColor2.r) and
-            (AColor1.g = AColor2.g) and
-            (AColor1.b = AColor2.b) and
-            (AColor1.a = AColor2.a);
+  Result := (r = AColor.r) and
+            (g = AColor.g) and
+            (b = AColor.b) and
+            (a = AColor.a);
 end;
 
 {$ENDREGION}
@@ -29459,6 +36855,35 @@ end;
 procedure TPyWindow.Resize(const AWidth, AHeight: Cardinal);
 begin
   glfwSetWindowSize(FHandle, AWidth, AHeight);
+end;
+
+procedure TPyWindow.SetSizeLimits(const AMinWidth, AMinHeight, AMaxWidth, AMaxHeight: Integer);
+var
+  LScale: TPyPoint;
+  LMinWidth, LMinHeight, LMaxWidth, LMaxHeight: Integer;
+begin
+  glfwGetWindowContentScale(FHandle, @LScale.x, @LScale.y);
+
+  LMinWidth := AMinWidth;
+  LMinHeight := AMinHeight;
+  LMaxWidth := AMaxWidth;
+  LMaxHeight := AMaxHeight;
+
+  if LMinWidth <> GLFW_DONT_CARE then
+    LMinWidth := Round(LMinWidth * LScale.x);
+
+  if LMinHeight <> GLFW_DONT_CARE then
+    LMinHeight := Round(LMinHeight * LScale.y);
+
+
+  if LMaxWidth <> GLFW_DONT_CARE then
+    LMaxWidth := Round(LMaxWidth * LScale.x);
+
+
+  if LMaxHeight <> GLFW_DONT_CARE then
+    LMaxHeight := Round(LMaxHeight * LScale.y);
+
+  glfwSetWindowSizeLimits(FHandle,LMinWidth, LMinHeight, LMaxWidth, LMaxHeight);
 end;
 
 procedure TPyWindow.ToggleFullscreen();

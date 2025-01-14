@@ -1,4 +1,4 @@
 VirtusTotal report for Pyro Game Library
 ========================================
 
-Pyro.res - https://www.virustotal.com/gui/file/160fd69ee28a89ebb2951c1620830a3c888964d620d1f4a9fd2ce16f6d45fe2d
+Pyro.res - https://www.virustotal.com/gui/file/5b5e31147a0120589229a6081e065b24cfa175cd4b0b195fb83cdf15266f2e87
