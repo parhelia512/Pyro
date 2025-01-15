@@ -24,7 +24,6 @@ uses
   UIO,
   UWindow,
   UVideo,
-  UNuklear,
   USpine,
   UAudio,
   UDatabase,
@@ -182,7 +181,6 @@ begin
   AddMenuOption('Window #01', Window01);
   AddMenuOption('Window #02', Window02);
   AddMenuOption('Spine #01', Spine01);
-  AddMenuOption('Nuklear #01', Nuklear01);
   AddMenuOption('Audio #01', Audio01);
   AddMenuOption('Video #01', Video01);
   AddMenuOption('Video #02', Video02);

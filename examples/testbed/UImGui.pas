@@ -40,6 +40,8 @@ var
   LSliderValue: Single;
   LCounter: Integer;
   LImVec2: ImVec2;
+  customFont: PImFont;
+  LResStream: TResourceStream;
 begin
   LShowDemoWindow := True;
   LShowAnotherWindow := False;
@@ -63,6 +65,12 @@ begin
   LIo.ConfigFlags := LIo.ConfigFlags or ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
   LIo.ConfigFlags := LIo.ConfigFlags or ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
   LIo.ConfigFlags := LIo.ConfigFlags or ImGuiConfigFlags_DockingEnable;     // Enable Docking
+
+  // Load custom font - default pyro font
+  LResStream := TResourceStream.Create(HInstance, 'db1184eec13447cb8cceb28a1052bd96', RT_RCDATA);
+  customFont := ImFontAtlas_AddFontFromMemoryTTF(LIo.Fonts, LResStream.Memory, LResStream.Size, 13*LWindow.GetScale().w, nil, nil);
+  customFont.ConfigData.FontDataOwnedByAtlas := False;
+  LResStream.Free();
 
   igStyleColorsDark(nil);
 
@@ -148,6 +156,7 @@ begin
 
   ImGui_ImplOpenGL2_Shutdown();
   ImGui_ImplGlfw_Shutdown();
+  ImFontAtlas_Clear(LIo.Fonts);
   igDestroyContext(nil);
 
   LFont.Free();

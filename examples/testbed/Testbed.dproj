@@ -119,7 +119,6 @@
         <DCCReference Include="UIO.pas"/>
         <DCCReference Include="UWindow.pas"/>
         <DCCReference Include="UVideo.pas"/>
-        <DCCReference Include="UNuklear.pas"/>
         <DCCReference Include="USpine.pas"/>
         <DCCReference Include="UAudio.pas"/>
         <DCCReference Include="UDatabase.pas"/>
@@ -170,6 +169,12 @@
                 <DeployFile LocalName="..\..\bin\Testbed.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>Testbed.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\bin\Testbed.rsm" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win64">
+                        <RemoteName>Testbed.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
