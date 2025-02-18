@@ -1675,6 +1675,7 @@ const
   NK_INCLUDE_FONT_BAKING = 1;
   NK_INCLUDE_DEFAULT_FONT = 1;
   NK_KEYSTATE_BASED_INPUT = 1;
+  PLM_NO_STDIO = 1;
   WINVER = $0501;
   LUA_LDIR = '!\lua\';
   LUA_CDIR = '!\';
@@ -2166,9 +2167,9 @@ const
   APPEND_STATUS_CREATE = (0);
   APPEND_STATUS_CREATEAFTER = (1);
   APPEND_STATUS_ADDINZIP = (2);
-  SQLITE_VERSION = '3.48.0';
-  SQLITE_VERSION_NUMBER = 3048000;
-  SQLITE_SOURCE_ID = '2025-01-14 11:05:00 d2fe6b05f38d9d7cd78c5d252e99ac59f1aea071d669830c1ffe4e8966e84010';
+  SQLITE_VERSION = '3.49.1';
+  SQLITE_VERSION_NUMBER = 3049001;
+  SQLITE_SOURCE_ID = '2025-02-18 13:38:58 873d4e274b4988d260ba8354a9718324a1c26187a4ab4c1cc0227c03d0f10e70';
   SQLITE_OK = 0;
   SQLITE_ERROR = 1;
   SQLITE_INTERNAL = 2;
@@ -2426,7 +2427,10 @@ const
   SQLITE_DBCONFIG_TRUSTED_SCHEMA = 1017;
   SQLITE_DBCONFIG_STMT_SCANSTATUS = 1018;
   SQLITE_DBCONFIG_REVERSE_SCANORDER = 1019;
-  SQLITE_DBCONFIG_MAX = 1019;
+  SQLITE_DBCONFIG_ENABLE_ATTACH_CREATE = 1020;
+  SQLITE_DBCONFIG_ENABLE_ATTACH_WRITE = 1021;
+  SQLITE_DBCONFIG_ENABLE_COMMENTS = 1022;
+  SQLITE_DBCONFIG_MAX = 1022;
   SQLITE_DENY = 1;
   SQLITE_IGNORE = 2;
   SQLITE_CREATE_INDEX = 1;
@@ -3645,12 +3649,12 @@ const
   ImGuiWindowFlags_NoNav = 196608;
   ImGuiWindowFlags_NoDecoration = 43;
   ImGuiWindowFlags_NoInputs = 197120;
+  ImGuiWindowFlags_DockNodeHost = 8388608;
   ImGuiWindowFlags_ChildWindow = 16777216;
   ImGuiWindowFlags_Tooltip = 33554432;
   ImGuiWindowFlags_Popup = 67108864;
   ImGuiWindowFlags_Modal = 134217728;
   ImGuiWindowFlags_ChildMenu = 268435456;
-  ImGuiWindowFlags_DockNodeHost = 536870912;
 
 type
   ImGuiChildFlags_ = Integer;
@@ -3731,9 +3735,10 @@ const
   ImGuiTreeNodeFlags_FramePadding = 1024;
   ImGuiTreeNodeFlags_SpanAvailWidth = 2048;
   ImGuiTreeNodeFlags_SpanFullWidth = 4096;
-  ImGuiTreeNodeFlags_SpanTextWidth = 8192;
+  ImGuiTreeNodeFlags_SpanLabelWidth = 8192;
   ImGuiTreeNodeFlags_SpanAllColumns = 16384;
-  ImGuiTreeNodeFlags_NavLeftJumpsBackHere = 32768;
+  ImGuiTreeNodeFlags_LabelSpanAllColumns = 32768;
+  ImGuiTreeNodeFlags_NavLeftJumpsBackHere = 131072;
   ImGuiTreeNodeFlags_CollapsingHeader = 26;
 
 type
@@ -3906,7 +3911,8 @@ const
   ImGuiDataType_Float = 8;
   ImGuiDataType_Double = 9;
   ImGuiDataType_Bool = 10;
-  ImGuiDataType_COUNT = 11;
+  ImGuiDataType_String = 11;
+  ImGuiDataType_COUNT = 12;
 
 type
   ImGuiDir = Integer;
@@ -4282,9 +4288,10 @@ const
   ImGuiColorEditFlags_NoSidePreview = 256;
   ImGuiColorEditFlags_NoDragDrop = 512;
   ImGuiColorEditFlags_NoBorder = 1024;
+  ImGuiColorEditFlags_AlphaOpaque = 2048;
+  ImGuiColorEditFlags_AlphaNoBg = 4096;
+  ImGuiColorEditFlags_AlphaPreviewHalf = 8192;
   ImGuiColorEditFlags_AlphaBar = 65536;
-  ImGuiColorEditFlags_AlphaPreview = 131072;
-  ImGuiColorEditFlags_AlphaPreviewHalf = 262144;
   ImGuiColorEditFlags_HDR = 524288;
   ImGuiColorEditFlags_DisplayRGB = 1048576;
   ImGuiColorEditFlags_DisplayHSV = 2097152;
@@ -4296,6 +4303,7 @@ const
   ImGuiColorEditFlags_InputRGB = 134217728;
   ImGuiColorEditFlags_InputHSV = 268435456;
   ImGuiColorEditFlags_DefaultOptions_ = 177209344;
+  ImGuiColorEditFlags_AlphaMask_ = 14338;
   ImGuiColorEditFlags_DisplayMask_ = 7340032;
   ImGuiColorEditFlags_DataTypeMask_ = 25165824;
   ImGuiColorEditFlags_PickerMask_ = 100663296;
@@ -4313,6 +4321,7 @@ const
   ImGuiSliderFlags_WrapAround = 256;
   ImGuiSliderFlags_ClampOnInput = 512;
   ImGuiSliderFlags_ClampZeroRange = 1024;
+  ImGuiSliderFlags_NoSpeedTweaks = 2048;
   ImGuiSliderFlags_AlwaysClamp = 1536;
   ImGuiSliderFlags_InvalidMask_ = 1879048207;
 
@@ -4558,7 +4567,6 @@ type
   PImGuiDataTypePrivate_ = ^ImGuiDataTypePrivate_;
 
 const
-  ImGuiDataType_String = 12;
   ImGuiDataType_Pointer = 13;
   ImGuiDataType_ID = 14;
 
@@ -5078,7 +5086,8 @@ const
   ImGuiTabItemFlags_SectionMask_ = 192;
   ImGuiTabItemFlags_NoCloseButton = 1048576;
   ImGuiTabItemFlags_Button = 2097152;
-  ImGuiTabItemFlags_Unsorted = 4194304;
+  ImGuiTabItemFlags_Invisible = 4194304;
+  ImGuiTabItemFlags_Unsorted = 8388608;
 
 type
   // Forward declarations
@@ -5497,6 +5506,7 @@ type
   PImVector_ImFontConfig = ^ImVector_ImFontConfig;
   PImFontAtlas = ^ImFontAtlas;
   PImVector_float = ^ImVector_float;
+  PImVector_ImU16 = ^ImVector_ImU16;
   PImVector_ImFontGlyph = ^ImVector_ImFontGlyph;
   PImFont = ^ImFont;
   PPImFont = ^PImFont;
@@ -5533,6 +5543,7 @@ type
   PImGuiWindowStackData = ^ImGuiWindowStackData;
   PImGuiShrinkWidthItem = ^ImGuiShrinkWidthItem;
   PImGuiPtrOrIndex = ^ImGuiPtrOrIndex;
+  PImGuiDeactivatedItemData = ^ImGuiDeactivatedItemData;
   PImGuiPopupData = ^ImGuiPopupData;
   PImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN = ^ImBitArray_ImGuiKey_NamedKey_COUNT__lessImGuiKey_NamedKey_BEGIN;
   PImGuiInputEventMousePos = ^ImGuiInputEventMousePos;
@@ -6930,6 +6941,8 @@ type
 
   plm_audio_decode_callback = procedure(self: Pplm_t; samples: Pplm_samples_t; user: Pointer); cdecl;
   plm_buffer_load_callback = procedure(self: Pplm_buffer_t; user: Pointer); cdecl;
+  plm_buffer_seek_callback = procedure(self: Pplm_buffer_t; offset: NativeUInt; user: Pointer); cdecl;
+  plm_buffer_tell_callback = function(self: Pplm_buffer_t; user: Pointer): NativeUInt; cdecl;
   ma_int8 = UTF8Char;
   ma_uint8 = Byte;
   Pma_uint8 = ^ma_uint8;
@@ -9828,6 +9841,7 @@ type
   PImU8 = ^ImU8;
   ImS16 = Smallint;
   ImU16 = Word;
+  PImU16 = ^ImU16;
   ImS32 = Integer;
   ImU32 = Cardinal;
   PImU32 = ^ImU32;
@@ -10079,6 +10093,7 @@ type
     MouseClickedCount: array [0..4] of ImU16;
     MouseClickedLastCount: array [0..4] of ImU16;
     MouseReleased: array [0..4] of Boolean;
+    MouseReleasedTime: array [0..4] of Double;
     MouseDownOwned: array [0..4] of Boolean;
     MouseDownOwnedUnlessPopupClose: array [0..4] of Boolean;
     MouseWheelRequestAxisSwap: Boolean;
@@ -10372,17 +10387,17 @@ type
     FontData: Pointer;
     FontDataSize: Integer;
     FontDataOwnedByAtlas: Boolean;
+    MergeMode: Boolean;
+    PixelSnapH: Boolean;
     FontNo: Integer;
-    SizePixels: Single;
     OversampleH: Integer;
     OversampleV: Integer;
-    PixelSnapH: Boolean;
+    SizePixels: Single;
     GlyphExtraSpacing: ImVec2;
     GlyphOffset: ImVec2;
     GlyphRanges: PImWchar;
     GlyphMinAdvanceX: Single;
     GlyphMaxAdvanceX: Single;
-    MergeMode: Boolean;
     FontBuilderFlags: Cardinal;
     RasterizerMultiply: Single;
     RasterizerDensity: Single;
@@ -10463,8 +10478,8 @@ type
     TexID: ImTextureID;
     TexDesiredWidth: Integer;
     TexGlyphPadding: Integer;
-    Locked: Boolean;
     UserData: Pointer;
+    Locked: Boolean;
     TexReady: Boolean;
     TexPixelsUseColors: Boolean;
     TexPixelsAlpha8: PByte;
@@ -10476,7 +10491,7 @@ type
     Fonts: ImVector_ImFontPtr;
     CustomRects: ImVector_ImFontAtlasCustomRect;
     ConfigData: ImVector_ImFontConfig;
-    TexUvLines: array [0..63] of ImVec4;
+    TexUvLines: array [0..32] of ImVec4;
     FontBuilderIO: PImFontBuilderIO;
     FontBuilderFlags: Cardinal;
     PackIdMouseCursors: Integer;
@@ -10489,6 +10504,12 @@ type
     Data: PSingle;
   end;
 
+  ImVector_ImU16 = record
+    Size: Integer;
+    Capacity: Integer;
+    Data: PImU16;
+  end;
+
   ImVector_ImFontGlyph = record
     Size: Integer;
     Capacity: Integer;
@@ -10499,7 +10520,7 @@ type
     IndexAdvanceX: ImVector_float;
     FallbackAdvanceX: Single;
     FontSize: Single;
-    IndexLookup: ImVector_ImWchar;
+    IndexLookup: ImVector_ImU16;
     Glyphs: ImVector_ImFontGlyph;
     FallbackGlyph: PImFontGlyph;
     ContainerAtlas: PImFontAtlas;
@@ -10510,12 +10531,12 @@ type
     FallbackChar: ImWchar;
     EllipsisWidth: Single;
     EllipsisCharStep: Single;
-    DirtyLookupTables: Boolean;
     Scale: Single;
     Ascent: Single;
     Descent: Single;
     MetricsTotalSurface: Integer;
-    Used4kPagesMap: array [0..1] of ImU8;
+    DirtyLookupTables: Boolean;
+    Used8kPagesMap: array [0..0] of ImU8;
   end;
 
   ImGuiViewport = record
@@ -10730,7 +10751,7 @@ type
     BackupCurrLineSize: ImVec2;
     BackupCurrLineTextBaseOffset: Single;
     BackupActiveIdIsAlive: ImGuiID;
-    BackupActiveIdPreviousFrameIsAlive: Boolean;
+    BackupDeactivatedIdIsAlive: Boolean;
     BackupHoveredIdIsAlive: Boolean;
     BackupIsSameLine: Boolean;
     EmitItem: Boolean;
@@ -10758,8 +10779,10 @@ type
   ImGuiInputTextState = record
     Ctx: PImGuiContext;
     Stb: PImStbTexteditState;
+    Flags: ImGuiInputTextFlags;
     ID: ImGuiID;
     TextLen: Integer;
+    TextSrc: PUTF8Char;
     TextA: ImVector_char;
     TextToRevertTo: ImVector_char;
     CallbackTextBackup: ImVector_char;
@@ -10769,8 +10792,7 @@ type
     CursorFollow: Boolean;
     SelectedAllMouseLock: Boolean;
     Edited: Boolean;
-    Flags: ImGuiInputTextFlags;
-    ReloadUserBuf: Boolean;
+    WantReloadUserBuf: Boolean;
     ReloadSelectionStart: Integer;
     ReloadSelectionEnd: Integer;
   end;
@@ -10862,6 +10884,13 @@ type
   ImGuiPtrOrIndex = record
     Ptr: Pointer;
     Index: Integer;
+  end;
+
+  ImGuiDeactivatedItemData = record
+    ID: ImGuiID;
+    ElapseFrame: Integer;
+    HasBeenEditedBefore: Boolean;
+    IsAlive: Boolean;
   end;
 
   ImGuiPopupData = record
@@ -11499,9 +11528,9 @@ type
     FrameCountEnded: Integer;
     FrameCountPlatformEnded: Integer;
     FrameCountRendered: Integer;
+    WithinEndChildID: ImGuiID;
     WithinFrameScope: Boolean;
     WithinFrameScopeWithImplicitWindow: Boolean;
-    WithinEndChild: Boolean;
     GcCompactAll: Boolean;
     TestEngineHookItems: Boolean;
     TestEngine: Pointer;
@@ -11561,9 +11590,8 @@ type
     ActiveIdWindow: PImGuiWindow;
     ActiveIdSource: ImGuiInputSource;
     ActiveIdPreviousFrame: ImGuiID;
-    ActiveIdPreviousFrameIsAlive: Boolean;
-    ActiveIdPreviousFrameHasBeenEditedBefore: Boolean;
-    ActiveIdPreviousFrameWindow: PImGuiWindow;
+    DeactivatedItemData: ImGuiDeactivatedItemData;
+    ActiveIdValueOnActivation: ImGuiDataTypeStorage;
     LastActiveId: ImGuiID;
     LastActiveIdTimer: Single;
     LastKeyModsChangeTime: Double;
@@ -11837,6 +11865,10 @@ type
     LayoutType: ImGuiLayoutType;
     ParentLayoutType: ImGuiLayoutType;
     ModalDimBgColor: ImU32;
+    WindowItemStatusFlags: ImGuiItemStatusFlags;
+    ChildItemStatusFlags: ImGuiItemStatusFlags;
+    DockTabItemStatusFlags: ImGuiItemStatusFlags;
+    DockTabItemRect: ImRect;
     ItemWidth: Single;
     TextWrapPos: Single;
     ItemWidthStack: ImVector_float;
@@ -11949,7 +11981,9 @@ type
     StateStorage: ImGuiStorage;
     ColumnsStorage: ImVector_ImGuiOldColumns;
     FontWindowScale: Single;
+    FontWindowScaleParents: Single;
     FontDpiScale: Single;
+    FontRefSize: Single;
     SettingsOffset: Integer;
     DrawList: PImDrawList;
     DrawListInst: ImDrawList;
@@ -11984,8 +12018,6 @@ type
     DockNode: PImGuiDockNode;
     DockNodeAsHost: PImGuiDockNode;
     DockId: ImGuiID;
-    DockTabItemStatusFlags: ImGuiItemStatusFlags;
-    DockTabItemRect: ImRect;
   end;
 
   ImGuiTabItem = record
@@ -12249,6 +12281,7 @@ type
     DummyDrawChannel: ImGuiTableDrawChannelIdx;
     Bg2DrawChannelCurrent: ImGuiTableDrawChannelIdx;
     Bg2DrawChannelUnfrozen: ImGuiTableDrawChannelIdx;
+    NavLayer: ImS8;
     IsLayoutLocked: Boolean;
     IsInsideRow: Boolean;
     IsInitializing: Boolean;
@@ -13438,8 +13471,6 @@ var
   c2Collided: function(const A: Pointer; const ax: Pc2x; typeA: C2_TYPE; const B: Pointer; const bx: Pc2x; typeB: C2_TYPE): Integer; cdecl;
   c2Collide: procedure(const A: Pointer; const ax: Pc2x; typeA: C2_TYPE; const B: Pointer; const bx: Pc2x; typeB: C2_TYPE; m: Pc2Manifold); cdecl;
   c2CastRay: function(A: c2Ray; const B: Pointer; const bx: Pc2x; typeB: C2_TYPE; &out: Pc2Raycast): Integer; cdecl;
-  plm_create_with_filename: function(const filename: PUTF8Char): Pplm_t; cdecl;
-  plm_create_with_file: function(fh: PPointer; close_when_done: Integer): Pplm_t; cdecl;
   plm_create_with_memory: function(bytes: PUInt8; length: NativeUInt; free_when_done: Integer): Pplm_t; cdecl;
   plm_create_with_buffer: function(buffer: Pplm_buffer_t; destroy_when_done: Integer): Pplm_t; cdecl;
   plm_destroy: procedure(self: Pplm_t); cdecl;
@@ -13472,8 +13503,7 @@ var
   plm_decode_audio: function(self: Pplm_t): Pplm_samples_t; cdecl;
   plm_seek: function(self: Pplm_t; time: Double; seek_exact: Integer): Integer; cdecl;
   plm_seek_frame: function(self: Pplm_t; time: Double; seek_exact: Integer): Pplm_frame_t; cdecl;
-  plm_buffer_create_with_filename: function(const filename: PUTF8Char): Pplm_buffer_t; cdecl;
-  plm_buffer_create_with_file: function(fh: PPointer; close_when_done: Integer): Pplm_buffer_t; cdecl;
+  plm_buffer_create_with_callbacks: function(load_callback: plm_buffer_load_callback; seek_callback: plm_buffer_seek_callback; tell_callback: plm_buffer_tell_callback; length: NativeUInt; user: Pointer): Pplm_buffer_t; cdecl;
   plm_buffer_create_with_memory: function(bytes: PUInt8; length: NativeUInt; free_when_done: Integer): Pplm_buffer_t; cdecl;
   plm_buffer_create_with_capacity: function(capacity: NativeUInt): Pplm_buffer_t; cdecl;
   plm_buffer_create_for_appending: function(initial_capacity: NativeUInt): Pplm_buffer_t; cdecl;
@@ -15114,6 +15144,7 @@ var
   igIsMouseClicked_Bool: function(button: ImGuiMouseButton; &repeat: Boolean): Boolean; cdecl;
   igIsMouseReleased_Nil: function(button: ImGuiMouseButton): Boolean; cdecl;
   igIsMouseDoubleClicked_Nil: function(button: ImGuiMouseButton): Boolean; cdecl;
+  igIsMouseReleasedWithDelay: function(button: ImGuiMouseButton; delay: Single): Boolean; cdecl;
   igGetMouseClickedCount: function(button: ImGuiMouseButton): Integer; cdecl;
   igIsMouseHoveringRect: function(r_min: ImVec2; r_max: ImVec2; clip: Boolean): Boolean; cdecl;
   igIsMousePosValid: function(const mouse_pos: PImVec2): Boolean; cdecl;
@@ -15368,8 +15399,8 @@ var
   ImFontAtlas_AddFontFromMemoryCompressedTTF: function(self: PImFontAtlas; const compressed_font_data: Pointer; compressed_font_data_size: Integer; size_pixels: Single; const font_cfg: PImFontConfig; const glyph_ranges: PImWchar): PImFont; cdecl;
   ImFontAtlas_AddFontFromMemoryCompressedBase85TTF: function(self: PImFontAtlas; const compressed_font_data_base85: PUTF8Char; size_pixels: Single; const font_cfg: PImFontConfig; const glyph_ranges: PImWchar): PImFont; cdecl;
   ImFontAtlas_ClearInputData: procedure(self: PImFontAtlas); cdecl;
-  ImFontAtlas_ClearTexData: procedure(self: PImFontAtlas); cdecl;
   ImFontAtlas_ClearFonts: procedure(self: PImFontAtlas); cdecl;
+  ImFontAtlas_ClearTexData: procedure(self: PImFontAtlas); cdecl;
   ImFontAtlas_Clear: procedure(self: PImFontAtlas); cdecl;
   ImFontAtlas_Build: function(self: PImFontAtlas): Boolean; cdecl;
   ImFontAtlas_GetTexDataAsAlpha8: procedure(self: PImFontAtlas; out_pixels: PPByte; out_width: PInteger; out_height: PInteger; out_bytes_per_pixel: PInteger); cdecl;
@@ -15749,6 +15780,7 @@ var
   igSetNextWindowRefreshPolicy: procedure(flags: ImGuiWindowRefreshFlags); cdecl;
   igSetCurrentFont: procedure(font: PImFont); cdecl;
   igGetDefaultFont: function(): PImFont; cdecl;
+  igPushPasswordFont: procedure(); cdecl;
   igGetForegroundDrawList_WindowPtr: function(window: PImGuiWindow): PImDrawList; cdecl;
   igAddDrawListToDrawDataEx: procedure(draw_data: PImDrawData; out_list: PImVector_ImDrawListPtr; draw_list: PImDrawList); cdecl;
   igInitialize: procedure(); cdecl;
@@ -15810,7 +15842,7 @@ var
   igItemHoverable: function(bb: ImRect; id: ImGuiID; item_flags: ImGuiItemFlags): Boolean; cdecl;
   igIsWindowContentHoverable: function(window: PImGuiWindow; flags: ImGuiHoveredFlags): Boolean; cdecl;
   igIsClippedEx: function(bb: ImRect; id: ImGuiID): Boolean; cdecl;
-  igSetLastItemData: procedure(item_id: ImGuiID; in_flags: ImGuiItemFlags; status_flags: ImGuiItemStatusFlags; item_rect: ImRect); cdecl;
+  igSetLastItemData: procedure(item_id: ImGuiID; item_flags: ImGuiItemFlags; status_flags: ImGuiItemStatusFlags; item_rect: ImRect); cdecl;
   igCalcItemSize: procedure(pOut: PImVec2; size: ImVec2; default_w: Single; default_h: Single); cdecl;
   igCalcWrapWidthForPos: function(pos: ImVec2; wrap_pos_x: Single): Single; cdecl;
   igPushMultiItemsWidths: procedure(components: Integer; width_full: Single); cdecl;
@@ -16041,6 +16073,7 @@ var
   igTabBarQueueReorderFromMousePos: procedure(tab_bar: PImGuiTabBar; tab: PImGuiTabItem; mouse_pos: ImVec2); cdecl;
   igTabBarProcessReorder: function(tab_bar: PImGuiTabBar): Boolean; cdecl;
   igTabItemEx: function(tab_bar: PImGuiTabBar; const &label: PUTF8Char; p_open: PBoolean; flags: ImGuiTabItemFlags; docked_window: PImGuiWindow): Boolean; cdecl;
+  igTabItemSpacing: procedure(const str_id: PUTF8Char; flags: ImGuiTabItemFlags; width: Single); cdecl;
   igTabItemCalcSize_Str: procedure(pOut: PImVec2; const &label: PUTF8Char; has_close_button_or_unsaved_marker: Boolean); cdecl;
   igTabItemCalcSize_WindowPtr: procedure(pOut: PImVec2; window: PImGuiWindow); cdecl;
   igTabItemBackground: procedure(draw_list: PImDrawList; bb: ImRect; flags: ImGuiTabItemFlags; col: ImU32); cdecl;
@@ -16165,6 +16198,7 @@ var
   igImFontAtlasBuildRender32bppRectFromString: procedure(atlas: PImFontAtlas; x: Integer; y: Integer; w: Integer; h: Integer; const in_str: PUTF8Char; in_marker_char: UTF8Char; in_marker_pixel_value: Cardinal); cdecl;
   igImFontAtlasBuildMultiplyCalcLookupTable: procedure(out_table: PByte; in_multiply_factor: Single); cdecl;
   igImFontAtlasBuildMultiplyRectAlpha8: procedure(table: PByte; pixels: PByte; x: Integer; y: Integer; w: Integer; h: Integer; stride: Integer); cdecl;
+  igImFontAtlasBuildGetOversampleFactors: procedure(const cfg: PImFontConfig; out_oversample_h: PInteger; out_oversample_v: PInteger); cdecl;
   igLogText: procedure(const fmt: PUTF8Char) varargs; cdecl;
   ImGuiTextBuffer_appendf: procedure(self: PImGuiTextBuffer; const fmt: PUTF8Char) varargs; cdecl;
   igGET_FLT_MAX: function(): Single; cdecl;
@@ -19364,6 +19398,7 @@ begin
   igImFloor_Float := GetProcAddress(aDLLHandle, 'igImFloor_Float');
   igImFloor_Vec2 := GetProcAddress(aDLLHandle, 'igImFloor_Vec2');
   igImFontAtlasBuildFinish := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildFinish');
+  igImFontAtlasBuildGetOversampleFactors := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildGetOversampleFactors');
   igImFontAtlasBuildInit := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildInit');
   igImFontAtlasBuildMultiplyCalcLookupTable := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildMultiplyCalcLookupTable');
   igImFontAtlasBuildMultiplyRectAlpha8 := GetProcAddress(aDLLHandle, 'igImFontAtlasBuildMultiplyRectAlpha8');
@@ -19507,6 +19542,7 @@ begin
   igIsMousePosValid := GetProcAddress(aDLLHandle, 'igIsMousePosValid');
   igIsMouseReleased_ID := GetProcAddress(aDLLHandle, 'igIsMouseReleased_ID');
   igIsMouseReleased_Nil := GetProcAddress(aDLLHandle, 'igIsMouseReleased_Nil');
+  igIsMouseReleasedWithDelay := GetProcAddress(aDLLHandle, 'igIsMouseReleasedWithDelay');
   igIsNamedKey := GetProcAddress(aDLLHandle, 'igIsNamedKey');
   igIsNamedKeyOrMod := GetProcAddress(aDLLHandle, 'igIsNamedKeyOrMod');
   igIsPopupOpen_ID := GetProcAddress(aDLLHandle, 'igIsPopupOpen_ID');
@@ -19609,6 +19645,7 @@ begin
   igPushItemWidth := GetProcAddress(aDLLHandle, 'igPushItemWidth');
   igPushMultiItemsWidths := GetProcAddress(aDLLHandle, 'igPushMultiItemsWidths');
   igPushOverrideID := GetProcAddress(aDLLHandle, 'igPushOverrideID');
+  igPushPasswordFont := GetProcAddress(aDLLHandle, 'igPushPasswordFont');
   igPushStyleColor_U32 := GetProcAddress(aDLLHandle, 'igPushStyleColor_U32');
   igPushStyleColor_Vec4 := GetProcAddress(aDLLHandle, 'igPushStyleColor_Vec4');
   igPushStyleVar_Float := GetProcAddress(aDLLHandle, 'igPushStyleVar_Float');
@@ -19800,6 +19837,7 @@ begin
   igTabItemCalcSize_WindowPtr := GetProcAddress(aDLLHandle, 'igTabItemCalcSize_WindowPtr');
   igTabItemEx := GetProcAddress(aDLLHandle, 'igTabItemEx');
   igTabItemLabelAndCloseButton := GetProcAddress(aDLLHandle, 'igTabItemLabelAndCloseButton');
+  igTabItemSpacing := GetProcAddress(aDLLHandle, 'igTabItemSpacing');
   igTableAngledHeadersRow := GetProcAddress(aDLLHandle, 'igTableAngledHeadersRow');
   igTableAngledHeadersRowEx := GetProcAddress(aDLLHandle, 'igTableAngledHeadersRowEx');
   igTableBeginApplyRequests := GetProcAddress(aDLLHandle, 'igTableBeginApplyRequests');
@@ -21509,9 +21547,8 @@ begin
   plm_audio_rewind := GetProcAddress(aDLLHandle, 'plm_audio_rewind');
   plm_audio_set_time := GetProcAddress(aDLLHandle, 'plm_audio_set_time');
   plm_buffer_create_for_appending := GetProcAddress(aDLLHandle, 'plm_buffer_create_for_appending');
+  plm_buffer_create_with_callbacks := GetProcAddress(aDLLHandle, 'plm_buffer_create_with_callbacks');
   plm_buffer_create_with_capacity := GetProcAddress(aDLLHandle, 'plm_buffer_create_with_capacity');
-  plm_buffer_create_with_file := GetProcAddress(aDLLHandle, 'plm_buffer_create_with_file');
-  plm_buffer_create_with_filename := GetProcAddress(aDLLHandle, 'plm_buffer_create_with_filename');
   plm_buffer_create_with_memory := GetProcAddress(aDLLHandle, 'plm_buffer_create_with_memory');
   plm_buffer_destroy := GetProcAddress(aDLLHandle, 'plm_buffer_destroy');
   plm_buffer_get_remaining := GetProcAddress(aDLLHandle, 'plm_buffer_get_remaining');
@@ -21522,8 +21559,6 @@ begin
   plm_buffer_signal_end := GetProcAddress(aDLLHandle, 'plm_buffer_signal_end');
   plm_buffer_write := GetProcAddress(aDLLHandle, 'plm_buffer_write');
   plm_create_with_buffer := GetProcAddress(aDLLHandle, 'plm_create_with_buffer');
-  plm_create_with_file := GetProcAddress(aDLLHandle, 'plm_create_with_file');
-  plm_create_with_filename := GetProcAddress(aDLLHandle, 'plm_create_with_filename');
   plm_create_with_memory := GetProcAddress(aDLLHandle, 'plm_create_with_memory');
   plm_decode := GetProcAddress(aDLLHandle, 'plm_decode');
   plm_decode_audio := GetProcAddress(aDLLHandle, 'plm_decode_audio');
